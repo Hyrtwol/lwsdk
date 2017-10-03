@@ -1,0 +1,77 @@
+<html>
+
+<head>
+<title>Globals: Timer</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="comring.html"><img width="96" height="20" border="0"
+    src="../images/navlt.gif" alt="Communication Ring"></a></td>
+    <td width="96" align="left"><a href="preview.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="Preview Functions"></a></td>
+    <td width="96" align="left"><a href="../globals.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Globals"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="700"><br>
+    <h3>Timer</h3>
+      <p><small><strong>Availability</strong>&nbsp; LightWave&reg;&nbsp;9.5</small><br>
+    <small><strong>Component</strong>&nbsp; Layout</small><br>
+      <small><strong>Header</strong>&nbsp; </small><a href="../../include/lwtimer.h"><small>lwtimer.h</small></a></p>
+      <p>Timers can be used to execute code at specified intervals.&nbsp; This interface
+      provides a means of creating one or more interval-based timer instances.
+    <p><strong>Global Call</strong></p>
+      <pre>   LWTimer *sdkTimer;
+   sdkTimer = global( LWTIMER_GLOBAL, GFUSE_TRANSIENT );</pre>
+      <p>The global function returns a pointer to an <kbd>LWTimer</kbd>
+      structure.</p>
+      <pre>    typedef struct st_LWTimer {
+        void    (*timerAdd)(TimerEventProc proc,void *data,unsigned long interval);
+        void    (*timerRemove)(TimerEventProc proc,unsigned long interval);
+    } LWTimer;
+      </pre>
+      <dl>
+      <p><strong>Event Support</strong></p>
+      <p> When creating a timer instance, you must provide a pointer to
+      a callback function that will be invoked whenever the timer expires.&nbsp; The
+      function has the following prototype:<p><code>&nbsp;&nbsp;&nbsp;
+      </code><code>typedef int (*<b>TimerEventProc</b>)(void *clientData);</code>
+      <p>The <code>clientData</code> pointer is the one provided to the <code>timerAdd()</code>
+      function when the you create the instance.</p>
+      <p>Timers return an integer value of either 0 or 1.&nbsp; This Boolean value indicates
+      to the timer management system whether or not this particular timer instance should
+      be implicitly removed from the timer list, and from further processing.&nbsp; If a value of
+      1 is returned, then the timer is removed from the system, and a subsequent call to
+      <code>timerRemove()</code> will not be required for this instance.</p>
+      <p><strong>Exported Timer Functions</strong></p>
+      <pre><tt><strong>timerAdd</strong>( proc, data, interval )</tt></pre>
+      <dd>Registers a new timer instance.&nbsp; <code>proc</code> is a pointer to a function
+      of type <code>TimerEventProc</code>.&nbsp; The <code>data</code>
+        pointer is instance data for this particular timer, and is user defined.&nbsp; The
+        <code>interval</code> value is interpreted as the number of milliseconds before
+        each timer event expires, and the <code>proc</code> callback function is activated.
+      </dd>
+      <pre><tt><strong>timerRemove</strong>( proc, interval )</tt></pre>
+      <dd>A timer instance can be explicitly removed using this call.&nbsp; Unless the timer
+      instance has implicitly removed itself by returning 1, <b>this call must be made for
+      each instance created by <code>timerAdd()</code></b>.&nbsp; The <code>proc</code>
+        pointer used in timerAdd() is used to identify the instance.&nbsp; The <code>interval</code>
+        value is considered optional, where a value of 0 will cause the first timer
+        instance that uses <code>proc</code> as its event callback to be removed.&nbsp; Otherwise,
+        the instance that uses <code>proc</code> and <code>interval</code> will be removed.
+      </dd>
+      <dt>&nbsp;</dt>
+      </dl></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<head>
+	<meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+	<title>9.0 Changes</title>
+
+	<style type="text/css">
+	<!--
+		tt { font-size: 10pt } 
+		pre { font-size: 10pt }
+	-->
+	</style>
+</head>
+
+<body lang="en-US" text="#000000" bgcolor="#ffffff" dir="LTR">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+	<tr>
+		<td width="120" align="left"><a href="83.html"><img width="96" height="20" border="0" src="images/navlt.gif" alt="8.3 Changes"></a></td>
+		<td width="96" align="left"><a href="92.html"><img width="64" height="20" border="0" src="images/navrt.gif" alt="9.1 Changes"></a></td>
+		<td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0" src="images/proglw.gif" alt="Table of Contents"></a></td>
+	</tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+	<tr>
+		<td width=600><br>
+			<h3>9.0 Changes</h3>
+			
+			<p><small>April 29th, 2006</small> </p>
+			
+			<p>This is a list of the changes in the LightWave&reg; 9.0 release that affect the SDK.</p>
+
+            <p><tt><a href="../include/lwcamera.h">lwcamera.h</a></tt>
+            <ul>
+              <li>The CameraHandler provides direct pixel cordinates and matrix functions to the Lightwave&reg; 
+Layout camera.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwnodes.h">lwnodes.h</a></tt>
+            <ul>
+              <li>Node based image / procedural / gradient handling.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwxpanel.h">lwxpanel.h</a></tt>
+            <ul>
+              <li>A single line height dThumbnail control option <tt>THUM_SNGL</tt> has been added.</li>
+              <li>dThumbnail border control options <tt>THUM_BORDER_NONE, THUM_BORDER_UP, THUMBORDER_DOWN</tt> have been added.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwvparm.h">lwvparm.h</a></tt>
+            <ul>
+              <li>Envelope creation and deletion event notifications weren't always being sent. They are now.</li>
+              <li>An envelope group rename event notification <tt>LWVPEC_RENAME</tt> has been added.</li>
+              <li>The naming of vector type envelopes can now be controlled by flags.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwdisplce.h">lwdisplce.h</a></tt>
+            <ul>
+              <li>A new flag <tt>LWDMF_AFTERMORPH</tt> has been added to allow displacement plugins to be evaluated
+              after morph. That is before the subdivision has been applied when subdivision order is "after morph".</li>
+              <li>A new flag <tt>LWDMF_NEED_NORMALS</tt> has been added to allow displacement plugins to signal
+                  the need for normals, which will be stored in the new "wNorm" member of <i>LWDisplacementAccess</i>.</li>
+              <li>A new member <tt>wNorm</tt> has been added to the <i>LWDisplacementAccess</i> data structure.
+                  "wNorm" will only be initialized with valid numbers if the flag LWDMF_NEED_NORMALS is specified by the plugin.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwrender.h">lwrender.h</a></tt>
+            <ul>
+              <li>The camera info global version has been incremented to 4.</li>
+              <li>A <code>LWCAMF_USECAMTYPE</code> flag has been added to indicate that a non-classical camera
+                  type is being used for the camera.</li>
+              <li>An <code>evaluateRay</code> function has been added to allow plug-ins to determine the ray properties
+                  for non-classical camera types during rendering.</li>
+              <li>Query functions have been added to allow plug-ins to determine the state of a camera's global-redirection
+                  settings.</li>
+              <li>The item info global version has been incremented to 4.</li>
+	      <li>Item info has gained new functions in relation to the improved align to path.</li>
+	      <li>New rayTrace function added.</li>
+	      <li>New Illumination function added.</li>
+              <li>The object info global version has been incremented to 7.</li>
+              <li>Functions have been added to the object info global to retrieve the displacement map and bump
+                  displacement order.</li>
+              <li>The viewport info global version has been incremeneted to 2.</li>
+              <li>The viewport info global can now return the projection and modelview OpenGL matrices
+                  for a viewport. Function have also been added to project world coordinates to a viewport,
+                  and unproject viewport pixel positions to world coordinates.</li>
+              <li>A function has been added to the viewport info global to return the view level of a viewport.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwvolume.h">lwvolume.h</a></tt>
+            <ul>
+              <li>The volumetrics class version has been incremented to 5.</li>
+              <li>The volumetric access structure has been expanded to include the current pixel position
+                  and the current ray recursion level.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwpolygon.h">lwpolygon.h</a></tt>
+            <ul>
+              <li>The <tt>LWGPTF_SUBD</tt> flag has been added, to mark the polytype as creating a subdivision surface.</li>
+              <li>An "edge_idx" parameter has been added to the lineTo function. In case a polygon is drawn,
+                  the parameter should specify the edge index starting from the edge
+                  between the vertices <i>(n-1, 0)</i> as edge with index 0.
+                  Polygon type plugins have to be recompiled for LW9.</li></ul>
+
+            <p><tt><a href="../include/lwmtutil.h">lwmtutil.h</a></tt>
+            <ul>
+              <li>Complete support for cross-platform multithreading has been added.  See the
+                  <a href="globals/mtutil.html">Multithreading Utilities</a> page for complete details.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwmeshedt.h">lwmeshedt.h</a></tt>
+            <ul>
+              <li>Added a <tt>typeFlags</tt> field to the <tt>EDPolygonInfo</tt> structure, which
+                  contains the polygon type flags (<tt>LWGPTF_*</tt>) of the polygon type.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwcustobj.h">lwcustobj.h</a></tt>
+            <ul>
+              <li>Added the <tt>LWCOFL_PICKING</tt> flag value to the custom object access, to
+                  distinguish selection evaluation passes from drawing evaluation passes.</li>
+              <li>added the <tt>LWCSYS_VIEWPORT</tt> coordinate system for custom object drawing.</li>
+            </ul>
+            
+            <p><tt><a href="../include/lwhost.h">lwhost.h</a></tt>
+            <ul>
+              <li>Added new file types:
+                <ul>
+                  <li><tt>LWFTYPE_NODES</tt></li>
+                  <li><tt>LWFTYPE_SOUNDS</tt></li>
+                  <li><tt>LWFTYPE_DYNAMICS</tt></li>
+                  <li><tt>LWFTYPE_RIGS</tt></li>
+                  <li><tt>LWFTYPE_INSTALL</tt></li>
+                </ul>
+              </li>
+            </ul>
+
+            <p><tt><a href="../include/lwimage.h">lwimage.h</a></tt>
+            <ul>
+              <li>The image utility global version number has been incremented to 2.</li>
+              <li>Functions have been added to the image utility global to get and set pixels in any type from a pixmap.</li>
+              <li>A function has been added to the image utility global to retrieve the color index map for <tt>LWIMTYP_INDEX8</tt> pixmaps.</li>
+            </ul>
+
+            <p><tt><a href="../include/lwmeshes.h">lwmeshes.h</a></tt>
+            <ul>
+              <li>A function has been added to the meshinfo structure to get the polytype flags of a polygon.</li>
+              <li>Meshinfo functions have been added to get polygon and vertex normals.</li>
+              <li>Iterator functions have been added to meshinfo to iterate over the polygons or points of a mesh.</li>
+            </ul>
+            
+                <p>
+                    <a href="commands/layout.html">Commands: Layout</a>
+                </p>
+                <ul>
+                    <li>
+                        A new command <tt>ApplyServerByItemID</tt> has been added to allow
+                        adding plugins by specifying the item id it should be applied to directly,
+                        without having to select the item first.
+                    </li>
+                    <li>
+                        New commands <tt>PathAlignMaxLookSteps</tt> and <tt>PathAlignReliableDist</tt>
+                        have been added to support the updated align to path controller.
+                    </li>
+                    <li>
+                        New commands <tt>DisplacementMapOrder</tt> and <tt>BumpDisplacementOrder</tt>
+                        have been added to set the displacement order of the displacement map and bump
+                        displacement.
+                    </li>
+                    <li>
+                        Added the <tt>UseGlobalResolution</tt>, <tt>UseGlobalMask</tt> and
+                        <tt>UseGlobalBlur</tt> commands to set the state of a selected camera's
+                        global-redirection flags.  
+                    </li>
+                    <li>
+                        Added the following global versions of the camera-specific commands to allow
+                        a plug-in to directly alter the settings of the scene's global camera:<br>
+                        <ul>
+                            <li><tt>GlobalFrameSize</tt></li>
+                            <li><tt>GlobalResolutionMultiplier</tt></li>
+                            <li><tt>GlobalPixelAspect</tt></li>
+                            <li><tt>GlobalApertureHeight</tt></li>
+                            <li><tt>GlobalMotionBlur</tt></li>
+                            <li><tt>GlobalParticleBlur</tt></li>
+                            <li><tt>GlobalBlurLength</tt></li>
+                            <li><tt>GlobalMaskPosition</tt></li>
+                        </ul>
+                    </li>
+                    <li>
+                        Added the <tt>HardwareShadingMethod</tt> command to set the 
+                        hardware shading method to be used in the viewports.<br />
+
+                        Currently available shading methods:<br />
+                        <ul>
+                            <li><tt>MultitextureShaders</tt></li>
+                            <li><tt>GLSLShaders</tt></li>
+                        </ul>                        
+                    </li>
+                    <li>
+                        Added the <tt>HardwareGeometryAccelerationMethod</tt> command to set the 
+                        hardware geometry acceleration method to be used in the viewports.<br />
+
+                        Currently available shading methods:<br />
+                        <ul>
+                            <li><tt>Streaming</tt></li>
+                            <li><tt>Buffered(VBO)</tt></li>
+                        </ul>                        
+                    </li>                                        
+                </ul>
+
+            <p>Miscellaneous</p>
+			<ul>
+				<li>
+					The AnimUV, Camera and Nodes plug-in classes have been added to the
+					support list of the LScript Object's server() method.  These plug-in
+					classes are represented in the script's environment by the following
+					pre-defined values:<br><br>
+					<ul>
+					  <li>SERVER_ANIMUV_H, SERVER_ANIMUV_I</li>
+					  <li>SERVER_CAMERA_H, SERVER_CAMERA_I</li>
+					  <li>SERVER_NODE_H, SERVER_NODE_I</li>
+					</ul>
+				</li>
+				<br>
+				<li>
+					Clarified that texture contexts should not be destroyed while a texture
+					using it still exists.
+				</li>
+				<br>
+				<li>
+					The preprocessor symbol <tt>_WIN32</tt> used when compiling the server
+					library and plugins on the Microsoft Windows platform has been replaced
+					by <tt>_MSWIN</tt>. This avoids some confusion when compiling for 64bit
+					systems.
+				</li>
+			</ul>
+		</td>
+	</tr>
+</table>
+
+<p><br><br></p>
+
+</body>
+</html>

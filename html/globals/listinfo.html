@@ -1,0 +1,200 @@
+<html>
+
+<head>
+<title>Globals: List Info</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="volumeeval.html"><img width="96" height="20" border="0"
+    src="../images/navlt.gif" alt="Volumetric Evaluation"></a></td>
+    <td width="96" align="left"><a href="shelf.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="Shelf Functions" ></a></td>
+    <td width="96" align="left"><a href="../globals.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Globals"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="700"><br>
+    <h3>List Info</h3>
+      <p><small><strong>Availability</strong>&nbsp; LightWave&reg;&nbsp;9.2.1</small><br>
+    <small><strong>Component</strong>&nbsp; Layout</small><br>
+      <small><strong>Header</strong>&nbsp; </small><a href="../../include/lwrender.h"><small>lwrender.h</small></a></p>
+      <p>This interface provides access functions for managing the internal
+      lists of objects maintained by LightWave Layout.</p>
+    <p><strong>Global Call</strong></p>
+      <pre>   LWListInfo *liFunc;
+   liFunc = global( LWLISTINFO_GLOBAL, GFUSE_TRANSIENT );</pre>
+      <p>The global function returns a pointer to a <kbd>LWListInfo</kbd>
+      structure.</p>
+      <pre>    typedef struct st_LWListInfo {
+        int          (*index)(LWItemID object);
+        int          (*reorder)(LWItemID *list);
+        int          (*swap)(LWItemID *list);
+        int          (*splice)(LWItemID point, LWItemID* list);
+    } LWListInfo;</pre>
+      <dl>
+      <p><strong>Exported ListInfo Functions</strong></p>
+      <dt><pre><code>index = </code><tt><strong>index</strong>( id )</tt></pre></dt>
+      <dd>This function will map the provided LWItemID to the owning object's
+      linear index value in the internal array.  If the identifier is invalid,
+      then the return value is <code>LI_Failure</code>.
+      </dd>
+      <dt><pre><code>result = </code><tt><strong>reorder</strong>( list[] )</tt></pre></dt>
+      <dd>Provided a list of LWItemIDs (terminated by a LWITEM_NULL), this function
+      will arrange the internal array to match the ordering found within the list.
+      Any LWItemIDs not found in the list will be appended to the end of the internal
+      array in the order in which they currently exist.
+      <p>Possible <code>result</code> values are:
+      <table>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_Success</code></td>
+          <td width=25></td>
+          <td>The operation completed successfully.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_MixedTypes</code></td>
+          <td width=25></td>
+          <td>The item types in the provided list are not all the same.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidBoneParent</code></td>
+          <td width=25></td>
+          <td>The parent object of a provided Bone identifier is invalid.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_MixedBones</code></td>
+          <td width=25></td>
+          <td>Bones in the list are from different parent objects.</td>
+        </tr>
+      </table>
+      </dd>
+      <dt><pre><code>result = </code><tt><strong>swap</strong>( list[] )</tt></pre></dt>
+      <dd>This function allows a finer granularity of control over the movement of objects
+      within the list.  The caller provides a list of LWItemID pairs, and the objects found
+      at those offsets within the specificed internal array for the item type will switch
+      places.  <code>list</code> should be terminated with an LWITEM_NULL entry.
+      <p>Possible <code>result</code> values are:
+      <table>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_Success</code></td>
+          <td width=25></td>
+          <td>The operation completed successfully.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidItemType</code></td>
+          <td width=25></td>
+          <td>The type of the identifier could not be determined.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_MixedTypes</code></td>
+          <td width=25></td>
+          <td>The item types in the provided list are not all the same.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidBoneParent</code></td>
+          <td width=25></td>
+          <td>The parent object of a provided Bone identifier is invalid.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_MixedBones</code></td>
+          <td width=25></td>
+          <td>Bones in the list are from different parent objects.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidPair</code></td>
+          <td width=25></td>
+          <td>A matched pair of identifiers is identical.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_OutOfBounds</code></td>
+          <td width=25></td>
+          <td>The number of pairs provided exceeds the size of the type array.</td>
+        </tr>
+      </table>
+      </dd>
+      <dt><pre><code>result = </code><tt><strong>splice</strong>( point, list[] )</tt></pre></dt>
+      <dd>Splicing takes the provided <code>LWITEM_NULL</code>-terminated list of LWItemIDs and inserts
+      them into the internal array at the indicated insertion <code>point</code>.  The item
+      occupying the insertion <code>point</code>, and all entries following it, will be moved
+      "down" in the array to make room for the spliced collection of identifiers.
+      <p>The <code>point</code> identifier can have the value <code>SPLICE_HEAD</code>,
+      which indicates to the splice() function that the list items should be inserted at
+      beginning of the array.  In addition, a <code>point</code> value of <code>SPLICE_TAIL</code>
+      will cause the items in the list to be appended to the end of the internal
+      array.
+      <p>Possible <code>result</code> values are:
+      <table>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_Success</code></td>
+          <td width=25></td>
+          <td>The operation completed successfully.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_MixedTypes</code></td>
+          <td width=25></td>
+          <td>The item types in the provided list are not all the same.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_ItemTypeMismatch</code></td>
+          <td width=25></td>
+          <td>The type of the insertion point identifier does not match the type of the first element in the list.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_CyclicInsertionPoint</code></td>
+          <td width=25></td>
+          <td>The provided insertion point identifier is a member of the provided list.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidBoneParent</code></td>
+          <td width=25></td>
+          <td>The parent object of a provided Bone identifier is invalid.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidItemType</code></td>
+          <td width=25></td>
+          <td>The type of the identifier could not be determined.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_InvalidInsertionPoint</code></td>
+          <td width=25></td>
+          <td>The provided insertion point identifier could not be found.</td>
+        </tr>
+        <tr>
+          <td width=25></td>
+          <td><code>LI_MixedBones</code></td>
+          <td width=25></td>
+          <td>Bones in the list are from different parent objects.</td>
+        </tr>
+      </table>
+      </dd>
+    </dl></td>
+  </tr>
+</table>
+</body>
+</html>

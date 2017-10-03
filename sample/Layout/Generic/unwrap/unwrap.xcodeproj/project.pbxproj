@@ -1,0 +1,252 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04D7A5870B617E9600C92F9B /* servmain.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5810B617E9600C92F9B /* servmain.c */; };
+		04D7A5880B617E9600C92F9B /* shutdown.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5820B617E9600C92F9B /* shutdown.c */; };
+		04D7A5890B617E9600C92F9B /* startup.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5830B617E9600C92F9B /* startup.c */; };
+		04D7A58A0B617E9600C92F9B /* username.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5840B617E9600C92F9B /* username.c */; };
+		04D7A5900B617EA200C92F9B /* tree.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A58B0B617EA200C92F9B /* tree.c */; };
+		04D7A5910B617EA200C92F9B /* ui.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A58D0B617EA200C92F9B /* ui.c */; };
+		04D7A5920B617EA200C92F9B /* unwrap.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A58E0B617EA200C92F9B /* unwrap.c */; };
+		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04D7A5800B617E9600C92F9B /* servdesc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = servdesc.c; path = ../../../../source/servdesc.c; sourceTree = SOURCE_ROOT; };
+		04D7A5810B617E9600C92F9B /* servmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = servmain.c; path = ../../../../source/servmain.c; sourceTree = SOURCE_ROOT; };
+		04D7A5820B617E9600C92F9B /* shutdown.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shutdown.c; path = ../../../../source/shutdown.c; sourceTree = SOURCE_ROOT; };
+		04D7A5830B617E9600C92F9B /* startup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = startup.c; path = ../../../../source/startup.c; sourceTree = SOURCE_ROOT; };
+		04D7A5840B617E9600C92F9B /* username.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = username.c; path = ../../../../source/username.c; sourceTree = SOURCE_ROOT; };
+		04D7A58B0B617EA200C92F9B /* tree.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = tree.c; sourceTree = "<group>"; };
+		04D7A58C0B617EA200C92F9B /* tree.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = tree.h; sourceTree = "<group>"; };
+		04D7A58D0B617EA200C92F9B /* ui.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = ui.c; sourceTree = "<group>"; };
+		04D7A58E0B617EA200C92F9B /* unwrap.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = unwrap.c; sourceTree = "<group>"; };
+		04D7A58F0B617EA200C92F9B /* unwrap.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = unwrap.h; sourceTree = "<group>"; };
+		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		8D576316048677EA00EA77CD /* unwrap.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = unwrap.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D576313048677EA00EA77CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04D7A57E0B617E4400C92F9B /* lwsdk */ = {
+			isa = PBXGroup;
+			children = (
+				04D7A5800B617E9600C92F9B /* servdesc.c */,
+				04D7A5810B617E9600C92F9B /* servmain.c */,
+				04D7A5820B617E9600C92F9B /* shutdown.c */,
+				04D7A5830B617E9600C92F9B /* startup.c */,
+				04D7A5840B617E9600C92F9B /* username.c */,
+			);
+			name = lwsdk;
+			sourceTree = "<group>";
+		};
+		089C166AFE841209C02AAC07 /* unwrap */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+			);
+			name = unwrap;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D576317048677EA00EA77CD /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				04D7A58B0B617EA200C92F9B /* tree.c */,
+				04D7A58C0B617EA200C92F9B /* tree.h */,
+				04D7A58D0B617EA200C92F9B /* ui.c */,
+				04D7A58E0B617EA200C92F9B /* unwrap.c */,
+				04D7A58F0B617EA200C92F9B /* unwrap.h */,
+				04D7A57E0B617E4400C92F9B /* lwsdk */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D576316048677EA00EA77CD /* unwrap.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D57630D048677EA00EA77CD /* unwrap */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "unwrap" */;
+			buildPhases = (
+				8D57630F048677EA00EA77CD /* Resources */,
+				8D576311048677EA00EA77CD /* Sources */,
+				8D576313048677EA00EA77CD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = unwrap;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = unwrap;
+			productReference = 8D576316048677EA00EA77CD /* unwrap.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB911E08733D790010E9CD /* Build configuration list for PBXProject "unwrap" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* unwrap */;
+			projectDirPath = "";
+			targets = (
+				8D57630D048677EA00EA77CD /* unwrap */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D57630F048677EA00EA77CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D576311048677EA00EA77CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04D7A5870B617E9600C92F9B /* servmain.c in Sources */,
+				04D7A5880B617E9600C92F9B /* shutdown.c in Sources */,
+				04D7A5890B617E9600C92F9B /* startup.c in Sources */,
+				04D7A58A0B617E9600C92F9B /* username.c in Sources */,
+				04D7A5900B617EA200C92F9B /* tree.c in Sources */,
+				04D7A5910B617EA200C92F9B /* ui.c in Sources */,
+				04D7A5920B617EA200C92F9B /* unwrap.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB911B08733D790010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = unwrap;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB911C08733D790010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = unwrap;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+		1DEB911F08733D790010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = _MACOS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB912008733D790010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = _MACOS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "unwrap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB911B08733D790010E9CD /* Debug */,
+				1DEB911C08733D790010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB911E08733D790010E9CD /* Build configuration list for PBXProject "unwrap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB911F08733D790010E9CD /* Debug */,
+				1DEB912008733D790010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

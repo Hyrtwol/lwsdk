@@ -1,0 +1,880 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#0000F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v1.3 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v1.3 Release Notes (<i><b>final</b></i>)</H1>
+
+<br><br>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  UDFs that contained local arrays were randomly crashing Modeler and
+  Layout when they were called/activated more than once.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Added new requester functions:
+
+     reqsize(width,height)
+
+        allows you to set the width and height of the requester panel.  this
+        function gives you manual control.
+
+     ctlposition(ctlid,column,row)
+
+        positions a control at the indicated column/row coordinates on the
+        requester panel.  once you call this function, LScript relinquishes
+        all control on the formatting of your controls. once you call it, you
+        must call it for ALL controls on the requester or they will all
+        default to (0,0) and stack one upon another.
+
+     ctlpopup(title,default,choices[])
+
+        creates a pop-up control with the values provided.  a pop-up is a
+        button-like control that displays a scrolling list of values when it
+        is selected with the mouse.
+
+     ctlslider(title,default,minimum,maximum)
+
+        creates a scroll-bar slider whose range matches that provided, and
+        includes a numeric input field.
+
+     ctlminislider(title,default,minimum,maximum)
+
+        creates a numeric input field with a scroll button to the immediate
+        right.
+
+     ctlsep([column,width])
+
+        this draw a 3D separator horizontally across your requester panel.
+        'column' is the starting column (pixel) of the separator, and 'width'
+        is number of columns (pixels) of the separator.  if no parameters are
+        provided, then the separator will span the entire width of your panel.
+        a 'width' of -1 will draw the separator to the right-most limit of
+        your panel.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Added new Light Object Agent methods rgbcolor() and rgbambient()
+  for acquiring the RGB colors of a Light
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Corrected globalstore() and globalrecall() to work in the true
+  global settings area for LScript
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected a bug in ctlchoice() that would crash the application
+  if a non-string element was provided
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Reconfigured the LScript IPC mechanism so that it will work under
+  SGI LightWave without crashing the application
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Enhanced the bend() command to work around a bug in Modeler that
+  incorrectly interprets the degree parameter as radians
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Corrected a bug in the Bone Object Agent code that prevented
+  traversal of an Object's bone chain
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected a bug that prevented access to certain Light, Bone and
+  Camera Object Agent methods
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  corrected a bug in smooth() that caused it to neglect the second
+  'strength' parameter
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A release of memory in the requester control management code was
+  randomly causing Panels-related crashes because Panels does not
+  create its own local copy of character strings
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Function call parameter and associative assignment lists can now have
+  implicit 'nil' elements.  If a position in a parameter or assignment
+  list is left empty (i.e., nothing in that position), then that
+  position receives an implicit 'nil' setting.
+
+  Consider the following function call parameter example:
+
+      main
+      {
+          testudf(,"Bob",,15.0,);
+      }
+
+      testudf: p1,p2,p3,p4,p5
+      {
+          info(p1," ",p2," ",p3," ",p4," ",p5);
+      }
+
+  This example script would print:
+
+      (nil) Bob (nil) 15 (nil)
+
+  Associative assignments benefit too from this new feature.  Let's
+  say you needed only the 3rd, 4th, and 6th elements of a multi-element
+  return value:
+
+      main
+      {
+          str = "23,-45,69.6,100,-.05,15.34";
+
+          (,,p1,p2,,p3) = parse(",",str);
+
+          info(p1," ",p2," ",p3);
+      }
+
+  This example script would print:
+
+      69.6 100 15.34
+
+  Please note that implicit 'nil' only works with function call
+  parameter lists and associative assignment lists, and only when
+  commas (,) are employed.  Leaving an empty parameter entry in
+  any other part of the system will likely generate a
+  compile-time error.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Default value assignments can now be made on function argument
+  parameters (much like C++).  These default value assignments
+  will trigger if the value passed to the function in that
+  position is 'nil'.
+
+  Consider the following example:
+
+      main
+      {
+          testudf(,"Bob",,15.0,);
+      }
+
+      testudf: p1 = -3.4,p2,p3 = "pretty",p4,p5
+      {
+          info(p1," ",p2," ",p3," ",p4," ",p5);
+      }
+
+  This example script would print:
+
+      -3.4 Bob pretty 15 (nil)
+
+  If you wish to provide for an actual 'nil' value in your
+  function's processing, then you must either avoid using default
+  value assignments for that parameter, or use 'nil' as the
+  default value.
+
+      main
+      {
+          testudf(,"Bob",,15.0,);
+      }
+
+      testudf: p1,p2,p3 = "pretty",p4,p5
+      {
+          if(p1)    // if 'p1' == nil, nothing will print
+              info(p1," ",p2," ",p3," ",p4," ",p5);
+      }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The angle() function, added in v1.2, was not calculating angles
+  accurately.  This has been corrected.  Its speed has also be greatly
+  increased.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Equality testing in the engine has been enhanced to allow for more
+  dissimilar type comparisons.  When comparisons take place ('==', '<', etc.),
+  the second comparitor is converted to be of an equivalent data type as that
+  of the first (if it is not already).
+
+            anumber = 1.5;
+            astring = "43.34";
+
+            if(anumber == astring)  // 'astring' is converted into
+            {                       // a number for the comparison
+                ...
+
+            if(astring == anumber)  // 'anumber' is converted into
+            {                       // a string for the comparison
+
+  Be aware that, in some less conventional comparisons, you may get results
+  that differ depending upon which comparitor appears first.  In cases where
+  the comparitors are too dissimilar, the results are undefined.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The random(low,high) function was returning values in the range
+  (low + 1) to high.  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The Object Agent interface has been enhanced to allow arrays of OA-supported
+  values to be passed to OA methods.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Point and polygon identifiers are now their (integer) index equivalents
+  instead of their actual internal (unusable) Modeler id values.  As a result,
+  they can now be used in comparison testing and array indexing.
+
+        pnts = polyinfo(polygons[1]);       // pnts[2-n] are point index values
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected a bug in the pre-processor causing it not to complete replacements
+  on lines where there was more than one macro identifier.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Support for a new private Object Agent method called 'alias' has been added
+  to the LScript OA interface.  The 'alias' method allows for method aliasing,
+  wherein an invoked Object Agent method name that cannot otherwise be resolved
+  by LScript can be re-directed to another method using the 'alias' private
+  method.  The LScript Appendix describing the Object Agent interface will be
+  updated with relavent information on this new private method.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The getfile() function was not accepting a third (optional) path parameter
+  under Layout LScript.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The Item Motion Object Agent set() and get() methods for an object's rotation
+  were functioning in terms of radians instead of degrees.  If you are currently
+  converting values using the rad() function, you should remove these workarounds
+  or you will see erratic behavior in your objects.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Added the WPOSITION parameter for the Item Motion get() method.  This parameter
+  will return the object's World position; useful in cases where the object is
+  parented.
+
+        process: ma, frame, time
+        {
+            // grab World position in case we're parented
+
+            position = ma.get(WPOSITION,time);
+            ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Corrected a bug with ctltext() that would crash Layout on the DEC Alpha
+  whenever it was used.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected bugs in the run-time environment with regards to the handling of
+  'library' files.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The matchfiles() function was not returning a proper value when no files
+  matched the provided pattern.  It now returns 'nil' as it should.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The run-time system has undergone a minor overhaul.  The binary format of
+  compiled scripts now mimics the Interchange File Format (IFF) used by
+  LightWave Object files.  This format provides enhanced modularity, and
+  will enable the run-time system to be more tolerant of additions to the
+  file (meaning re-compiles will become less necessary) in future releases.
+  Experimental features have also been added to aid script writers in the
+  commercial and semi-commerical distribution of their work.
+
+  Because the file format has change significantly, existing compiled
+  scripts will not work with v1.3 of LScript without being re-compiled.
+  However, unlike predecessors, v1.3 of the run-time system should now
+  be able to detect older binary file version and display an appropriate
+  error message (typically "Bad magic value...") instead of crashing.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  With regard to external script components, LScript is now somewhat more
+  self-configuring.  When an external component is encountered in a script
+  (whether during execution or compiling) that cannot be located through
+  available resources, LScript will prompt the user to locate the component
+  themselves.  Once successfully located, LScript will update its own internal
+  search system so that, while the located component does not move, LScript
+  will not have to prompt for its location again.  External components
+  upon which scripts can be dependent are things like insert files and Object
+  Agent Libraries.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The randu() now takes an optional integer parameter.  When provided, this
+  value will be used to re-seed the pseudo-random number generator, making it
+  possible to reproduce specific numerical sequences.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Integral data types now respond to the following set of messages:
+
+      size()        returns the size of the item
+                       - integer and number, returns the the value itself
+                       - string, returns the number of characters
+                       - vector, returns 1
+                       - array, returns the total elements allocated
+
+      count()       returns the count of the item
+                       - integer, number and vector, returns 1
+                       - string, returns the number of characters
+                       - array, returns the number of elements that
+                         contain values
+
+      asInt()       returns the data interpreted as an integer
+      asNum()       returns the data interpreted as a number
+      asStr()       returns the data interpreted as a character string
+      asVec()       returns the data interpreted as a vector
+
+      pack()        packs the data
+                       - returns a boolean true or false to indicate
+                         whether or not packing took place
+                       - integer, number and vector, does nothing
+                       - string, removes leading whitespace
+                       - array, packs elements with values down to
+                         remove intervening 'nil' values
+
+      trunc()       truncates the data
+                       - returns a boolean true or false to indicate
+                         whether or not truncating took place
+                       - integer, number and vector, does nothing
+                       - string, removes trailing whitespace
+                       - array, resizes the array, removing trailing
+                         elements whose value is 'nil'
+
+      sortA()       sorts the data
+                       - returns a boolean true or false to indicate
+                         whether or not sorting took place
+                       - integer, number and vector, does nothing
+                       - string, sorts characters in ascending order
+                       - array, packs, then sorts like elements in
+                         ascending order.  integer, number and string
+                         are sortable.
+
+      sortD()       sorts the data
+                       - returns a boolean true or false to indicate
+                         whether or not sorting took place
+                       - integer, number and vector, does nothing
+                       - string, sorts characters in descending order
+                       - array, packs, then sorts like elements in
+                         descending order.  integer, number and string
+                         are sortable.
+
+      isNil()       tests the data type for 'nil'
+                       - returns a boolean true or false
+                       - functionally equivalent to performing
+                         and equality test (i.e., "data == nil")
+
+      isInt()       tests the data type for integer
+                       - returns a boolean true or false
+                       - there is no equality test equivalent
+
+      isNum()       tests the data type for number
+                       - returns a boolean true or false
+                       - there is no equality test equivalent
+
+      isStr()       tests the data type for string
+                       - returns a boolean true or false
+                       - there is no equality test equivalent
+
+      isVec()       tests the data type for vector
+                       - returns a boolean true or false
+                       - there is no equality test equivalent
+
+  The following code fragment creates an array of 8 elements, and
+  then places values within it at random.  A pack() and a trunc()
+  are then performed on the array:
+
+      q[8] = nil;
+      q[2] = 1.5; q[4] = "Bob"; q[5] = <1,2,3>;
+
+      info(q.size());
+      info(q.count());
+      info(q);
+
+      q.pack();
+
+      info(q);
+
+      q.trunc();
+
+      info(q);
+
+  This script code would print the following messages:
+
+      8
+
+      3
+
+      (nil) 1.5 (nil) "Bob" <1,2,3> (nil) (nil) (nil)
+
+      1.5 "Bob" <1,2,3> (nil) (nil) (nil) (nil) (nil)
+
+      1.5 "Bob" <1,2,3>
+
+  While all data types respond to each message, not all operations have
+  meaning.  For instance, packing or truncating an integer does nothing.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The Object requester controls for Layout (ctlmeshitems(),
+  ctllightitems(), etc.) now take an optional second parameter
+  that can be used to initialize the control to display a specific
+  object (instead of the default "(none)" selection).  This second
+  parameter can be either a character string that contains the name
+  of the object as it is displayed in Layout, or it can be an actual
+  LightWave Object value.
+
+  LScript will enforce types when you initialize controls.  What this
+  means is that you cannot use a Mesh Object to initialize a Light Object
+  control.
+
+     c1 = ctlmeshitems("Select object","Cow.lwo");
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  LScript was incorrectly posting an error regarding conflicting
+  class names when more than one Object Agent class was declared using
+  unique identities in a script.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A bug in the arithmethic assignment operators (+=, -=, etc.) prevented
+  them from correctly dealing with array-element lvalues.  For instance,
+  the following line of code would not alter the element value:
+
+     . . .
+     i[3] += 15.340;
+     . . .
+
+  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Arithmetic operations have been streamlined and consolidated internally.
+  Certain improper operations that would before have been ignored by LScript
+  are now correctly flagged as illegal operations.  For example, the following
+  (illegal) arithmetic operation would not produce an error under previous
+  releases:
+
+     . . .
+     srf[3] = nil;
+     t = srf[1] * 255;
+     . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A bug with ctlcolor() under Modeler was not accurately returning the values
+  entered into the requester.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The run-time plug-ins were not behaving properly under ScreamerNet.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The ctl*items() control functions were not properly accepting an
+  optional 'nil' argument in the second parameter.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The Modelr ctlfont() control was not properly accomodating a bug in
+  the Modeler's font handling by returning a value that could be used
+  directly by maketext().
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The ctltext() function was always returning 'nil' instead of the control's
+  identifier.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Additional Modeler error codes have been trapped by LScript in 'autoerror'
+  mode.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The split() function was not correctly accepting all (internal) string
+  data types.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Assignments to variables containing arrays was being flagged as errors
+  instead of warnings by LScript.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  LS/DM was not correctly recognizing return values from the flags()
+  function.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The default behavior for LS/DM scripts without flags() functions is now
+  to process in WORLD coordinates instead of LOCAL.  If you want LOCAL
+  processing, you must now explicitly return that value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The Layout I/O parameter provided to LScript save() and load()
+  functions now provides the methods writeString() and readString()
+  to deal with storing and retrieving string values in binary files.
+
+     . . .
+     save: what, io
+     {
+         if(what == OBJECTMODE)
+         {
+             . . .
+             io.writeString("Hello!");
+             . . .
+         }
+     }
+     . . .
+     load: what, io
+     {
+         if(what == OBJECTMODE)
+         {
+             . . .
+             myString = io.readString();  // returns "Hello!"
+             . . .
+         }
+     }
+     . . .
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

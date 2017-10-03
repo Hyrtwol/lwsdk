@@ -1,0 +1,382 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#FFFFFF"
+      vlink="#FFFFFF">
+
+<TITLE>LScript v2.5 Patch Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.5 Patch Release Notes</H1>
+
+<table BORDER=1>
+  <tr>
+    <td width=75 bgcolor="#505050" align=center>
+<A HREF="#v251">v2.5.1</A>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+<hr width="50%">
+<br><br>
+
+
+<A NAME=v251>
+
+<table BORDER=1>
+  <tr>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     patch: v2.5.1
+</font>
+    </td>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     released: 05/28/2002
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<table BORDER=1>
+  <tr>
+    <td bgcolor="#c0c0c0" colspan=5 align=center>
+<font color="#000000">
+        LScript v2.5.1 Files
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v251/lcore3.zip">Intel</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v251/lcore3.sit">Mac OS X</A>
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  Using a requester solely within the confines of an invoked UDF could cause crashing
+  when the UDF returned a value to the caller.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  ctlangle() and ctlpercent() have been corrected to include sliders
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The flags() function of the Master class architecture is not invoked by Layout until
+  it needs to decide the fate of the plug-in (i.e., when the scene is cleared).  This has
+  caused some problems with LScript's sanity management with situations like calling
+  ClearScene() from a SCENE-based Master script.  LScript now calls the flags() function
+  itself the first time the process() function is invoked to ensure the proper internal
+  settings exist as soon as possible.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Some poor stack indexing in code that supports the 'fpdepth' pragma setting caused
+  certain equality tests to return the incorrect result.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  A secondary definition of the SCENE global constant was cause incorrect interpretation
+  of the return value of the Master flags() function when it was returned.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A few string-related functions and functionalities have been buttressed against Very
+  Large strings.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The LScript VMap Object Agent constructor was lacking any mechanism for directly
+  accessing custom VMaps defined in an object.  This has been rectified by allowing
+  custom type identities to be used when referencing a VMap either by index:
+
+        @define VMAP_PVOT  @'P','V','O','T'@
+        ...
+        map = VMap(VMAP_PVOT,1);
+
+  or by type:
+
+        map = VMap(VMAP_PVOT);
+
+  In addition, a Vertex Map (pre-defined or custom) can now be referenced by both
+  its type <i>and</I> its name:
+
+        map = VMap(VMAP_PVOT,"theMap");
+
+  or just by name:
+
+        map = VMap("theMap");
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The getPivotRotation() method was being incorrectly mapped internally to the
+  getWorldRotation() code.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The Image Object Agent was not functioning in Modeler.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Returning non-global memory from the ctllistbox() control's name function could
+  cause a condition where the function's local memory was reclaimed by LScript's
+  garbage collector before it was added to the listbox.  This often resulted in
+  either garbage characters in the listbox, or just a crash of the application.
+
+  This particular mechanism has been corrected to delay function memory cleanup
+  until after the return value has been safely placed into the listbox.  This
+  means that listbox entries need no longer be anchored in global variables.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Situations where secondary UDFs appeared at the start of a script's compiled
+  code stream could cause a crash when called by other UDFs.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Requester panels were always positioned in the same location on the screen each
+  time they were opened.  Requester panel attributes (screen position and dimensions)
+  are now permanently memorized by LScript.  Up to the last 30 unique requester
+  panels are remembered, with the oldest entry being replaced by the newest if
+  that number is exceeded.
+
+  Panels are uniquely identified for memorization by the first 80 characters of
+  the requester title.  If you alter the title of your requester, it is considered
+  a new (unique) requester instance.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Construction of array-based object variable references on the left side of an
+  assignment was not correctly identifying components for assignment, resulting
+  in an "internal stack error" message.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The visible() Object Agent method was not functioning correctly when applied to
+  listboxes.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  An internal refresh buffering mechanism was being overrun when more than 500
+  calls were made to setvalue() from a listbox callback function.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The code that calculated the world rotation value for an object was not using
+  the correct values to generate the initial matrix.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The Bezier curve type was mapped to an obsolete implementation of the 1D
+  Bezier curve in the setKeyCurve() method.  It now maps to the more current
+  2D Bezier implemenation.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Using a value of 'nil' in a sequence of string arithmetic operators could
+  cause a crash of the application.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The method used by LScript to compile regular expressions into a transportable
+  internal entity used tokens that clashed with those generated by the regular
+  expression compiler.  This could result in corrupted expressions when certain
+  items were of the correct length, leading to failed matches or even application
+  crashes.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The <b>ctlangle()</b> control was assuming the provided angle measurement was in radians
+  instead of degrees.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+</CENTER>

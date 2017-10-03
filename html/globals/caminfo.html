@@ -1,0 +1,372 @@
+<html>
+
+<head>
+<title>Globals: Camera Info</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="boneinfo.html"><img width="96" height="20"
+    border="0" src="../images/navlt.gif" alt="Bone Info"></a></td>
+    <td width="96" align="left"><a href="chaninfo.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="Channel Info"></a></td>
+    <td width="96" align="left"><a href="../globals.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Globals"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+    <h3>Camera Info</h3>
+    <p><small><strong>Availability</strong>&nbsp; LightWave&reg; 6.0</small><br>
+    <small><strong>Component</strong>&nbsp; Layout</small><br>
+    <small><strong>Header</strong>&nbsp; <a href="../../include/lwrender.h">lwrender.h</a></small></p>
+    <p>The camera info global returns functions for getting camera-specific information about
+    any of the cameras in a scene. Use the <a href="iteminfo.html">item info</a> global to get
+    the camera list and for generic item information. The information returned by these
+    functions is read-only, but you can set camera parameters using <a
+    href="../commands/layout.html#cameras">commands</a>.</p>
+    <p>Beginning with LightWave&reg; 9, certain portions of a camera's render settings can be
+    re-directed to use settings from a "global" camera.  This global camera contains settings
+    for resolution, motion blur, and mask values that can be shared by one or more cameras in
+    the scene. For those settings marked as being controlled by the global camera, the camera
+    info functions will retrieve the global values. <strong>Note:</strong> in LW9.0 (version 4
+    of the camera info global), the global value was only returned if the setting was marked as
+    being global, and the camera was the current render camera.</p>
+    <p>
+    From LightWave&reg; 9 there is a new plugin class to implement arbitrary camera types. Cameras
+    are no longer limited to pinhole perspective. To allow plugins to evaluate the camera projection
+    there is a camera evaluator global. Camera evaluators can be used independently from each other.
+    Each evaluator keeps its own render mode, time, and pass state. When evaluating the camera, the
+    camera state is changed to match the state of the evaluator. Beware that if there are multiple
+    evaluators with different states, there is some time cost in switching between them.
+    </p>
+
+    <p><strong>Global Call</strong></p>
+    <pre>   LWCameraInfo *caminfo;
+   caminfo = global( LWCAMERAINFO_GLOBAL, GFUSE_TRANSIENT );</pre>
+    <p>The global function returns a pointer to an LWCameraInfo.</p>
+    <pre>   typedef struct st_LWCameraInfo {
+      double       (*<strong>zoomFactor</strong>)           (LWItemID, LWTime);
+      double       (*<strong>focalLength</strong>)          (LWItemID, LWTime);
+      double       (*<strong>focalDistance</strong>)        (LWItemID, LWTime);
+      double       (*<strong>fStop</strong>)                (LWItemID, LWTime);
+      double       (*<strong>blurLength</strong>)           (LWItemID, LWTime);
+      void         (*<strong>fovAngles</strong>)            (LWItemID, LWTime, double *hfov, double *vfov);
+      unsigned int (*<strong>flags</strong>)                (LWItemID);
+      void         (*<strong>resolution</strong>)           (LWItemID, int *w, int *h);
+      double       (*<strong>pixelAspect</strong>)          (LWItemID, LWTime);
+      double       (*<strong>separation</strong>)           (LWItemID, LWTime);
+      void         (*<strong>regionLimits</strong>)         (LWItemID, int *x0, int *y0, int *x1,int *y1);
+      void         (*<strong>maskLimits</strong>)           (LWItemID, int *x0, int *y0, int *x1,int *y1);
+      void         (*<strong>maskColor</strong>)            (LWItemID, LWDVector color);
+      unsigned int (*<strong>motionBlur</strong>)           (LWItemID);
+      unsigned int (*<strong>fieldRendering</strong>)       (LWItemID);
+      int          (*<strong>irisPos</strong>)              (LWItemID, LWTime, int pass, float *irisx, float *irisy);
+      int          (*<strong>usingGlobalResolution</strong>)(LWItemID);
+      int          (*<strong>usingGlobalBlur</strong>)      (LWItemID);
+      int          (*<strong>usingGlobalMask</strong>)      (LWItemID);
+      unsigned int (*<strong>motionBlurPasses</strong>)     (LWItemID, LWTime);
+      double       (*<strong>shutterEfficiency</strong>)    (LWItemID, LWTime);
+      unsigned int (*<strong>noiseSampler</strong>)         (LWItemID);
+      void         (*<strong>filmSize</strong>)             (LWItemID, double *width, double *height);
+      unsigned int (*<strong>frameTiming</strong>)          (LWItemID, LWFrame, LWFrameTimingInfo *timingInfo);
+      unsigned int (*<strong>antiAliasing</strong>)         (LWItemID, LWTime);
+      double       (*<strong>overSampling</strong>)         (LWItemID, LWTime);
+      void         (*<strong>diaphragm</strong>)            (LWItemID, LWTime, int *sides, double *rotation);
+   } LWCameraInfo;</pre>
+
+	<dl>
+    <dt><tt>zoom = <strong>zoomFactor</strong>( camera, time )</tt></dt>
+    <dd>Returns the zoom factor.</dd>
+    <dt><tt>flen = <strong>focalLength</strong>( camera, time )</tt></dt>
+    <dd>Returns the focal length in millimeters.</dd>
+    <dt><tt>fdist = <strong>focalDistance</strong>( camera, time )</tt></dt>
+    <dd>Returns the distance from the camera at which objects are in focus. </dd>
+    <dt><tt>fstop = <strong>fStop</strong>( camera, time )</tt></dt>
+    <dd>Returns the f-stop number.</dd>
+    <dt><tt>blurlen = <strong>blurLength</strong>( camera, time )</tt></dt>
+    <dd>Returns the blur length as a fraction of the frame time.</dd>
+    <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see <a href="#USINGGLOBALBLUR">usingGlobalBlur</a>).
+    If the camera's "Use Global" flag is enabled for this setting, then the value returned by this function comes instead from the
+    scene's Global Camera.</dd>
+    <dt><tt><strong>fovAngles</strong>( camera, time, hfov, vfov )</tt></dt>
+    <dd>Gets the <tt>hfov</tt> and <tt>vfov</tt> (horizontal and vertical field of view) angles,
+        expressed in radians.</dd>
+    <dt><tt>f = <strong>flags</strong>( camera );</tt></dt>
+    <dd>Returns flags describing the camera, combined using bitwise-or.
+		<dl>
+		<dt><code>LWCAMF_STEREO</code></dt>
+                <dd>This indicates that the camera has stereo rendering enabled.</dd>
+		<dt><code>LWCAMF_LIMITED_REGION</code></dt>
+                <dd>This indicates that the camera has limited region rendering set.</dd>
+		<dt><code>LWCAMF_MASK</code></dt>
+                <dd>This indicates that masked rendering is enabled for the camera.</dd>
+		<dt><code>LWCAMF_DOF</code></dt>
+		<dd>This indicates that the camera has enabled depth of field.</dd>
+		<dt><code>LWCAMF_PARTICLE_BLUR</code></dt>
+		<dd>This indicates that the camera has enabled particle blurring, which is the simulated trajectory of one-point polygons over time</dd>
+		<dt><code>LWCAMF_LR_NOBORDERS</code></dt>
+		<dd>This indicates that limited region is being used without borders when limited region is enabled</dd>
+		<dt><code>LWCAMF_FIELD</code></dt>
+		<dd>When field rendering is enabled, this indicates which field (0 or 1) is being processed</dd>
+		<dt><code>LWCAMF_USECAMTYPE</code></dt>
+		<dd>Indicates that the camera uses a camera type plugin, instead of the built-in classic type (rev.4+)</dd>
+                <dt><code>LWCAMF_SUPPORTS_DOF</code></dt>
+                <dd>Set when the camera supports Depth of Field rendering. Check <code>LWCAMF_DOF</code> to determine if DOF is enabled or not (rev.5+)</dd>
+		<dt><code>LWCAMF_EYE</code></dt>
+		<dd>When stereo rendering is enabled, this indicates which eye (0 or 1) is being processed (rev.5+)</dd>
+		</dl>
+      </dd>
+    <dd><strong>Note</strong>: The <code>LWCAMF_PARTICLE_BLUR</code> and <code>LWCAMF_FIELD</code> flags are controlled by a "Use Global" flag
+    (see <a href="#USINGGLOBALRES">usingGlobalResolution</a> and <a href="#USINGGLOBALBLUR">usingGlobalBlur</a>).  If
+    the camera's "Use Global" flag is enabled for these settings, then the values for these flags come instead from the scene's Global Camera.</dd>
+
+	<dt><tt><strong>resolution</strong>( camera, width, height )</tt></dt>
+    <dd>Gets the image size in pixels for the images rendered by the camera.</dd>
+    <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+    <a href="#USINGGLOBALRES">usingGlobalResolution</a>).  If the camera's "Use Global" flag is enabled
+    for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+    <dt><tt>aspect = <strong>pixelAspect</strong>( camera, time )</tt></dt>
+    <dd>Returns the pixel aspect ratio of images rendered by the camera, expressed as
+        width/height. Values greater than 1.0 mean short wide pixels and values less than 1.0 mean
+        tall thin pixels.</dd>
+    <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+    <a href="#USINGGLOBALRES">usingGlobalResolution</a>).  If the camera's "Use Global" flag is enabled
+    for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+    <dt><tt>sep = <strong>separation</strong>( camera, time )</tt></dt>
+    <dd>Returns the interocular distance (eye separation) for stereoscopic rendering, in meters.</dd>
+
+    <dt><tt><strong>regionLimits</strong>( camera, x0, y0, x1, y1 )</tt></dt>
+    <dd>Gets the limited region rectangle for the camera.</dd>
+
+    <dt><tt><strong>maskLimits</strong>( camera, x0, y0, x1, y1 )</tt></dt>
+    <dd>Gets the mask rectangle for the camera.</dd>
+    <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+    <a href="#USINGGLOBALMASK">usingGlobalMask</a>).  If the camera's "Use Global" flag is enabled
+    for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+    <dt><tt><strong>maskColor</strong>( camera, color )</tt></dt>
+    <dd>Gets the color that will be rendered in areas of the image outside the mask rectangle.</dd>
+
+    <dt><tt>blur = <strong>motionBlur</strong>( camera ) (rev.3+)</tt></dt>
+    <dd>This retrieves motion blur setting for a camera item. See the LWCAMMB_ 
+          defines for possible return values. This value is only valid when a 
+          multi-pass anti-aliasing approach is used.
+          <dl>
+		  <dt><code>LWCAMMB_OFF</code></dt>
+          <dt><code>LWCAMMB_NORMAL</code></dt>
+          <dt><code>LWCAMMB_DITHERED</code></dt>
+		  </dl>
+        </dd>
+    <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+    <a href="#USINGGLOBALBLUR">usingGlobalBlur</a>).  If the camera's "Use Global" flag is enabled
+    for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+     <dt><tt>ff = <strong>fieldRendering</strong>( camera ) (rev.3+)</tt></dt> 
+     <dd>Returns the field-rendering state for the specified camera. See the 
+          LWCAMFIELDR_ defines for possible return values.
+          <dl>
+		  <dt><code>LWCAMFIELDR_OFF</code></dt>
+          <dt><code>LWCAMFIELDR_EVENFIRST</code></dt>
+          <dt><code>LWCAMFIELDR_ODDFIRST</code></dt>
+		  </dl>
+        </dd>
+    <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+    <a href="#USINGGLOBALRES">usingGlobalResolution</a>).  If the camera's "Use Global" flag is enabled
+    for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+      <dt><tt>havepos = <strong>irisPos</strong>( camera, time, pass, irisx, irisy ) (rev. 4+)</tt></dt>
+      <dd>Get the iris position for the camera at a given time and pass number. The iris position is typically
+          used for depth of field. It represents a sample point on the camera's aperture. The position is
+          normalized, ranging from -1 to 1 over the height of the aperture. The pass number ranges from 0 to
+          <tt>sceneinfo->maxSamplesPerPixel-1</tt>. Returns 1 if there is a sample point, or 0 otherwise.
+        </dd>
+
+      <a name="USINGGLOBALRES"></a>
+      <dt><tt>using = <strong>usingGlobalResolution</strong>( camera ) (rev. 4+)</tt></dt>
+      <dd>Reports the state of the Camera's "Use Global" redirection flag for resolution settings.
+          A value of 1 means the switch is enabled, and the global resolution settings are used
+          by this camera.  A value of 0 means it is off, and the camera's local resolution settings
+          are active.
+        </dd>
+
+      <a name="USINGGLOBALBLUR"></a>
+      <dt><tt>using = <strong>usingGlobalBlur</strong>( camera ) (rev. 4+)</tt></dt>
+      <dd>Reports the state of the Camera's "Use Global" redirection flag for motion blur settings.
+          A value of 1 means the switch is enabled, and the global motion blur settings are used
+          by this camera.  A value of 0 means it is off, and the camera's local motion blur settings
+          are active.
+        </dd>
+
+      <a name="USINGGLOBALMASK"></a>
+      <dt><tt>using = <strong>usingGlobalMask</strong>( camera ) (rev. 4+)</tt></dt>
+      <dd>Reports the state of the Camera's "Use Global" redirection flag for mask boundary settings.
+          A value of 1 means the switch is enabled, and the global mask boundary settings are used
+          by this camera.  A value of 0 means it is off, and the camera's local mask boundary settings
+          are active.  Note: mask boundaries are only regarded if "Use Mask" has been enabled.
+        </dd>
+
+
+      <dt><tt>passes = <strong>motionBlurPasses</strong>( camera, time ) (rev.5+)</tt></dt>
+      <dd>This retrieves the motion blur passes setting for a camera item.</dd>
+      <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+      <a href="#USINGGLOBALBLUR">usingGlobalBlur</a>).  If the camera's "Use Global" flag is enabled
+      for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+      <dt><tt>efficiency = <strong>shutterEfficiency</strong>( camera, time ) (rev.5+)</tt></dt>
+      <dd>Gets the shutter efficiency for a camera item. The efficiency is returned as a fraction,
+          usually between 0.5 and 1.0.</dd>
+      <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see
+      <a href="#USINGGLOBALBLUR">usingGlobalBlur</a>).  If the camera's "Use Global" flag is enabled
+      for this setting, then the value returned by this function comes instead from the scene's Global Camera.</dd>
+
+      <dt><tt>sampler = <strong>noiseSampler</strong>( camera ) (rev.5+)</tt></dt>
+      <dd>Returns the noise sampler setting for the camera.</dd>
+
+      <dt><tt><strong>filmSize</strong>( camera, width, height ) (rev.5+)</tt></dt>
+      <dd>Gets the width and height of the film frame in metres.</dd>
+      <dd><strong>Note</strong>: This setting is controlled by a "Use Global" flag (see <a href="#USINGGLOBALRES">usingGlobalResolution</a>).
+      If the camera's "Use Global" flag is enabled for this setting, then the value returned by
+      this function comes instead from the scene's Global Camera.</dd>
+
+      <dt><tt>havetiming = <strong>frameTiming</strong>( camera, frame, frametiming ) (rev.5+)</tt></dt>
+      <dd>Fills in the frame timing structure pointed to by the frametiming arguments, for the given camera and frame. The frame
+      timing structure defines the times and durations of the various passes and fields in the frame.
+<pre>
+   typedef struct st_LWComponentTimingInfo {
+       unsigned int <b>count</b>;
+       double <b>offset</b>;
+       double <b>duration</b>;
+       double <b>stride</b>;
+   } LWComponentTimingInfo;
+
+   typedef struct st_LWFrameTimingInfo {
+       LWComponentTimingInfo <b>frame</b>;
+       LWComponentTimingInfo <b>fields</b>;
+       LWComponentTimingInfo <b>steps</b>;
+       LWComponentTimingInfo <b>scanlines</b>;
+       LWComponentTimingInfo <b>pixels</b>;
+   } LWFrameTimingInfo;
+</pre>
+      A frame is divided into fields, each of which is divided into steps (for motion blur), with each step divided into
+      scanlines, and finally scanlines are split into pixels. The frame timing structure defines the time ranges at which the
+      instances of these component are evaluated.
+      <p></p>
+      <dl>
+        <dt><tt><b>count</b></tt></dt>
+        <dd>The number of instances of this component within the parent component instance. For example, the number of steps
+            in a field, or the number of pixels in a scanline. For the frame component this will be 1.</dd>
+        <dt><tt><b>offset</b></tt></dt>
+        <dd>The offset of the starting time of the first instance of the component, relative to the starting time of the
+            parent component instance. The value in in seconds. For example, the starting time of the first field in a
+            frame, or the first pixel in a scanline. For the frame, the offset is the actual time of the start of the frame.</dd>
+        <dt><tt><b>duration</b></tt></dt>
+        <dd>The duration of each component instance in seconds. The duration is the length of time over which the instance is
+            sampled. This can be zero, meaning that the component will only be sampled at the starting time. The duration may
+            also exceed the stride (see below).</dd>
+        <dt><tt><b>stride</b></tt></dt>
+        <dd>The step size in seconds from the start of one instance to the start of the next instance. For example, the jump
+            between the start time of the first field and the start of the second field in a frame (if there is more than one
+            field in the frame).</dd>
+      </dl>
+      <p></p>
+      For example, the starting time of the second field in a frame with multiple fields is given by:
+      <pre>  frame.offset + fields.offset + fields.stride</pre>
+      The last time value at which the 16th scanline of the 3rd step of the last field of the frame may be evaluation:
+      <pre>  frame.offset +                                                  // Frame start
+    fields.offset + (fields.count - 1) * fields.stride +          // Last field start
+    steps.offset + 2 * steps.stride +                             // 3rd step start
+    scanlines.offset + 15 * scanlines.stride + scanlines.duration // 16th scanline end</pre>
+
+
+      <strong>Note</strong> that this function uses a frame number as an argument, not time. Returns 1 if the structure was successfully
+      filled in, or 0 otherwise.</dd>
+
+      <dt><tt>aa = <strong>antiAliasing</strong>( camera, time ) (rev.5+)</tt></dt>
+      <dd>Return the antialiasing level for the camera.</dd>
+
+      <dt><tt>os = <strong>overSampling</strong>( camera, time ) (rev.5+)</tt></dt>
+      <dd>Returns the oversampling value for the camera.</dd>
+
+      <dt><tt><strong>diaphragm</strong>( camera, time, sides, rotation ) (rev.5+)</tt></dt>
+      <dd>Gets the number of sides and rotation of the diaphragm for the camera. If the number
+          of sides is zero, the diaphragm is circular. The rotation is in radians.</dd>
+
+      </dl>
+
+    <p><strong>Global Call</strong></p>
+    <pre>   LWCameraEvaluationFuncs *camevalfuncs;
+   camevalfuncs = global( LWCAMERAEVALUATIONFUNCS_GLOBAL, GFUSE_TRANSIENT );</pre>
+    <p>The global function returns a pointer to an LWCameraEvaluationFuncs. <strong>Note</strong> that
+    version 1 of this global is no longer supported.</p>
+
+    <pre>   typedef struct st_LWCameraEvaluationFuncs {
+      LWCameraEvaluatorID (*<strong>create</strong>) (LWItemID camera);
+      void    (*<strong>destroy</strong>)  (LWCameraEvaluatorID);
+      LWError (*<strong>init</strong>)     (LWCameraEvaluatorID, int mode);
+      void    (*<strong>cleanUp</strong>)  (LWCameraEvaluatorID);
+      LWError (*<strong>newTime</strong>)  (LWCameraEvaluatorID, LWFrame frame, LWTime time);
+      int     (*<strong>preview</strong>)  (LWCameraEvaluatorID, double lpx, double lpy, LWDMatrix4 projection);
+      LWError (*<strong>newFrame</strong>) (LWCameraEvaluatorID);
+      int     (*<strong>evaluate</strong>) (LWCameraEvaluatorID, double fpx, double fpy, double lpx, double lpy,
+                           double fractime, LWCameraRay* camray);
+   } LWCameraEvaluationFuncs;</pre>
+
+   <dl>
+     <dt><tt>cameval = <strong>create</strong>( camera )</tt></dt>
+     <dd>Create a new camera evaluator for the given camera.</dd>
+     <dt><tt><strong>destroy</strong>( cameval )</tt></dt>
+     <dd>Destroy a camera evaluator. All created camera evaluators must be destroyed.</dd>
+     <dt><tt>error = <strong>init</strong>( cameval, mode )</tt></dt>
+     <dd>Set the mode for the camera evaluator. The mode is either <tt>LWINIT_PREVIEW</tt> or
+         <tt>LWINIT_RENDER</tt>.</dd>
+     <dt><tt><strong>cleanup</strong>( cameval )</tt></dt>
+     <dd>Indicate the end of a rendering session.</dd>
+     <dt><tt>error = <strong>newTime</strong>( cameval, frame, time )</tt></dt>
+     <dd>Set the frame and time for a camera evaluator.</dd>
+     <dt><tt>havepreview = <strong>preview</strong>( cameval, lpx, lpy, projection )</tt></dt>
+     <dd>Obtain the preview projection matrix.</dd>
+     <dt><tt>error = <strong>newFrame</strong>( cameval )</tt></dt>
+     <dd>Start evaluating a frame. This must be called at the start of the frame evaluation before using <tt>evaluate()</tt></dt>
+     <dt><tt>dotrace = <strong>evaluate</strong>( cameval, fpx, fpy, lpx, lpy, fractime, ray )</tt></dt>
+     <dd>Evaluate the camera, filling in the ray structure.</dd>
+   </dl>
+
+    <p><strong>Example</strong></p>
+    <p>This code fragment collects information about the first camera.</p>
+    <pre>   #include &lt;lwserver.h&gt;
+   #include &lt;lwrender.h&gt;
+
+   LWItemInfo *iteminfo;
+   LWCameraInfo *caminfo;
+   LWItemID id;
+   LWTime t = 3.0;          /* seconds */
+   double zoom, flen, fdist, fstop, blen, hfov, vfov;
+
+   iteminfo = global( LWITEMINFO_GLOBAL, GFUSE_TRANSIENT );
+   caminfo  = global( LWCAMERAINFO_GLOBAL, GFUSE_TRANSIENT );
+
+   if ( iteminfo &amp;&amp; caminfo ) {
+      id = iteminfo-&gt;first( LWI_CAMERA, NULL );
+      zoom  = caminfo-&gt;zoomFactor( id, t );
+      flen  = caminfo-&gt;focalLength( id, t );
+      fdist = caminfo-&gt;focalDistance( id, t );
+      fstop = caminfo-&gt;fStop( id, t );
+      blen  = caminfo-&gt;blurLength( id, t );
+      fovAngles( id, t, &amp;hfov, &amp;vfov );
+   }
+</pre>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

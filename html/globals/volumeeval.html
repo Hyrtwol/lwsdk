@@ -1,0 +1,122 @@
+<html>
+
+<head>
+<title>Globals: Volumetric Evaluation</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="sceneinf.html"><img width="96" height="20"
+    border="0" src  ="../images/navlt.gif" alt="Scene Info" ></a></td>
+    <td width="96" align="left"><a href="shelf.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="Shelf Functions" ></a></td>
+    <td width="96" align="left"><a href="../globals.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Globals"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+    <h3>Volumetric Evaluation</h3>
+    <p><small><strong>Availability</strong>&nbsp; LightWave® 8.3</small><br>
+    <small><strong>Component</strong> &nbsp; Layout</small><br>
+    <small><strong>Header</strong>&nbsp; <A href="../../include/lwvolume.h">lwvolume.h</A></small></p>
+    <p>There are two globals available necessary to evaluate volumetrics in Layout:
+    VRayFuncs and VolumetricEvaluationFuncs. The first handles volumetrics
+    in general, and the latter handles Layout's implementation of them as plugins.</p>
+      <P>Volumetrics are processing by generating rays to be fired into the 
+      scene. The volumetric plugins react to these rays and break the ray 
+      into ray segments. Each segments is assigned a color intensity and 
+      opacity for each color channel (red, green, blue).&nbsp; Once all the 
+      segments are specified, the ray is 'flattened', which is a process of 
+      converting the segments into a final opacity and intensity for each color 
+      channel for the original ray. The globals provided facilitate that 
+      process by allowing one to generate these rays and have the existing 
+      voluemtric plugins within Layout to process them.</P>
+    <p><strong> VRayFuncs</strong></p>
+      <P>The VRayFuncs global generate these rays and have the existing voluemtric plugins within Layout to 
+      process them. The process to follow is:</P>
+      <ul>
+        <li>Create a new ray structure with <tt>LWVRayFuncs-&gt;New()</tt></li>
+        <li>Initialize the ray with your desired source and direction and other required information 
+            with <tt>LWVRayFuncs-&gt;Init()</tt> and <tt>LWVRayFuncs-&gt;SetRenderFuncs()</tt></li>
+        <li>Shoot the ray into the scene to be evaluated (This is where the 
+            LWVolumetricEvaluationFuncs come in)</li>
+        <li>Obtain the rays evaluated color intensity and opacity with <tt>LWVRayFuncs-&gt;Flatten()</tt></li>
+        <li>Destroy the ray structure with <tt>LWVRayFuncs-&gt;Destroy()</tt></li>
+        <li>Use the color data as you wish.</li>
+      </ul>
+      (Note: Reusing an already evaluated ray for another evaluation 
+      may have problems, so always create a new ray each time for now)</P>
+      <P><STRONG>Global Call</STRONG></P>
+      <pre>   LWVRayFuncs *vrayfuncs;
+   vrayfuncs = global( LWVRAYFUNCS_GLOBAL, GFUSE_TRANSIENT );</PRE>
+      <p>The global function returns a pointer to an LWVRayFuncs.</p>
+      <PRE>   typedef struct st_LWVRayFuncs {
+      LWVolumeAccess* (*<strong>New</strong>)            (void);
+      LWError         (*<strong>Destroy</strong>)        (LWVolumeAccess *ray);
+      void            (*<strong>Init</strong>)           (LWVolumeAccess *ray,
+                                           double o[3],
+                                           double dir[3],
+                                           double nearClip,
+                                           double farClip,
+                                           int evalFlag,
+                                           int hres,
+                                           double hfov,
+                                           double incMultiplier,
+                                           LWIlluminateFunc *illuminate);
+      void            (*<strong>SetRenderFuncs</strong>) (LWVolumeAccess *ray,
+                                           LWIlluminateFunc *illuminate,
+                                           LWRayTraceFunc *rayTrace,
+                                           LWRayCastFunc *rayCast,
+                                           LWRayShadeFunc *rayShade,
+                                           LWRayTraceModeFunc *rayTraceMode,
+					   LWIlluminateSampleFunc *illuminateSample,
+					   LWRandomFloatFunc *randomFloat );
+      double          (*<strong>Flatten</strong>)        (LWVolumeAccess *ray,
+                                           double color[3],
+                                           double opa[3]);
+    } LWVRayFuncs;</pre>
+
+      <P><STRONG>Global Call</STRONG></P>
+      <PRE>   LWVolumetricEvaluationFuncs *volevalfuncs;
+   volevalfuncs = global( LWVOLUMETRICEVALUATIONFUNCS_GLOBAL, GFUSE_TRANSIENT );</PRE>
+      <P>The global function returns a pointer to an LWVolumetricEvaluationFuncs.</P>
+      <PRE>   typedef struct st_LWVolumetricEvaluationFuncs {
+      void   (*<strong>init</strong>)     (unsigned int slot, int LWINIT_context);
+      void   (*<strong>newtime</strong>)  (unsigned int slot);
+      double (*<strong>evaluate</strong>) (unsigned int slot, LWVolumeAccess *ray, unsigned short LWVOLF_raytype);
+      void   (*<strong>cleanup</strong>)  (unsigned int slot);
+   } LWVolumetricEvaluationFuncs;</pre>
+
+      <P><strong>Example</strong></P>
+      <P>In order to get a volumetric plugin to evaluate outside of a render context:
+      <ul>
+        <li><tt>VolumetricEvaluationFuncs-&gt;init()</tt> to prepare the volumetric handlers to be used for rendering.
+	    This will call each handler's "init" callback.</li>
+        <li><tt>VolumetricEvaluationFuncs-&gt;newtime()</tt> to obtain flags from the volumetric handlers and invoke a
+            NEWTIME notification to get them up to date with the current scrub time. This will call each handler's
+            "newtime" callback</li>
+        <li>Create a ray structure using <tt>VRayFuncs-&gt;New()</tt></li>
+        <li>For each ray to be evaluated for whatever purposes:</li>
+        <ul>
+          <li><tt>VRayFuncs-&gt;Init()</tt> the ray with custom parameters</li>
+	  <li><tt>VolumetricEvaluationFuncs-&gt;evaluate()</tt> the ray to figure each volumetric handler's contribution
+              to the samples</li>
+	  <li><tt>VRayFuncs-&gt;Flatten()</tt> the ray to obtain colors and color opacities for that ray</li>
+          <li><tt>VRayFuncs-&gt;Destroy()</tt> the ray when done with it.</li>
+        </ul>
+        <li><tt>VolumetricEvaluationFuncs-&gt;cleanUp()</tt> to notify a render finishing to each volumetric
+            handler. This will call each handler's "cleanup" callback</li>
+      </ul>
+
+  </td></tr>
+</table>
+</body>
+</html>

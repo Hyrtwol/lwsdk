@@ -1,0 +1,1235 @@
+<HTML>
+<BODY background="../ls_back2.gif"
+      text="#000000"
+      link="#FFFFFF"
+      vlink="#FFFFFF">
+
+<TITLE>LScript/LSIDE Patch Release Notes</TITLE>
+
+<CENTER>
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<center><font size="+3" color="#000000">&nbsp;LScript v2.6 Patch Release Notes&nbsp;</font></center>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td width=75 bgcolor="#505050" align=center>
+<A HREF="#v261">v2.6.1</A>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<A HREF="#v262">v2.6.2</A>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+<A NAME=v261>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     patch: v2.6.1
+</font>
+    </td>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     released: <font color="#ffff00">LightWave 7.5c</font>
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+<!--
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="300"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0" colspan=3 align=center>
+<font color="#000000">
+        LScript v2.6.1 Files
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lcore3.zip">Intel</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lcore3.sit">Mac OS X</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lcore3.tar.gz">Linux</A>
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+-->
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+      <table border="0"
+             cellpadding="3"
+             cellspacing="0"
+             bordercolor="#000000"
+             bordercolorlight="#000000"
+             width="600"
+             bordercolordark="#FFFFFF">
+        <tr>
+          <td width=75 bgcolor="#c0c0c0" align=center>
+<font size="+2" color="#000000">&nbsp;Bug Fixes&nbsp;</font>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The index validation code for the <b>generalopts[]</b> array was excluding the last element
+  ([7]) in the array.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Run-time parsing code would begin producing processing delays that were somewhat
+  logarithmically proprotional to the number of lines of code in the compiled script.
+  It manifested at a certain script size (the start of the upward curve of the
+  logarithmic line), and load times would gradually increase thereafter.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Due to their storage and retrieval from binary disc files, the 'true' and 'false'
+  constant values were not always being evaluated correctly in the run-time
+  environment.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Tab page selections made prior to posting a Requester were being overridden and
+  initialized to the first page in the reqpost() code.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The Displacement Object Agent's 'source' data member was being hidden by a break in
+  the program's logic flow.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The watchdog mechanism used to prevent infinite recursion in refresh callbacks
+  (activated when <b>setvalue()</b> is called for a control while in that control's active
+  refresh UDF) was somehow broken during v2.6 development.  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Single-element return values (usually 'nil') applied to associative assignments would
+  generate an "illegal assignment type" error message.  Now in such cases all assignment
+  variables are simply left with their initialized 'nil' values and no error is
+  generated.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Assignment of sub-arrays to array elements, for example:
+
+<font color="#ffff00">        PolysPoints[i][5] = polyinfo(PolyNum[i]);</font>
+
+  were not being marked as the correct type on assignment.  This left them vulnerable
+  to the LScript garbage collector, causing the arrays to be reclaimed and cleared at
+  the end of the assignment statement.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The ctlgroup() functionality, apparently long broken, has been fixed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Script re-entrancy would be a problem when a redraw callback returned control to
+  Layout while it was processing (for instance, when an info() call was made to
+  pause script execution).  Re-entrancy during this situation is now watched for,
+  and avoided.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Attempting to display a PointID in Layout using info() (or warn() or error()) would
+  result in a crash.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Some existing compiled Modeler LScripts could experience problems with the way
+  the automattic points[] and polygons[] arrays are now managed by the LScript
+  engine.  This problem would most often manifest as the "attempt to access undeclared
+  array ..." error message.
+
+  Code has been added to trap this condition when loading compiled scripts and to
+  fix up their references to these arrays.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Negative numbers in the "Days until expiration" and "Usage count" fields of the
+  LScript compiler interface were not being disallowed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The new <b>binary()</b> function would not return documented results when the maximum
+  bit size in the second argument matched the number of bits in an integer (i.e.,
+  [sizeof(int) * 8] on any platform).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The Scene Object Agent's <b>animfilename</b> data member was incorrectly mapped to the
+  current scene's name.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The <b>recovery password</b> and <b>expiration message</b> controls of the Modeler LScript compiler
+  interface were never enabled.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Vector values would not display properly with the info()/warn()/error() functions.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A temporary script structured employed by the Modeler LScript compiler was not being
+  clear upon creation, leaving all of its data members in an undefined state.  This
+  could manifest as odd errors in both the compile and the resulting compiled file.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The Modeler <b>setlayer()</b> and <b>setblayer()</b> functions could cause memory overruns if the
+  number of layers specified (in an array) exceeded a certain count.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Modeler LScript compiler was not properly initializing values in a temporary
+  script structure used during compiling.  This could cause random problems with both
+  the compile and the resulting compiled script.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The automated handling of the change of object identifiers was checking for a false
+  condition, leading in some states to a bypass of the update.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Cross-platform path conversion code in LScript has been re-worked to more accurately
+  fit literal path strings in the script to the platform where they are used.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The <b>reqposition()</b> function was mistakenly using the provided X value for both X and
+  Y position.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The application of run-time identifier construction to array referencing, i.e.:
+
+<font color="#ffff00">        save_type`current_expr[i] = ...</font>
+
+  was broken.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Sequential variable handling in the LScript pre-processor failed to generate the correct
+  names when base names included an underscore charaacter ('_').
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Compiled LScripts that used <b>store()</b> and <b>recall()</b> would sometimes fail to restore saved
+  values until other scripts were first executed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  Activating the debugger in a Shader's <b>process()</b> function caused re-entrancy problems,
+  often resulting in a crash of the application.  This condition has been trapped, and
+  subsequent calls to <b>process()</b> while the debugger is active are discarded.  Be aware
+  that activating the debugger will likely generate incorrect results in the output
+  of the shader script (i.e., the resulting image will not be shaded correctly) due
+  to the discarded calls.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The <b>RenderThreads()</b> function was not correctly filtering the provided integer values to
+  ensure that they matched what Layout was expecting.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  Unterminated multi-line comments would crash the application; now an error message is
+  generated.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  An internal token used to represent the <b>foreach()</b> iterator had some extra settings added
+  to the compiled file format in LScript v2.6.  However, the run-time building code was not
+  checking the version of the file format, and problems were occurring when this internal
+  token was processed in previous versions.  This usually manifested as an "internal
+  inconsistency" error when scripts compiled with older versions of the LScript compiler
+  were run with v2.6 or higher.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+      <table border="0"
+             cellpadding="3"
+             cellspacing="0"
+             bordercolor="#000000"
+             bordercolorlight="#000000"
+             width="600"
+             bordercolordark="#FFFFFF">
+        <tr>
+          <td width=75 bgcolor="#c0c0c0" align=center>
+<font size="+2" color="#000000">&nbsp;Behavioral Changes&nbsp;</font>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="0"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                           
+  Informational popups generated in Layout with <b>info()</b>/<b>warn()</b>/<b>error()</b> no longer consumes
+  the first message slot with the identification of the script that is posting the
+  message.  Instead, the name of the script is now appended to the title of the window,
+  leaving both message slots available to the script.
+
+<center>
+<img src="v26patch_1.jpg" align=top>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                           
+  The <b>ctlpopup()</b> control now has the ability to generate its contents dynamically.  By
+  specifying the name of a UDF as the third argument instead of an array-type value,
+  the popup will query the indicated UDF for the contents of the popup each time the
+  list is displayed.
+
+<font color="#ffff00">        ...
+        ctl[EXPRLST_CTL] = ctlpopup("Expressions",1,<b>"popup_expr_list"</b>);
+        ...</font>
+
+  The callback UDF should return one or more strings, either individually or as an
+  array reference.
+
+<font color="#ffff00">        ...
+        popup_expr_list
+        {
+            return(expr_list);  // expr_list[] is constructed elsewhere in the script
+        }
+        ...</font>
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                           
+  In order to allow scripts to be more flexible in handling changes in the environment,
+  two methods have been added to the Object Agents that manage information for Scene
+  object.
+
+  <b>isValid()</b> will cause the object identifier cached in the Object Agent to be validated
+  against those objects in the Scene.  If the object identifier is no longer valid, then
+  Boolean <b>false</b> is returned.
+
+  <b>isOriginal()</b> will indicate whether the underlying object identifier has been changed
+  by some event in the Scene (typically object loading or removal).  If Boolean <b>true</b> is
+  returned, then the object identifier has not changed since the Object Agent was
+  created.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                           
+  The <b>pack()</b> method now also handles associative arrays.  Any keys whose elements are
+  'nil' will be removed from the array.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+<br><br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<center><font size="+3" color="#000000">&nbsp;LScript Editor v1.3 Patch Release Notes&nbsp;</font></center>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td width=75 bgcolor="#505050" align=center>
+<A HREF="#edv131">v1.3.1</A>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+<A NAME=edv131>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     patch: v1.3.1
+</font>
+    </td>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     released: <font color="#ffff00">LightWave 7.5c</font>
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+<!--
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="300"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0" colspan=3 align=center>
+<font color="#000000">
+        LSIDE v1.3.1 Files
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lsed131.zip">Intel</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lsed131.sit">Mac OS X</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+    </td>
+  </tr>
+</table>
+
+<br>
+-->
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  Text files that did not end with a newline character caused the editor to improperly
+  terminate the final line of the file.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                           
+  Incoming text lines whose size exactly matched the length of the initial buffer
+  allocation for them would not trigger a required expansion of the buffer, leading to
+  memory overruns and random wonkiness (usually intermittent crashes).
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+<br><br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<center><font size="+3" color="#000000">&nbsp;Interface Designer v1.3 Patch Release Notes&nbsp;</font></center>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td width=75 bgcolor="#505050" align=center>
+<A HREF="#idv132">v1.3.2</A>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+    <td width=75 bgcolor="#505050" align=center>
+<font color="#505050">.</font>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+<A NAME=idv132>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     patch: v1.3.2
+</font>
+    </td>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     released: <font color="#ffff00">LightWave 7.5c</font>
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+<!--
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="300"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0" colspan=3 align=center>
+<font color="#000000">
+        LSIDE v1.3.2 Files
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lsid131.zip">Intel</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v261/lsid131.sit">Mac OS X</A>
+</font>
+    </td>
+    <td bgcolor="#505050" width=100 align=center>
+    </td>
+  </tr>
+</table>
+
+<br>
+-->
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  Generation of Requester separator code was not using the correct temporary
+  variable in the <b>ctlposition()</b> call.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+<br><br>
+<br><br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<center><font size="+3" color="#000000">&nbsp;Expressions Patch Release Notes&nbsp;</font></center>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     patch: ?
+</font>
+    </td>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     released: <font color="#ffff00">LightWave 7.5c</font>
+</font>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The Mesh() constructor was not functioning properly when used in an LScript
+  library file.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+<A NAME=v262>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     patch: v2.6.2
+</font>
+    </td>
+    <td bgcolor="#505050" width=300 align=center>
+<font color="#FFFFFF">
+     released: <font color="#ffff00">LightWave 7.5d</font>
+</font>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+      <table border="0"
+             cellpadding="3"
+             cellspacing="0"
+             bordercolor="#000000"
+             bordercolorlight="#000000"
+             width="600"
+             bordercolordark="#FFFFFF">
+        <tr>
+          <td width=75 bgcolor="#c0c0c0" align=center>
+<font size="+2" color="#000000">&nbsp;Bug Fixes&nbsp;</font>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The <b>getdir()</b> function was incorrectly stripping the trailing slash from paths that
+  point at the root drive under Windows.  This had the effect of making an absolute
+  path relative, leaving the working directory whatever was current on that drive.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The <b>File()</b> constructor was erroneously adding a leading colon to provided path
+  names on the Mac.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The <b>SchematicPosition()</b> CS function was incorrectly converting provided numeric values
+  into whole integers before applying them to the schematic view.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Countdown reminders in compiled files were not being displayed when scripts were
+  loaded and activated as regular plug-ins.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The <b>keys()</b> method was not returning a 'nil' value when all elements in an associative
+  array were cleared by the <b>pack()</b> method.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The <b>active</b> data member of the Control Object Agent was not being recognized as
+  valid.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The <b>matchdirs()</b> command was miscounting found subdirectories on the Mac, resulting
+  in a nil return value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The <b>setValue()</b> method of the Texture Layer Object Agent was not processing the provided
+  argument correctly for the <b>TXLRIMAGE</b> mode.  It would result in incorrect images being
+  applied, or even an application crash.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Arguments to the <b>TXTAG_WREPEAT</b> and <b>TXTAG_HREPEAT</b> modes of the Texture Layer Object
+  Agent <b>setValue()</b> method were not being retrieved from the correct memory location.  This
+  resulted in an error message about the provided argument's type.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  When using a Surface Object Agent's <b>setValue()</b> function when that Surface had a name
+  that contained spaces, a crash of the application could result.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Multiple-element assigments to the 'this' pointer were using an uninitalized variable reference.
+  This problem was reported by a compiler warning, and has not appeared to manifest in any way
+  during script execution.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Transparency colors specified when creating a Glyph were not being processed correctly, resulting
+  in no transparency happening at all.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+<table border="1"
+       cellpadding="3"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+      <table border="0"
+             cellpadding="3"
+             cellspacing="0"
+             bordercolor="#000000"
+             bordercolorlight="#000000"
+             width="600"
+             bordercolordark="#FFFFFF">
+        <tr>
+          <td width=75 bgcolor="#c0c0c0" align=center>
+<font size="+2" color="#000000">&nbsp;Behavioral Changes&nbsp;</font>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<table border="1"
+       cellpadding="0"
+       cellspacing="0"
+       bordercolor="#000000"
+       bordercolorlight="#000000"
+       width="600"
+       bordercolordark="#FFFFFF">
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                           
+  System messages generated when the LightWave alert level is set to Expert are now
+  channelled back to the interface's message area instead of displaying in an
+  independent window.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                           
+  The pre-processor <b>@if</b> directive now recognizes a <b>running_under</b> token that can be
+  matched against one of <b>LAYOUT</b>, <b>MODELER</b> or <b>SCREAMERNET</b>.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                           
+  There was no way in which a script could access a surface qualified by its referencing
+  object (it could just access surfaces in the "pool" of surface names).  This could
+  invariably cause problems when two or more objects were loaded that referenced the same
+  (uninstanced) surface name.  Instead of returning 'nil', the <b>Surface()</b> constructor's
+  surface-creation mode has been modified to return a Surface Object Agent for a specified
+  surface if it already exists in the object's references.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+</CENTER>

@@ -1,0 +1,269 @@
+<HTML>
+    <SCRIPT LANGUAGE="JavaScript">
+<!-- Begin
+function openWindow(url)
+{
+    popupWin = window.open(url,'remote','scrollbars=yes,resizable=yes,width=800,height=600')
+    popupWin.focus()
+}
+
+function openWebSite(url)
+{
+    popupWin = window.open(url)
+    popupWin.focus()
+}
+
+//-->
+    </SCRIPT>
+    <HEAD>
+        <TITLE>LScript 2.8 Release Notes</TITLE>
+    </HEAD>
+    <BODY bgcolor="#ffffff" text="#ffffff" link="#ffffff" vlink="#ffffff">
+    </BODY>
+    <CENTER>
+        <table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+            <tr>
+                <td width="600" align="center"><img width="230" height="20" border="0" src="../images/proglw.gif"></td>
+            </tr>
+        </table>
+        <br>
+        <br>
+        <br>
+        <A NAME="TOP">
+            <table border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                width="600" bordercolordark="#FFFFFF">
+                <tr>
+                    <td bgcolor="#c0c0c0">
+                        <center><font size="+3" color="#000000">&nbsp;LScript v2.8 Release Notes&nbsp;</font></center>
+                    </td>
+                </tr>
+                <tr>
+                    <table border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                        width="600" bordercolordark="#FFFFFF">
+                        <tr>
+                            <td width="75" bgcolor="#001f00" align="center">
+                                <A HREF="#LSCRIPTFEATURES">Features</A>
+                            </td>
+                            <td width="75" bgcolor="#001f00" align="center">
+                                <A HREF="#LSCRIPTBUGS">Bug Fixes</A>
+                            </td>
+                        </tr>
+                    </table>
+                </tr>
+            </table>
+            <br>
+            <br>
+            <A NAME="LSCRIPTFEATURES">
+                <table border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                    width="600" bordercolordark="#FFFFFF">
+                    <tr>
+                        <td bgcolor="#c0c0c0">
+                            <table border="0" cellpadding="3" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                                width="600" bordercolordark="#FFFFFF">
+                                <tr>
+                                    <td width="75" bgcolor="#c0c0c0" align="center">
+                                        <font size="+2" color="#000000">&nbsp;New Features&nbsp;</font>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <table border="2" cellpadding="0" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                    width="600" bordercolordark="#FFFFFF">
+                    <tr>
+                        <td width="50">
+                        </td>
+                        <td bgcolor="#c0c0c0">
+                            <pre>
+<font color="#000000">
+  In order to support the new global camera settings in LightWave&reg; 9, the following CS commands
+  have been added to the language:
+  
+    GlobalFrameSize()
+    GlobalResolutionMultiplier()
+    GlobalPixelAspect()
+    GlobalApertureHeight()
+    GlobalMotionBlur()
+    GlobalParticleBlur()
+    GlobalBlurLength()
+    GlobalMaskPosition()
+
+  The arguments to these new functions are identical to their non-global counterparts.  Using these
+  commands causes the settings in the scene's global camera to be modified, <i>not</i> the currently
+  selected camera (please see the LightWave&reg; SDK documentation for more information).
+</font>
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50">
+                        </td>
+                        <td bgcolor="#505050">
+                            <pre>
+<font color="#FFFFFF">
+  These CS commands have been added in order to allow access to a camera's global-redirection settings:
+
+      <b>UseGlobalResolution(&lt;state&gt;)</b>
+
+          Sets the &lt;state&gt; of the camera's global-redirection for resolution settings.
+          A value of 1 will redirect these settings to the global camera; a value of 0 will
+          make the camera's own settings effective.
+
+      <b>UseGlobalBlur(&lt;state&gt;)</b>
+
+          Sets the &lt;state&gt; of the camera's global-redirection for motion blur settings.
+          A value of 1 will redirect these settings to the global camera; a value of 0 will
+          make the camera's own settings effective.
+
+      <b>UseGlobalMask(&lt;state&gt;)</b>
+
+          Sets the &lt;state&gt; of the camera's global-redirection for mask boundary settings.
+          A value of 1 will redirect these settings to the global camera; a value of 0 will
+          make the camera's own settings effective.  (Note: the "Use Mask" setting must be
+          enabled for a camera's mask boundary settings to be effective.)
+</font>
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50">
+                        </td>
+                        <td bgcolor="#c0c0c0">
+                            <pre>
+<font color="#000000">
+  The LScript Camera Object Agent now has the following new methods in order to support camera
+  global-redirection:
+
+      <b>globalResolution()</b>
+
+          Returns an integer value that represents the state of the camera's global-redirection
+          setting for resolution.  A value of 1 indicates that the setting is active (resolution
+          settings for the camera come from the "global" camera); a value of 0 means that the
+          camera's own resolution settings are active.
+
+      <b>globalBlur()</b>
+
+          Returns an integer value that represents the state of the camera's global-redirection
+          setting for motion blur.  A value of 1 indicates that the setting is active (motion
+          blur settings for the camera come from the "global" camera); a value of 0 means that
+          the camera's own motion blur settings are active.
+
+      <b>globalMask()</b>
+
+          Returns an integer value that represents the state of the camera's global-redirection
+          setting for mask boundary.  A value of 1 indicates that the setting is active (mask
+          boundary settings for the camera come from the "global" camera); a value of 0 means that
+          the camera's own mask boundary settings are active.
+</font>
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50">
+                        </td>
+                        <td bgcolor="#505050">
+                            <pre>
+<font color="#FFFFFF">
+  LScript's internal list for the Mesh Object Agent's server() method has been updated to
+  include <b>AnimUV</b>, <b>Camera</b> and <b>Node</b> handlers and interface server types.
+  The new types are defined in the script environment by the names <b>SERVER_ANIMUV_H</b>,
+  <b>SERVER_ANIMUV_I</b>, <b>SERVER_CAMERA_H</b>, <b>SERVER_CAMERA_I</b>, <b>SERVER_NODE_H</b>,
+  and <b>SERVER_NODE_I</b>.
+</font>
+</pre>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="50">
+                        </td>
+                        <td bgcolor="#c0c0c0">
+                            <pre>
+<font color="#000000">
+  LScript's Image Object Agent now sports the following new method:
+
+      <b>replace(&lt;imageFile&gt;)</b>
+
+          Given a valid image file, this method will cause the current image for which the Agent
+          serves as a proxy to be replaced with the image data within the file.  The following
+          is a usage example of the new method (the loaded image being processed is called
+          "layers.bmp"):
+
+              @version 2.8
+              @warnings
+
+              generic
+              {
+                  if((replacementName = getfile("Please select replacement image...","*.*",".",true)) == nil)
+                      return;
+
+                  if(replacementName.contains("layers.bmp"))
+                      return;     // same file that's currently loaded?
+
+                  image = Image("layers.bmp");
+                  image.replace(replacementName) || error("Replacement failed!");
+
+                  info("New image: " + image.filename(0));
+              }
+</font>
+</pre>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <br>
+                <br>
+                <A NAME="LSCRIPTBUGS">
+                    <table border="1" cellpadding="3" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                        width="600" bordercolordark="#FFFFFF">
+                        <tr>
+                            <td bgcolor="#c0c0c0">
+                                <table border="0" cellpadding="3" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                                    width="600" bordercolordark="#FFFFFF">
+                                    <tr>
+                                        <td width="75" bgcolor="#c0c0c0" align="left">
+                                        </td>
+                                        <td width="75" bgcolor="#c0c0c0" align="center">
+                                            <font size="+2" color="#000000">&nbsp;Bug Fixes&nbsp;</font>
+                                        </td>
+                                        <td width="75" bgcolor="#c0c0c0" align="right">
+                                            <A HREF="#TOP">(top)</A>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <table border="2" cellpadding="0" cellspacing="0" bordercolor="#000000" bordercolorlight="#000000"
+                        width="600" bordercolordark="#FFFFFF">
+                        <tr>
+                            <td width="50">
+                            </td>
+                            <td bgcolor="#c0c0c0">
+                                <pre>
+<font color="#000000">
+                                                                                        
+  The Envelope Object Agent's constructor had an issue where it would cause the Graph Editor to
+  display an invalid channel group, which would cause a crash when the entry was clicked.
+
+</font>
+</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="50">
+                            </td>
+                            <td bgcolor="#505050">
+                                <pre>
+<font color="#FFFFFF">
+
+  Icons used in LScript Requester panels were being trashed internally when a panel that used
+  them was opened a second time, leading eventually to a crash of the application.
+
+</font>
+</pre>
+                            </td>
+                        </tr>
+                    </table>
+    </CENTER>
+</BODY>

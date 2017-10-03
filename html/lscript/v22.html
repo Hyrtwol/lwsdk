@@ -1,0 +1,902 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00F0F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v2.2 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.2 Release Notes</H1>
+
+<br><br>
+
+<H2>New Features</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  All 20 LScript plug-ins have been integrated into a single disc file.  Further, LScript has
+  been integrated into LCore, making it now an internal subsystem.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A new Mesh Object Agent data member has been added, called "flags".  This data member is an
+  array of five elements.  The first three duplicate the values found in the <b>shadows[]</b> data
+  member.  The remaining two, <b>flags[4]</b> and <b>flags[5]</b>, indicate the object's current
+  "Unseen By Camera" and "Unseeen By Rays" settings.
+
+  This new data member is intended to replace the existing <b>shadows[]</b> data member.  You should
+  begin using this data member in future scripts as the <b>shadows[]</b> data memeber will eventually
+  be removed from the Object Agent.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A series of new identification methods have been added to the Object Agent class.
+  These methods return a boolean true/false indicating the type of the object for
+  which the Object Agent is a proxy.
+
+        isMesh()
+        isLight()
+        isCamera()
+        isBone()
+        isScene()
+        isImage()
+        isChannel()
+        isEnvelope()
+        isVMap()
+        isChannelGroup()
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The Image Object Agent now includes two new methods, <b>alpha()</b> and <b>alphaSpot()</b>, and a new data
+  member called <b>hasAlpha</b>, for accessing Alpha-channel image data.
+
+  The <b>hasAlpha</b> data member is a Boolean flag that indicates whether or not the image contains any
+  Alpha image data.  If this flag is true, then the Alpha data can be accessed using the new methods.
+
+  The new <b>alpha()</b> method functions just like the Image Object Agent <b>rgb()</b> method.  Given an (x,y)
+  position within the image, the Alpha value for that pixel will be returned.  Alpha-channel data
+  contains only one numeric value for each triplet RGB value.
+
+  <b>alphaSpot()</b> functions just like <b>rgbSpot()</b>, with the exception that it only returns a single
+  numeric value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>reqabort()</b> function has been added to the Requester system.  This function is intended to be
+  called from within a control or requester callback function, and will immediately terminate the
+  posted requester.  No user intervention is required.
+
+  When <b>reqabort()</b> is called without arguments, a "Cancel" result is returned to the <b>reqpost()</b> function.
+  This simulates a user press of that button.  If a <b>true</b> value is provided to <b>reqabort()</b>, then an "Ok"
+  result is passed to <b>reqpost()</b>.
+
+        generic
+        {
+            reqbegin("Reqabort() Test");
+
+            reqsize(200,180);
+
+            c1 = ctlstate("Goodbye",0,50,"goodbye");
+
+            ctlposition(c1,35,10);
+
+            if(reqpost())
+                info("You pressed OK");
+            else
+                info("You pressed Cancel");
+
+            reqend();
+        }
+
+        goodbye: val
+        {
+        //    reqabort();
+            reqabort(true);
+        }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The ctlposition() function now accepts three additional, optional numeric arguments.  These
+  new arguments provide access to sizeable requester controls in LScript.
+
+  The third argument indicates the width (in pixels) of the control.  The fourth indicates the
+  height (also in pixels) of the control.
+
+  The fifth indicates the offset value for the control.  An offset value can be used to control
+  the width of the label field for controls that have labels, or the distance a control is
+  shifted to the right from its left-most position for those without labels.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  New selection types have been added to the Modeler selpolygon() function.  You can now select
+  <b>BONE</b>, <b>PATCH</b>, and <b>MBALL</b> elements within the mesh.
+
+  <b>BONE</b> is a synonym for Skelegon, and you can in fact also specify <b>SKELEGON</b>.
+
+  <b>MBALL</b> stands for Metaball.
+
+  These selection types are without argument, and will select all elements of that type within
+  the current mesh.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A new Light Object Agent data member has been added, called "flags".  This data member is an
+  array of six elements, each corresponding to the flag values returned by the SDK function.  More
+  specifically, each element provides the following information about the Light:
+
+        flags[1]        <b>true</b> if <b>Limited Range</b> is enabled
+        flags[2]        <b>true</b> if <b>Affect Diffuse</b> is enabled
+        flags[3]        <b>true</b> if <b>Affect Specular</b> is enabled
+        flags[4]        <b>true</b> if <b>Affect Caustics</b> is enabled
+        flags[5]        <b>true</b> if <b>Lens Flare</b> is enabled
+        flags[6]        <b>true</b> if <b>Volumetric</b> is enabled
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Image Filter architecture supports 5 new buffer types:
+
+    <b>MOTIONX</b>          2D vector-based motion blur buffer containing X distance values
+    <b>MOTIONY</b>          2D vector-based motion blur buffer containing Y distance values
+    <b>REFLECTRED</b>       Red levels of the contribution from mirror reflections
+    <b>REFLECTGREEN</b>     Green levels of the contribution from mirror reflections
+    <b>REFLECTBLUE</b>      Blue levels of the contribution from mirror reflections
+
+  All new buffers are floating point, and must be accessed using the floatline()
+  IF function.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The Scene Object Agent has a new method called <b>getSelect()</b>.  This method returns, as a list
+  of Object Agents, all the items in a scene that are currently selected.  Called without arguments,
+  all selected items--whether Mesh, Bone, Light, or Camera--will be returned.  A flag value can be
+  specified to limit the view of selections to a particular genus.  Flags can be MESH, BONE, LIGHT,
+  or CAMERA.
+
+  This method is intended to simplfy the process of determining selected items, although the
+  <b>firstSelect()</b> and <b>nextSelect()</b> methods are still available for special processing needs.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Scene Object Agent has a new data member called <b>backdroptype</b>.  This value holds the
+  type of the current backdrop in the scene.  It can be either <b>SOLID</b> or <b>GRADIENT</b>.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Several new backdrop-related methods have been added to the Scene Object Agent.
+
+    <b>backdropRay</b>(time,ray)           This method returns the color value, as a vector, intersecting
+                                    the given ray at the given time index.  The ray value must
+                                    be normalized.
+                                    
+    <b>backdropColor</b>(time)             This method returns the color values for the <b>zenith</b>, <b>sky</b>, <b>ground</b>,
+                                    and <b>nadir</b>, each as a vector, at the given time index.
+
+    <b>backdropSqueeze</b>(time)           Returns the squeeze amount for the <b>sky</b> and <b>ground</b>, each as a
+                                    floating point value, at the given time index.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Scene Object Agent has a new method called <b>renderCamera()</b>.  Given a time index, this
+  method will return the active camera in the scene at that time index as a Camera Object Agent.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The Scene Object Agent has a new data member called <b>fogtype</b>.  This value holds the
+  type of the fog active in the scene.  It can be one of <b>NONE</b>, <b>LINEAR</b>, <b>NONLINEAR1</b>,
+  or <b>NONLINEAR2</b>.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Many new fog-related methods have been added to the Scene Object Agent.
+
+    <b>fogMinDist</b>(time)                This method returns the distance from the viewer (typically
+                                    the camera) at which the fog effect is at a minimum. 
+                                    
+    <b>fogMaxDist</b>(time)                This method returns the distance at which the fog effect
+                                    reaches its maximum
+
+    <b>fogMinAmount</b>(time)              Returns the minimum amount of fog (the amount at the minimum
+                                    distance). Fog amounts range from 0.0 to 1.0. 
+
+    <b>fogMaxAmount</b>(time)              Returns the maximum amount of fog (the amount at the maximum
+                                    distance).
+
+    <b>fogColor</b>(time)                  This method returns, as a vector, the color of the fog at the
+                                    given time index.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The Scene Object Agent has three new data members that provide information about the scene's
+  current compositing state.  <b>compfg</b>, <b>compbg</b>, and <b>compfgalpha</b> all contain either an Image Object
+  Agent for the active compositing images (foreground, background, and foreground alpha,
+  respectively), or they will contain 'nil' if no image is active for that position.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new Requester function has been added called <b>requpdate()</b>.  This function can be used from
+  within control callback functions to cause listboxes on the requester panel to refresh with
+  new values.  It cannot be invoked from within a listbox <u>count</u> or <u>value</u> callback function,
+  and will have no effect if it is.
+
+
+            count;
+            lb_items;
+
+            generic
+            {
+                for(count = 1;count &lt;= 5;count++)
+                    lb_items += "Item_" + count;
+
+                reqbegin("Testing requpdate()");
+
+                c1 = ctllistbox("Items",300,300,"lb_count","lb_value");
+                c2 = ctlbutton("Increment",200,"inc_button");
+
+                reqpost();
+            }
+
+            lb_count
+            {
+                return(lb_items.count());
+            }
+
+            lb_value: index
+            {
+                return(lb_items[index]);
+            }
+
+            inc_button
+            {
+                x = count;
+                y = 1;
+                count += 5;
+
+                while(x &lt;= count)
+                {
+                    lb_items[y] = "Item_" + x;
+                    ++x;
+                    ++y;
+                }
+
+                requpdate();
+            }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Binary data can now be embedded directly within an LScript.  This data is handled by
+  LScript as nothing more than a stream of unsigned bytes.  This allows any type of
+  binary data to be embedded within the script and accessed at run-time.
+
+  Binary data is delimited between a pair of preprocessor directives, "@data"
+  and "@end".  Individual bytes are declared as integer values between 0 and 255.
+  The data can be of any length on each line, but you should probably keep them
+  under 80 columns for readibility and maximum editor compatibility.
+
+  Each block of binary data must be named.  The name provided will become a global
+  variable within the operating environment of the script when it begins to execute.
+
+        @data bobdata
+        070 079 082 077 000 000 039 064 076 087 079 050 084 065 071 083 000 000 000 010
+        069 121 101 000 073 114 105 115 000 000 076 065 089 082 000 000 000 018 000 000
+        ...
+        @end
+
+  The binary block identifiers exist at run-time just like any other global variable
+  in your script.  They can be queried as Objects:
+
+        info(bobdata.size());
+
+  They can be used with the foreach() iterator:
+
+        foreach(x,bobdata)
+        {
+            ...
+        }
+
+  They can be passed to functions:
+
+        info(blocksize(bobdata));
+
+        blocksize: data
+        {
+            return(data.size());
+        }
+
+  Their data can be accessed and modified as the script executes:
+
+        x = bobdata[25];
+        bobdata[25] = 0;
+
+  As a side note, not only will your script sizes be considerably smaller, but parsing
+  of the binary data will go slightly faster if values are included as a bare minimum.
+  For instance, "0" will parse faster than "000", and consume two less bytes in the disc
+  file.  The bytes in the examples above have been padded only for visual alignment, not
+  out of any necessity.
+
+  You can use <a href=GenData.ls>this</a> Generic script to generate syntactically correct LScript binary
+  data from any disc file.  It will generate code to a new file, or you can specify
+  an existing file (i.e., script) to which the generated code will be appended.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new File Object Agent method has been added specifically to handle block binary
+  data.  Using writeData(), you can send the binary data in a block to a disc file.
+  This can be used to re-create binary files from the embedded binary data within
+  the script.  For instance, a LightWave object file can be embedded in a script
+  and carried along with the script until needed:
+
+        @version 2.2
+        @warnings
+
+        generic
+        {
+            output = File("ball.lwo","wb");
+            output.writeData(ball);
+
+            // important!  the file must be closed to flush any
+            // remaining data to disc before the call to
+            // LoadObject()
+
+            output.close();
+
+            LoadObject("ball.lwo");
+
+            filedelete("ball.lwo");
+        }
+
+        @data ball
+        070 079 082 077 000 000 039 064 076 087 079 050 084 065 071 083 000 000 000 010
+        069 121 101 000 073 114 105 115 000 000 076 065 089 082 000 000 000 018 000 000
+        000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 000 080 078 084 083
+        ...
+        @end
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A new global constant value called <b>SCRIPTID</b> exists in the LScript operating environment.
+  This constant holds the full path and filename of the script currently being executed.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The listbox control now has a fourth, optional callback function that allows you to specify
+  which entries in the control can be selected by the user.  The <u>select</u> callback function
+  should take an integer argument that represents the index of the element being selected,
+  and should return a Boolean true/false value to indicate if the element can be selected.
+
+        @version 2.2
+        @warnings
+
+        lb_items;
+
+        generic
+        {
+            for(x = 1;x <= 5;x++)
+                lb_items += "Item_" + x;
+
+            reqbegin("Testing List Box");
+
+            c1 = ctllistbox("Items",300,300,"lb_count","lb_name",,"lb_select");
+
+            reqpost();
+        }
+
+        lb_count
+        {
+            return(lb_items.size());
+        }
+
+        lb_name: index
+        {
+            return(lb_items[index]);
+        }
+
+        lb_select: index
+        {
+            // only allow selection of the odd-numbered elements
+
+            return(index & 1);
+        }
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<A NAME="BEHAVIOR">
+
+<H2>Behavioral Changes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Listbox controls in LScript are now always multiple-select.  In order to accomodate this,
+  certain value changes have been made.
+
+  The argument provided to the "event" function for listbox controls is now either an array
+  of indices denoting the current selection(s) in the listbox, or 'nil' if no selections exist.
+
+  The getvalue() return type for listbox controls has become multi-element, with each
+  element denoting the index of the selected item.  If no items are selected in the listbox
+  when getvalue() is called, then 'nil' is returned.
+
+  The setvalue() function can now accept a number of different data types for setting the
+  selection within a listbox.
+
+  Here is a sample script to illustrates the new listbox interface mechanism:
+
+    @version 2.2
+    @warnings
+
+    c1;
+    lb_items;
+
+    generic
+    {
+        for(x = 1;x <= 5;x++)
+           lb_items += "Item_" + x;
+
+        reqbegin("Testing List Box");
+
+        c1 = ctllistbox("Items",300,300,"lb_count","lb_name","lb_event");
+        c2 = ctlbutton("Select",50,"button_event");
+
+        return if !reqpost();
+
+        sel = getvalue(c1);
+
+        reqend();
+
+        if(sel == nil)
+            info("No selections were made");
+        else
+            info("You have selected '",sel,"'!");
+    }
+
+    lb_count
+    {
+        return(lb_items.size());
+    }
+
+    lb_name: index
+    {
+        return(lb_items[index]);
+    }
+
+    lb_event: items
+    {
+        // 'items' is an array of integer index values,
+        // or 'nil'
+
+        if(items == nil)
+            info("No items are selected");
+        else
+            info("You have selected '",items,"'!");
+    }
+
+    button_event
+    {
+    //    a = @"Item_2","Item_4"@;
+        a = @1,3,5@;
+    //    a = 4;
+    //    a = "Item_5";
+
+        setvalue(c1,a);
+    }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  LScript is no longer using the Panels sub-system to generate requesters, but rather is
+  now using the LightWave toolkit directly.  This has lead to a change in the
+  interpretation of the listbox height value.
+
+  The listbox control used to specify widths in pixels and heights in number of listbox
+  entries that should be visible.  However, the height for a listbox now also specifies
+  pixels.  Taking the example script provided in the v2.1 release notes, the following
+  would produce a listbox that is 300-pixels wide and 10-pixels high in v2.2:
+                                                                                                        
+    c1 = ctllistbox("Items",300,10,"lb_count","lb_name","lb_event");
+
+  This will need to be updated for use with v2.2:
+
+    c1 = ctllistbox("Items",300,300,"lb_count","lb_name","lb_event");
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The compression algorithm used by the LScript run-time system did not function properly
+  when compiled file sizes exeeded some threshold.  For this reason, it has been replaced
+  with a newer binary-based compression algorithm that functions similarly, achieves
+  equitable ratios, and does not appear to be effected by the size of the file.
+
+  The original compression algorithm remains in LScript to support decompression of older
+  compiled scripts.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The LightColor() and AmbientColor() Command Sequence functions now expect their arguments
+  to be in floating-point format, expressed as 0.0 to indicate 0 and 1.0 to indicated 255.
+  You can continue to use integer values between 0 and 255 for individual color components,
+  but they must be converted to their floating-point equivalents in the range of 0.0 to
+  1.0--i.e., (150 / 255.0)
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<H2>Bug Fixes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Containers holding arrays were not being cleared completely when new values
+  were assigned, leaving phantom pointers to the reclaimed arrays.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Array duplication included an additional memory lock that prevented
+  subsequent reclamation.  This caused memory consumption during a script's
+  execution when arrays were frequently created and destroyed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Modeler's new() command dropped it's integer parameter with the release
+  of LightWave [6].  LScript has been corrected to adhere to this.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A problem with the logic flow in object processing caused certain data
+  members (like 'totallayers') to be unrecognized.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Tab control created with ctltab() was not receiving the correct
+  data type, causing a crash of the application when tabs are altered.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>genus</b> data member of the Object Agent passed to the Item Motion
+  create() function always returned zero (0), regardless of the type of the
+  object.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Image Object Agent methods rgbSpot(), lumaSpot() and needAA() were not
+  accepting the correct number of arguments.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The LightFalloffType() CS function was incorrectly accepting string arguments.
+  It has been corrected to accept integer values between 1 and 4 (1==off).
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Point and Polygon data members introduced in v1.4 were lost during the object
+  code reorganization that took place in v2.0.  These have been added back to
+  LScript.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Variables holding regular expressions (search, or search-and-replaced) could
+  not correctly be tested for equality or inequality with other values.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <title>Scene Files</title>
+        <style type="text/css"> <!--tt { font-size: 10pt }
+	pre { font-size: 10pt }
+	--></style>
+    </head>
+    <body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+        <table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+            <tr>
+                <td width="120" align="left"><a href="eaiff85.html"><img width="96" height="20" border="0" src="../images/navlt.gif" alt="EA IFF 85"></a></td>
+                <td width="96" align="left"><a href="lwo2.html"><img width="64" height="20" border="0" src="../images/navrt.gif" alt="Object Files"></a></td>
+                <td width="96" align="left"><a href="../filefmts.html"><img width="56" height="20" border="0" src="../images/navup.gif" alt="File Formats"></a></td>
+                <td width="288" align="right"><a href="../index.html"><img width="230" height="20" border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+            </tr>
+        </table>
+        <table border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td width="600"><br>
+                    <h3>Scene Files</h3>
+                    <p><small>October 17, 2006</small></p>
+                    <p>
+                        This document describes the changes&nbsp;made to&nbsp;the LWSC file format that 
+                        bring it to version 4 (LightWave®&nbsp;9.2 and later).</p>
+                    <p><strong>Baked Object Identifiers</strong></p>
+                    <p>In releases prior to LightWave® 9.2, objects loaded into a scene were 
+                        dynamically assigned identifiers based upon their load order each time the 
+                        scene was loaded.&nbsp; In cases where third-party plug-ins had cached these 
+                        fluid identifiers, issues could result&nbsp;when objects were deleted from the 
+                        scene, or when the load order of objects was altered manually (by direct 
+                        editing of the scene file).&nbsp; Objects would receive new 
+                        identifiers&nbsp;the next time the scene was loaded, and the plug-in could be 
+                        left with an invalid reference (often breaking the scene).&nbsp; Staring with 
+                        LightWave® 9.2, scene objects (Cameras, Lights, Bones, etc.) are all now 
+                        assigned identifiers that can be considered "unique" within the domain of the 
+                        scene, and permanent as long as the object remains a member of a particular 
+                        scene domain.</p>
+                    <p>
+                    These new assigned (or "baked") identifiers appear on the line in the scene file where the 
+                    object is declared, e.g.:<p>
+                        <table border="0">
+                            <tr>
+                                <td width="30"></td>
+                                <td><code>AddNullObject <strong>10000000</strong> Null</code></td>
+                            </tr>
+                            <tr>
+                                <td width="30"></td>
+                                <td><code>AddBone <strong>40020000</strong></code></td>
+                            </tr>
+                            <tr>
+                                <td width="30"></td>
+                                <td><code>LoadObjectLayer 1 <strong>10000003</strong> G:box.lwo</code></td>
+                            </tr>
+                            <tr>
+                                <td width="30"></td>
+                                <td><code>AddCamera <strong>30000000</strong></code></td>
+                            </tr>
+                        </table>
+                    </p>
+                    </p>
+                    <p>Once "baked", these permanent identifiers are saved into the scene 
+                        file along with the object, and are&nbsp;re-assigned to the object whenever the 
+                        scene is loaded again.&nbsp; New objects added to the scene are assigned new 
+                        identifiers which are "baked" onto them and remain theirs while they exist in 
+                        the scene.&nbsp; When objects are deleted from the scene, all remaining objects 
+                        retain their previously assigned identifiers, and the identifier of the object 
+                        deleted from the scene becomes available for re-assignment to the next new 
+                        object added.</p>
+                    <p>
+                        &nbsp;</p>
+                    <p><strong>Re-formated Goal</strong></p>
+                    <p>The numeric format of the GoalObject entry has been changed to hexidecimal.</p>
+                    <p>&nbsp;</p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

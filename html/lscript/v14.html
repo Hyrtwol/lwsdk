@@ -1,0 +1,1327 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#0000F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v1.4 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v1.4 Release Notes (<i><b>final...really...</b></i>)</H1>
+<H3>(updated 02.07.99)</H3>
+
+<br><br>
+
+<H3>ENHANCEMENTS & BEHAVIOURAL CHANGES</H3>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Modeler LScript can now use LW Panels if it is installed.  If it is
+  not, then LScript will revert to the built-in Modeler requester
+  interface, substituting as best it can equivalent controls for those
+  provided by Panels.
+
+  Use of Panels in Modeler LScript is not automatic.  The reqbegin()
+  function has been altered to accomodate this.  If you employ reqbegin()
+  in its original form, then LScript will use the built-in Modeler
+  requester.
+
+  However, you can now provide an optional second boolean parameter
+  that instructs LScript to use the LW Panels plug-in instead if it
+  is available.  A boolean return value is now provided by reqbegin()
+  to indicate the presence (true) or absence (false) of the plug-in.
+
+            . . .
+            if(!reqbegin("Panels Test",true))
+                return;
+            . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The asStr() method has had some formatting enhancements made for
+  floating-point numbers, and vector data types now adhere to any
+  floating-point formatting specifications.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new requester control function has been added.  This function,
+  ctlimage(), allow you to embed Targa Image Files (type 2 and 10,
+  top-down or bottom-up raster) anywhere on your Panels-based
+  requester panel.  ctlimage() takes one required and three optional
+  parameters:  the image file name, the image's X (horizontal) offset,
+  the image's Y (vertical) offset, and a color transparency mask -- as
+  a single integer or a vector -- for simple color filtering (which
+  can, in some cases, greatly increase display speed).
+  
+  You can also use the ctlposition() function to position your
+  image anywhere on your panel.  You can use ctlposition() with
+  a ctlimage() control without triggering LScript's control
+  position release logic.
+
+        . . .
+        if(!reqbegin("Image Test",true))
+            return;
+
+        reqsize(500,300);
+
+        gravity = .9;
+        ground = 0.0;
+        startRange = 30;
+        axis = 2;
+
+        // load a Targa image that is 500x50
+        ctlimage("f:/tmp/mental.tga");  // default to: (0,0)
+
+        c0 = ctlsep();
+        c1 = ctlnumber("Initial velocity (m/s)",gravity);
+        c2 = ctlnumber("Ground",ground);
+        c3 = ctlinteger("Disperal Range",startRange);
+        c4 = ctlpopup("How 'bout a pop-up?",2,@"Item 1","Item 2","Item 3"@);
+        c5 = ctlchoice("Test",axis,@"X","Y","Z"@);
+
+        ctlposition(c0,0,50);   // separator at the bottom of the image
+
+        ctlposition(c1,10,110); // put all the other controls below the
+        ctlposition(c2,10,130); // image area...
+        ctlposition(c3,10,150);
+        ctlposition(c4,10,170);
+        ctlposition(c5,10,190);
+        . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Due to a design flaw in the plug-in API, plug-ins that load data in from
+  a scene file can exceed the boundaries of their saved data, even to the
+  point of reaching the end of the scene file.  Unfortunately, Layout
+  mistakenly shares the scene file pointer with the plug-in (instead of
+  correctly making a separate copy), so when a plug-in that has read beyond
+  its data returns control to Layout, the scene can either become corrupted,
+  or Layout may simply load nothing more (because its scene file pointer has
+  hit EOF).
+  
+  The LScript Layout read() function has been bullet-proofed against this.
+  It will now detect the end of a plug-in's data chunk (indicated in the
+  scene file by the marker "EndPlugin"), and will set the EOF flag for
+  any remaining data read()'s, thus preventing the script from reading any
+  scene data that it does not own.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The return count and types for the LScript/PT illuminate() function
+  have been changed.  In versions prior, six floating-point values are
+  returned, three for direction, and three for color.  Now, three values
+  are turned:  ray result (boolean; 'true' if light illuminates position,
+  'false' otherwise), direction (vector), and color (vector).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Both selpolygon() and selpoint() were designed to throw exceptions if they
+  detected non-id elements in provided arrays.  This rather uptight behaviour
+  has been altered so that both functions will now simply not look any
+  further for id elements once they encounter a first non-id element.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Those identifiers used for variables and function names can now be
+  "constructed" at run-time using a new language extension.  This extension
+  is triggered by using a "tick" mark or reverse apostrophe (`) found on the
+  same key as the tilde.
+  
+  Starting with a base identifier, you add constructors to the end,
+  preceding each with the "tick" mark.  For example, the following
+  code fragment will assign the integer value 15 to the identifier
+  "Bob36Hood":
+
+         . . .
+         x = 36;
+         y = "Hood";
+         Bob`x`y = 15;
+         . . .
+
+  When this code is executed, 'x' will contain 36, 'y' will hold "Hood",
+  'Bob' will be nil (ultimately, we are not assigning to 'Bob'), and
+  the new variable 'Bob36Hood' will be 15.
+
+  Pseudo-arrays can be constructed by using this run-time identifier
+  construction.  However, this should only be used for low-count
+  situations; otherwise, you should employ LScript's integral array
+  support:
+
+        . . .
+        for(x = 1;x <= 10;x++)
+            value`x = x * x;
+        . . .
+
+  You can also use this mechanism to build function names (for
+  invocation, NOT for definition):
+
+        . . .
+        reqbegin("Testing Identifier Construction");
+        c1 = ctlchoice("Which action?",1,
+                       @"Action1","Action2","Action3"@);
+
+        if(!reqpost()) return;
+
+        x = getvalue(c1);
+        reqend();
+
+        func`x();  // evaluates to 'func1', 'func2' or 'func3'
+        . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The random() function has been enhanced to generate floating-point random
+  values if floating-point values are passed as arguments
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Tabs have been added to the requester control repertoire.  The are created
+  using the ctltab() function.  This function takes a series of character
+  strings that betitle each tab:
+
+       . . .
+       c3 = ctltab("Page 1","Page 2","Page 3");
+       . . .
+
+  Like ctlimage(), tabs can be positioned with ctlposition() without
+  triggering LScript's control position release logic.
+
+  Currently, only one tab control is allowed on the panel.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Controls can be "placed" on tab pages using the ctlpage() command.
+  This command takes a page number which corresponds to a defined
+  tab, and one or more control identifiers.  When a control is placed
+  on a tab page, it will only appear on the tab page when that tab is
+  active.  If a control is not associated with a tab page, then it
+  will remain visible on the requester panel at all times:
+
+       . . .
+       ctlpage(1,c4,c5);
+       ctlpage(2,c6);
+       ctlpage(3,c7,c8,c9);
+       . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  getfirstitem() now returns a 'nil' value for objects identified by
+  name that cannot be located.  In previous versions, a error message
+  was printed to the user.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Primitive-creation functions (makebox(), makeball(), maketesball(),
+  makecone(), and makedisc()) will now create their components using
+  default settings when no parameters are provided.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Support for the Diffuse Shading (DIFFSHADE) and Specular Shading
+  (SPECSHADE) Image Filter buffers has been added to LS/IF.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The flags() function in LS/IF is now optional.  If omitted, LS/IF
+  will automatically detect buffer accesses (through calls to
+  bufferline() and floatline()) and ensure that accessed buffers are
+  available when the process() function is called.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The caching mechanism of LS/IF is now copy-on-write.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  LS/IF now sports a refresh() function that will discard any cache()'d
+  image data and refresh from the original image data.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A "flow" pragma has been added to the pre-processor.  When used, a
+  limited tracing of the script flow will be generated to the file
+  designated.  This pragma is not supported in the run-time environment
+  (and should be turned off before distributing the script!).
+
+        @flow "f:/test.flow"
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Modest speed improvements have been realized in the memory management.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  LS/IF is now completely cache-based.  As a result, the cache() command
+  no longer performs any useful function, and is obsolete.  The bufferline()
+  and floatline() commands are still functional, and are still the only
+  means of accessing non-RGBA channels.  The getpixel() and putpixel()
+  functions are now the preferred means of manipulating RGBA pixel data.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Two hook functions, _getRawSurf() and _setRawSurf(), have been added
+  to LScript Modeler.  These functions return and set the raw surface
+  attribute chunk for a surface assigned to an object.  These functions
+  are not intended for direct use by script writers, but rather have
+  been added to allow an Object Agent to be written that will manage
+  surface settings.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A requester function has been added to allow controls to be grouped
+  together around a "leader" control.  When grouped using the ctlgroup()
+  function, all subordinate controls are then positioned *relative* to the
+  group leader.  The first argument is the control id of the group leader,
+  while all subsequent arguments are the controls that belong to the group.
+  Groupings should be established PRIOR to setting control positions.
+  
+  For instance, this function "attaches" a separator to a tab control:
+
+       . . .
+       c0 = ctltab("Tab1","Tab2","Tab3");
+       c1 = ctlsep();
+
+       ctlgroup(c0,c1);        // <-- c0 is group leader
+
+       ctlposition(c1,0,24);   // <-- relative to c0
+       ctlposition(c0,0,10);   // <-- group "leader" -- c1 will follow
+       . . .
+
+  Groupings can also be nested:
+
+       . . .
+       if(!reqbegin("Panels Test",true))
+           return;
+
+       c0 = ctlcheckbox("Testing Number 1",true);
+       c1 = ctlcheckbox("Testing Number 2",false);
+       c2 = ctlcheckbox("Testing Number 3",true);
+       c3 = ctlcheckbox("Testing Number 4",false);
+
+       ctlgroup(c0,c1,c2);
+       ctlgroup(c2,c3);
+
+       ctlposition(c0,10,10);
+       ctlposition(c1,0,20);   // <-- relative to c0
+       ctlposition(c2,0,60);   // <-- relative to c0
+       ctlposition(c3,0,20);   // <-- relative to c2
+       . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Because of the way the angle() function performs it calculations, returned
+  angles, although accurate, would sometimes not match expectations.  With
+  any angle measurement, there are always two possible values, the sum of
+  which total to 360 degrees.  The angle() calculation logic will
+  occasionally return one value when the script writer is expecting the
+  other remainder.
+
+  To avoid such confusion, the angle() function has been altered to always
+  return the smaller of the two angle measurements -- which means that no
+  returned angle will be greater than 180 degrees.  As before, you can get
+  the inverse (or remainder) angle by subtracting the returned angle from
+  360 degrees.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new feature has been added to the LScript requester mechanism.  Using
+  a new function, ctlactive(), one or more requester controls can be
+  activated and deactivated based upon the state of another control.
+  This mechanism is by far the most complex of those yet created for the
+  LScript requester.  It has a parameter structure much like ctlgroup(),
+  however each call to ctlactive() must be companioned by an LScript
+  callback UDF.
+
+  The function parameters consist of the "state" control identifier as the
+  first parameter (much like the group "leader" control for ctlgroup()):
+
+    . . .
+    c0 = ctlcheckbox("Testing Number 1",true);
+    c1 = ctlinteger("Disperal Range",x);
+    . . .
+    ctlactive(c0,...       // 'c0' is the "state" control
+    . . .
+
+  The second parameter to ctlactive() is a character string that identifies
+  a UDF in the current script:
+
+    . . .
+    ctlactive(c0,"toggleOn",...
+    . . .
+
+  All remaining parameters to ctlactive() are the identifiers of those controls
+  whose state will be effected:
+
+    . . .
+    ctlactive(c0,"toggleOn",c1);
+    . . .
+
+  Active callbacks must accept a single argument that will hold the value of
+  the "state" control at the time its state changed:
+
+        . . .
+        ctlactive(c0,"toggleOn",c1);
+    . . .
+    toggleOn: value
+    {
+        . . .
+    }
+
+  Callback UDFs must return a boolean true or false to indicate the active
+  state of all governed controls.  A boolean true will cause governed controls
+  to be active, while a false value will render them inactive.
+
+  It is the script's responsibility to evalute the data passed to the
+  callback UDF to determine the appropriate return value.  For instance,
+  in the above code snippets, the "state" control is a checkbox.
+  Therefore, the value passed to our callback UDF toggleOn() will be either
+  true or false--the values that can be contained by the checkbox control.
+  So, if we wish our governed controls to be active when the checkbox is
+  "true", we would simply return the value passed to us:
+
+    . . .
+    toggleOn: value
+    {
+        return(value);
+    }
+    . . .
+
+  However, if our "state" control were, for instance, a choice, we
+  might want to activate our governed controls only when choice #2
+  was selected:
+
+        c0 = ctlchoice("Test",2,@"X","Y","Z"@);
+        c1 = ctlcheckbox("Testing Number 1",true);
+        c2 = ctlinteger("Disperal Range",x);
+        . . .
+        ctlactive(c0,"on2",c1,c2);
+    . . .
+    on2: value
+    {
+        return(value == 2);
+    }
+
+  "State" controls can be associated with up to ten (10) callback functions.
+  This can allow you to perform more specific activations on controls.  For
+  instance, the following code snippet will activate control 'c1' when the
+  controller's integer value is greater than 10, and will activate control
+  'c2' when the controller's integer value is less than, or equal to, 10:
+
+        . . .
+        x = 15;
+        c0 = ctlinteger("Disperal Range",x);
+        c1 = ctlcheckbox("Testing Number 1",true);
+        c2 = ctlchoice("Test",2,@"X","Y","Z"@);
+        . . .
+        ctlactive(c0,"over10",c1);
+        ctlactive(c0,"under10",c2);
+    . . .
+    over10: value
+    {
+        return(value > 10);     // turns 'c1' on or off
+    }
+
+    under10: value
+    {
+        return(value <= 10);    // turns 'c2' on or off
+    }
+
+  Unlike ctlgroup(), "state" controllers CANNOT be cascaded--i.e.,
+  you cannot include a "state" identifier in the governed parameter
+  list for another.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Layout LScript has a new function called effectedby().  This function is
+  used to inform Layout about the objects in the current scene to which
+  your script has dependencies.  This function is LScript's interface to the
+  plug-in API's useItems system.
+
+  effectedby() can be called at anytime in your script, and accepts one or
+  more character strings that represent the names of objects in the current
+  scene whose parameters effect the script.  These names can also be
+  passed to effectedby() through an array reference.
+
+  This function has no actual impact on the execution of your script.
+  Rather, it has impact on *when* your script is executed.  Layout will use
+  the information provided by effectedby() to determine when your script
+  (i.e., the LScript plug-in) should be executed in response to some change
+  in the indicated objects.
+
+    obj;
+
+    create
+    {
+        obj = getfirstitem("MasterNull");
+
+        // make sure process() is called
+        // whenever "MasterNull" changes
+
+        if(obj)
+            effectedby("MasterNull");
+    }
+
+    process: ma, frame, time
+    {
+        if(!obj) return;
+
+        v = obj.param(POSITION,time);
+        ma.set(POSITION,v + 1);
+
+        v = obj.param(ROTATION,time);
+        ma.set(ROTATION,v);
+
+        v = obj.param(SCALING,time);
+        ma.set(SCALING,v);
+    }
+
+  The effectedby() function can also be called in your options() function
+  in response to some change to the operation of the script made by the
+  user.  For instance, you can allow the user to specify which object(s)
+  will effect the script:
+
+    obj;
+
+    create
+    {
+        obj = nil;
+    }
+
+    process: ma, frame, time
+    {
+        . . .
+    }
+
+    options
+    {
+        if(!reqbegin("Parent"))
+            return;
+
+        c1 = ctlallitems("Select master object",obj);
+
+        if(reqpost())
+        {
+            object = getvalue(c1);
+
+            if(object && (object.name != obj.name))
+            {
+                obj = object;
+                effectedby(obj.name);  // new dependencies!
+            }
+        }
+
+        reqend();
+    }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new function, normalize(), has been added to the global toolset.  This
+  function takes a vector, and returns a normalized version of that vector:
+
+    . . .
+    vec = normalize(vec);
+    . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The ctlstring() and ctlfilename() requester functions now take an optional
+  third argument that indicates the width of the input field.  This argument
+  will be ignored if you are are not using the Panels plug-in to construct
+  your requester.
+
+    . . .
+    test = "There!";
+    c1 = ctlstring("Hey!",test,30);
+    . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Another new requester function has been added to the toolbox to allow
+  controls to be visible or invisible based upon some condition.  Its calling
+  parameters and operational requirements are identical to that of ctlactive():
+
+    . . .
+        c0 = ctlchoice("Test",2,@"Checkbox","Integer"@);
+        c1 = ctlcheckbox("Testing Number 1",true);
+        c2 = ctlinteger("Disperal Range",x);
+        . . .
+        ctlvisible(c0,"showCheckBox",c1);
+        ctlvisible(c0,"showInteger",c2);
+    . . .
+    showCheckbox: value
+    {
+        return(value == 1);
+    }
+
+    showInteger: value
+    {
+        return(value == 2);
+    }
+    . . .
+
+  A pleasing and professional-looking effect can be achieved by *stacking*
+  controls that are conditionally visible, allowing them all to occupy the
+  same location/space on the panel. In this way, the control itself appears
+  to alter each time the condition changes:
+
+        . . .
+        c0 = ctlchoice("Test",2,@"X","Y","Z"@);
+        c1 = ctlinteger("Disperal Range",x);
+        c2 = ctlcheckbox("Testing Number 1",true);
+        c3 = ctlpopup("How 'bout a pop-up?",2,@"Item 1","Item 2","Item 3"@);
+
+        ctlvisible(c0,"vis1",c1);
+        ctlvisible(c0,"vis2",c2);
+        ctlvisible(c0,"vis3",c3);
+
+        ctlposition(c0,10,10);
+
+        // stack visiblity-controlled controls atop each other
+        ctlposition(c1,0,30);
+        ctlposition(c2,0,30);
+        ctlposition(c3,0,30);
+    . . .
+    vis1: value
+    { return(value == 1); }
+
+    vis2: value
+    { return(value == 2); }
+
+    vis3: value
+    { return(value == 3); }
+    . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The internal LScript memory manager now performs full-scale garbage
+  collection of unused or temporary memory.  In previous releases of
+  LScript, only character strings were reclaimed by the memory manager
+  as a script executed.  Now, all LScript data types are reclaimed,
+  preventing long-running scripts from consuming memory unnecessarily.
+  This reclamation process has added overhead to the basic execution
+  of LScript, which will unavoidably translate into longer execution
+  times for all scripts.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  ctlalign() allows controls to be aligned with a master control using
+  incremental offsets for the horizontal and vertical values.  The first
+  parameter is the lead control whose position will be used as the
+  beginning offet.  Next, come the X and Y offset increments as integers
+  that will be applied to successive controls.  All remaining parameters
+  are the controls that will be aligned relative to the master control
+  and the increasing offsets.
+
+
+    . . .
+    c0 = ctlchoice("Test",2,@"X","Y","Z"@);
+    c1 = ctlinteger("Disperal Range",x);
+    c2 = ctlcheckbox("Testing Number 1",true);
+    c3 = ctlpopup("How 'bout a pop-up?",2,@"Item 1","Item 2","Item 3"@);
+
+    ctlalign(c0,0,20,c1,c2,c3); // align c1/c2/c3 at an X offset of 0, and
+                                // 20 successive units away from c0
+    ctlposition(c0,10,10);
+    . . .
+
+  Offset values can also be negative.
+
+    . . .
+    ctlalign(c0,-5,20,c1,c2,c3); // controls move 5 units to the left of c0
+    ctlposition(c0,10,10);
+    . . .
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A function has been added to convert file/directory paths from their
+  relative values into fully qualified paths.  The fullpath() function
+  takes a single path value (string), and returns a full path version
+  if the provided path is relative.  If the path is already fully qualified,
+  then that value is return.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A requester function called ctlrefresh() is available to make indicated
+  controls act as triggers to "refresh" the values of other controls on the
+  panel.  The function takes a control identifier, and the name of a refresh
+  callback function.  When the specified control is altered in any way by
+  the user (i.e., mouse clicks, keyboard entry, etc.), the refresh callback
+  is invoked with the current value of the control.
+
+  Unlike callbacks used by other requester controls, the callback for
+  ctlrefresh() should not return a value.  Instead, control refreshing
+  takes place through the use of the setvalue() function.
+
+    filenames;
+    counter = 2;
+    c1;
+
+    main
+    {
+        . . .
+        filenames = matchfiles("c:\\temp","*.*");
+
+        c0 = ctlchoice("Test",counter,@"X","Y","Z"@);
+        c1 = ctlstring("Filenames",filenames[counter]);
+
+        ctlrefresh(c0,"refresh");
+        . . .
+    }
+
+    refresh: value
+    {
+        setvalue(c1,filenames[value]);
+    }
+
+  Note the use of the global values.  Because the refresh callback alters
+  the values of controls directly, the control identifiers must be visible
+  at a global level.  For instance, in the example above, the 'c1' variable
+  is made global so that the refresh callback can change its value directly.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Point and Polygon data types have been given their own set of data members
+  and methods.  In each case, additional information is available through
+  these additions that cannot be accessed by any other means in LScript.
+
+  The Point data type now responds to the following messages:
+
+      polygon/polygon()
+
+              this element of the Point data type is overloaded to return
+              different data based on the context.  if the element is
+              accessed directly, then the number of polygons to which the
+              point belongs is returned.  if the method context is invoked,
+              then one or more polygon identifiers will be returned to
+              the caller.  if the point is unassociated with any polygon,
+              the data member context will return zero (0), and the method
+              context will return 'nil'.
+
+              the data member context is read-only.
+
+      x, y, z
+
+              these three data members hold the position of the point
+              along the indicated axis.  these values can be read, or
+              the can be assigned to.  assignments will alter the
+              position of the point.
+
+  The Polygon data type now responds to the following messages:
+
+      surface
+
+              this is the surface name currently assigned to the polygon.
+              this data member can be read, and it can be assigned to.
+              if the surface name assigned does not exist, LScript will
+              first create it.
+
+      pointCount
+
+              an integer value that contains the number of points that
+              comprise the polygon.  this data member is read-only.
+
+      layer
+
+              an integer value between 1 and 10 that indicates the
+              Modeler layer in which the polygon lives.  this data
+              member is read-only.
+
+      points[]
+
+              an array of Point identifiers that contain all the points
+              that comprise the polygon.  it has 'pointCount' elements.
+              the elements in this data member are read-only.
+
+      isCurve()
+
+              returns a true or false value that indicates whether
+              the polygon is a curve (true) or a face (false).
+
+      hasCCEnd()
+
+              if the polygon is a curve, this method will return
+              true if it contains a control point at its tail.
+
+      hasCCStart()
+
+              if the polygon is a curve, this method will return
+              true if it contains a control point at its head.
+
+      setPoints()
+
+              this method can be used to set the points that
+              comprise the polygon.  it accepts an array reference
+              containing pre-existing point ids, a list of
+              pre-existing pointer ids, or a series of one or
+              more vector values that the method will first
+              convert into points and then apply them to the
+              polygon.
+
+  Point and Polygon messages are only legal during a mesh edit
+  session (i.e., between calls to editBegin() and editEnd()).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LScript pre-processor now understands a simple form of conditional
+  code compilation.  Using the new @if, @else, and @end directives, you
+  can instruct the compiler to include--or exclude--code from compilation.
+
+  The @if test expects an identifer, followed by an optional equality
+  operator, and an optional value to test.  If the optional value is
+  omitted, then the test will succeed if the identifer exists in either
+  the pre-processor's macro list, or in the LScript environment
+  (enviromental testing is not performed on the Mac).
+  
+    . . .
+    @if LOCALMODE
+        info("running in local mode");
+    @end
+    . . .
+
+  If the test value exists without an equality operator, then equality
+  is tested by default.  Recognized equality test operators are "<", ">",
+  "<=", ">=", "==", and "!=".
+
+    . . .
+    @define TEST 45
+    . . .
+    @if TEST > 40
+        info("TEST > 40");
+    @else
+        info("TEST <= 40");
+    @end
+    . . .
+
+  A special identifier "version" is recognized that will evaluate to
+  the current version of the LScript plug-in.  This allows code to be
+  compiled based upon the version of LScript.
+
+    . . .
+    @if version < 1.4
+        scl = degree(obj.getScale(time));
+    @else
+        scl = obj.getScale(time);
+    @end
+    . . .
+
+  In addition, a "not" operator can be applied to any test to invert the
+  result.
+
+    . . .
+    @if not version 1.4
+        scl = degree(obj.getScale(time));
+    @else
+        scl = obj.getScale(time);
+    @end
+    . . .
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<H3>BUG FIXES</H3>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  LScript/IF was providing the 'start' and 'end' times for a frame as integer
+  values instead of floating point.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  LScript/IF was freeing memory that it didn't own, causing crashing of Layout
+  under certain conditions and platforms.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Layout options() processing was not detecting an active requester interface
+  upon exit (i.e., reqbegin() was called, but reqend() was not before the
+  function terminated), leaving certain internal flags set.  These flags
+  then prevented other functions (notably, process()) from being executed.
+  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LScript/PT illuminate() function was incorrectly requiring three
+  parameters, when only two were actually required (light id and world
+  coordinate position).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  LScript/PT was not returning the result code from the illuminate()
+  call.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LScript/PT raySource[] data member was not properly accessible.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The File Object Agent's writeln() method was not performing proper
+  error detection when bad point or polygon identifiers were provided
+  for printing.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The File Object Agent's writeln() method did not properly recognize
+  point and polygon identifiers contained within arrays.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Added better size checking in the parser for build stacks.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The redo() command was missing from the run-time system.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The if/else construct was broken in the run-time system.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The number() function contained some old code that would
+  return an integer instead of a floating-point value under
+  certain conditions.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The random() function was returning the wrong data type under certain
+  conditions.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Default value assignments, introduced in v1.3, were causing internal
+  code problems when floating-point values were returned from functions.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  LScript was not properly recognizing IPC queue variables when used in
+  mathematical operations.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Some division operations involving arrays were multiplying instead
+  of dividing.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Some returned rotational values (i.e., param(ROTATION,...)) were
+  being returned as radians instead of degrees.  This was causing
+  problems with functions that expected degree-based parameters
+  (i.e., set(ROTATION,...)).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Garbage collection of character strings was not functioning properly,
+  resulting in excessive memory consumption in long-running scripts.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Further synchronization problems existed between the script
+  compilers and the run-time plug-ins.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Some here-to-fore undiscovered stack handling problems existed
+  in the Layout LScript global Object Agents (Scene, Bones, etc.).
+  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Some memory allocations in the requester mechanism were not
+  being cleared, leaving undefined values in certain areas.
+  Enhancements introduced in v1.4 uncovered this oversight.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The select() function has been renamed to selector() to
+  resolve a conflict with one of LScripts reserved keywords.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

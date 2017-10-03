@@ -1,0 +1,189 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#FFFFFF"
+      vlink="#FFFFFF">
+
+<TITLE>LScript v2.2 Patch Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.2 Patch Release Notes</H1>
+
+<table BORDER=1>
+  <tr>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v221">v2.2.1</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v222">v2.2.2</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+
+<A NAME=v221>
+
+<pre>
+<H3>patch: v2.2.1       released: 05/16/01</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The Channel Requester control (ctlchannel()) was totally whacked.  In the conversion
+  from Panels, it was not duplicated as anything remotely resembling the Panels
+  implementation.  To a large extent, this has been corrected.
+
+  As part of this correction, an <u>event</u> callback function has been enabled for the
+  control.  To avoid breaking existing scripts, this callback declaration now appears
+  as the fifth parameter to the ctlchannel() function, and is optional.  Whenever a
+  channel is selected, the <u>event</u> function will be called with the selected Channel
+  Object Agent as the sole argument:
+
+    generic
+    {
+        reqbegin("Testing");
+        c1 = ctlchannel("Channels",200,200,,"chan_sel");
+        reqpost();
+        ...
+    }
+
+    chan_sel: channel
+    {
+        info(channel.keyExists(0.0) ? "Yes" : "No");
+    }
+
+  As with the Listbox control, the width and height paramaters (200 and 200 in the
+  above example) are in terms of pixels.
+
+  As with the Listbox control, Channel trees also respond to the requpdate() call.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Crashing could occur when a Requester panel was opened, closed, and then
+  immediately re-opened.  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Bones were not being included in the ctlallitems() control.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Ownership of a Bone entry was not being indicated in the ctlboneitems() or
+  ctlallitems() controls.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The internal code to locate a specific object's Channel Group was not recursive,
+  causing search results to include only the shallow components.  Object's whose
+  channels were subordinate to other objects (like Bones) were not being located
+  as a result.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+<A NAME=v222>
+
+<pre>
+<H3>patch: v2.2.2       released: 06/27/01</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The AddEnvelope() and RemoveEnvelope() commands were internally wrapping the
+  envelope name in quotation marks, which caused Layout some heartburn.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The ctlposition() function was not accepting the correct number of arguments
+  when used in Modeler scripts.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The run-time system was not managing short numeric types when a need existed to
+  swap bytes--such as when running an Intel-compiled script on the Macintosh.  This
+  lead to some odd error messages and occasional crashes.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+</CENTER>

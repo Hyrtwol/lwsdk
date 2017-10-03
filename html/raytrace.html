@@ -1,0 +1,279 @@
+<html>
+
+<head>
+<title>Raytracing Functions</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="meshinfo.html"><img width="96" height="20"
+    border="0" src="images/navlt.gif" alt="Mesh Info"></a></td>
+    <td width="96" align="left"><a href="filefmts.html"><img width="64" height="20" border="0"
+    src="images/navrt.gif" alt="File Formats"></a></td>
+    <td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0"
+    src="images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+    <h3>Raytracing Functions</h3>
+    <p>Several plug-in classes receive pointers to raytracing functions that allow them to
+    probe the scene from any point of view.</p>
+    <p>These functions aren't valid in all contexts, since they depend on having information
+    about the scene that may not always exist. When the Surface Editor renders its preview
+    thumbnail, for example, it evaluates the active <a href="classes/shader.html">shaders</a>,
+    but in this previewing context, the <tt>rayCast</tt> and <tt>rayShade</tt> fields of the
+    LWShaderAccess will be NULL. Always ensure that raytracing function pointers are valid
+    before using them.</p>
+    <p>You may also need to safeguard against infinite recursion. A ray fired in the
+    evaluation callback of a <a href="classes/shader.html">shader</a> or (particularly) a <a
+    href="classes/volume.html">volumetric</a> may cause that callback to be re-entered.
+    Shaders can use the <tt>bounce</tt> member of the LWShaderAccess to monitor the recursion
+    level.</p>
+    <pre>   typedef double LWRayTraceFunc (const LWDVector position,
+                     const LWDVector direction, LWDVector color);
+
+   typedef int    LWIlluminateFunc (LWItemID light,
+                     const LWDVector position, LWDVector direction,
+                     LWDVector color);
+
+   typedef double LWRayCastFunc (const LWDVector position,
+                     const LWDVector direction);
+
+   typedef double LWRayShadeFunc (const LWDVector position,
+                     const LWDVector direction,
+		     struct st_LWShaderAccess *);
+
+   typedef int    LightSampleFunc (void *data, LWItemID light, const LWDVector dir, const LWDVector color);
+
+   typedef double LWIlluminateSampleFunc (LWItemID light, const LWDVector pos, LWDVector dir,
+					  LightSampleFunc *sampler, void *data);
+
+   typedef double  LWIlluminateNormalFunc (LWItemID light, const LWDVector pos, LWDVector dir, const LWDVector normal,
+					   LWDVector color);
+
+   typedef double  LWIlluminateSampleNormalFunc (LWItemID light, const LWDVector pos, LWDVector dir,
+						 const LWDVector normal, LightSampleFunc *sampler, void *data);
+
+   typedef double  LWRayTraceModeFunc (const LWDVector position,
+                                       const LWDVector direction,
+                                       LWDVector color,
+                                       const double eta,
+				       const int rtmode);
+
+   typedef void    LWRayTraceDataFunc( LWRenderData, LWRayTraceData* );
+   typedef void    LWRayTraceShadeFunc( LWRayTraceData* );
+
+</pre>
+    <dl>
+      <dt><tt>len = <strong>rayTrace</strong>( position, direction, color )</tt></dt>
+      <dd>Trace a ray from the given location in the given direction in world coordinates. The
+        return value is the length of the ray (or -1.0 if infinite) and the color coming from that
+        direction. The direction argument is the outgoing direction and must be normalized (a unit
+        vector). <dl>
+          <dt><br>
+            <tt>position</tt></dt>
+          <dd>The world coordinates of the source of the ray.</dd>
+          <dt><tt>direction</tt></dt>
+          <dd>A unit-length vector, the outgoing direction of the ray in world coordinates.</dd>
+          <dt><tt>color</tt></dt>
+          <dd>Storage for the color of the spot hit by the ray.</dd>
+        </dl>
+      </dd>
+      <dt>
+      <tt><br>
+        lit = <strong>illuminate</strong>( lightID, position, direction, color )</tt></dt>
+      <dd>This function obtains the light ray (color and direction) hitting the given position
+        from the given light at the current time step. The return value is zero if the light does
+        not illuminate the given world coordinate position at all. The color includes effects from
+        shadows (if any), falloff, spotlight cones and transparent objects between the light and
+        the point. <dl>
+          <dt><br>
+            <tt>lightID</tt></dt>
+          <dd>The light, given by its LWItemID.</dd>
+          <dt><tt>position</tt></dt>
+          <dd>The world coordinates of the spot at which the illumination will be tested. </dd>
+          <dt><tt>direction</tt></dt>
+          <dd>Storage for the direction of the light ray computed by the function.</dd>
+          <dt><tt>color</tt></dt>
+          <dd>Storage for the color of the light ray. </dd>
+        </dl>
+        <p>Two special light IDs, <tt>LWITEM_RADIOSITY</tt> and <tt>LWITEM_CAUSTICS</tt>, allow <a
+        href="classes/shader.html">shaders</a> and <a href="classes/pxlfilt.html">pixel filters</a>
+        to account for global illumination. When using these IDs, the <tt>direction</tt> argument
+        becomes an input rather than an output, specifying the desired sampling direction. </p>
+      </dd>
+      <dt><tt>len = <strong>rayCast</strong>( position, direction )</tt></dt>
+      <dd>This is a quicker version of the rayTrace function which only returns the distance to
+        the nearest surface (or -1.0). It performs neither shading nor recursive raytracing. <dl>
+          <dt><br>
+            <tt>position</tt></dt>
+          <dd>The world coordinates of the source of the ray.</dd>
+          <dt><tt>direction</tt></dt>
+          <dd>A unit-length vector, the outgoing direction of the ray in world coordinates.</dd>
+        </dl>
+      </dd>
+      <dt><br>
+        <tt>len = <strong>rayShade</strong>( position, direction, shaderAccess )</tt></dt>
+      <dd>Trace a ray to the nearest surface and evaluate the basic surface parameters and any
+        shaders on that surface. The <a href="classes/shader.html#access">LWShaderAccess</a>
+        structure passed (and owned) by the caller is filled in with the result and no more
+        processing is done. <dl>
+          <dt><br>
+            <tt>position</tt></dt>
+          <dd>The source of the ray in world coordinates.</dd>
+          <dt><tt>direction</tt></dt>
+          <dd>A unit-length vector, the outgoing direction of the ray in world coordinates.</dd>
+          <dt><tt>shaderAccess</tt></dt>
+          <dd>A pointer to an empty ShaderAccess structure that will be filled in by the function.</dd>
+        </dl>
+	</dd>
+	<br>
+
+        <tt>intensity = <strong>illuminateSample</strong>( light, position, direction, sampler, mydata )</tt></dt>
+	<dd>Illumination function, which calls the sampler function for each of the light rays.
+	The sampler function receives the direction, color of the sample and the specified userdata.<dl>
+          <dt><br>
+            <tt>lightID</tt></dt>
+          <dd>The light, given by its LWItemID.</dd>
+          <dt><tt>position</tt></dt>
+          <dd>The world coordinates of the spot at which the illumination will be tested. </dd>
+          <dt><tt>direction</tt></dt>
+	  <dd>Storage for the direction of the light ray computed by the function.</dd>
+	  <dt><tt>sampler</tt></dt>
+	  <dd>A LightSampleFunc function callback.</dd>
+	  <dt><tt>mydata</tt></dt>
+	  <dd>The mydata argument is passed to the sampler callback and can be anything it might require.</dd>
+        </dl>
+	</dd>
+	<br>
+
+	<dt>
+	<tt>lit = <strong>illuminate</strong>( lightID, position, direction, color )<br></tt>
+	<tt>intensity = <strong>illuminateSampleNormal</strong>( light, position, direction, normal, sampler, mydata )<br></tt>
+	<dd>These new illumination functions behave the same way as their older counterparts, only these accept a normal direction which is used by light evaluators to determine if any illumination from lights or shadow rays are to be cast for the spot.<br><br></dd>
+	</dt>
+	
+      <dt><tt>len = <strong>rayTraceMode</strong>( position, direction, color, eta, rtmode )</tt></dt>
+      <dd>Trace a ray from the given location in the given direction in world coordinates. The
+        return value is the length of the ray (or -1.0 if infinite) and the color coming from that
+        direction. The direction argument is the outgoing direction and must be normalized (a unit
+	vector). The eta is the outgoing ray refraction index, and is only used when rtmode is RTMODE_REFRACTION.
+	The rtmode parameter defines the outgoing ray type.<br><br>
+
+    All modes except backdrop take volumetrics into account. The ray flags are (ray mode & 0xFF).  The choices are:<br><br>
+
+    <ul>
+    <li>
+      Mode 0: RTMODE_DISTANCE<br>
+      Only returns the distance to the closest surface. This mode does not recurse. It can hit fully transparent surfaces.<br>
+      The ray's position, direction and flags are used. Only distance is returned.
+    </li>
+    <li>
+      Mode 1: RTMODE_REFLECTION<br>
+      This casts a reflection ray and shades the surface that is hit. It uses ray recursion.<br>
+      All parameters except eta (refraciton index) are used. Distance and color are returned.
+    </li>
+    <li>
+      Mode 2: RTMODE_REFRACTION<br>
+      This casts a refraction ray and shades the surface that is hit. It uses ray recursion.<br>
+      All parameters are used. Distance and color are returned.
+    </li>
+    <li>
+      Mode 3: RTMODE_DISSOLVE<br>
+      This casts a dissolve ray and shades the surface that is hit. It uses ray recursion. Dissolve is a special case of a refraction ray. It will never hit the object that cast the ray.<br>
+      All parameters are used. Distance and color are returned.
+    </li>
+    <li>
+      Mode 4: RTMODE_SHADOW<br>
+      This calculates the shadow occlusion along a ray. The ray does not recurse or bend at each intersection. At each surface intersection, the opacity is calculated and combined with the ray's current opacity. The order in which the surfaces are intersected is unpredictable.<br>
+      The ray's position, direction and flags are used. Color and distance are returned.
+    </li>
+    <li>
+      Mode 5: RTMODE_OCCLUSION<br>
+      This casts an occlusion ray. The ray does not recurse or bend at each intersection. Occlusion is a special case of a shadow ray. The difference is in the way it uses the object's normal ray visibility flags instead of the object's shadow visiblity flags.<br>
+      The ray's position, direction and flags are used. Color and distance are returned.
+    </li>
+    <li>
+      Mode 6: RTMODE_BACKDROP<br>
+      This casts a backdrop ray. The ray only intersects the backdrop color. It does not recurse.<br>
+      The ray's position and direction are used. Color and distance are returned. The distance is always -1.
+    </li>
+    </ul><br>
+
+    The ray flags are (ray mode & 0xFF000000).<br><br>
+
+    <ul>
+    <li>
+      RTFLAG_CAMERA<br>
+      The ray is cast from the camera. It may have passed through transparent surfaces but it has not been reflected or refracted.
+    </li>
+    <li>
+      RTFLAG_BACKSHADE<br>
+      Causes shaders to be called when the back side of a surface is hit by a ray.
+    </li>
+    <li>
+      RTFLAG_BACKDROP<br>
+      Makes the raytrace functions use the color parameter as the backdrop color instead of calculating it prior to casting the ray. This allows a plug-in to override the backdrop color.
+    </li>
+    <li>
+      RTFLAG_OBJECT<br>
+      Restricts the rays to only intersecting the same object that cast the ray. This is useful for shaders that calculate sub-surface scattering.
+    </li>
+    <li>
+      RTFLAG_SAMPLEDRAY<br>
+      Should be set by the plug-in when it is using multiple rays to calculate illumination. An example would be for soft relfections. This allows shaders to restrict the number of rays that they cast to calculate illumination. This can greatly speed up renderings without degrading the image quality.
+    </li>
+    <li>
+      RTFLAG_NOPOLYGON<br>
+      Allows the rays to hit the same polygon that cast them. This is useful for shaders that cast frays from a point in front of a surface.
+    </li>
+    </ul><dl>
+          <dt><br>
+            <tt>position</tt></dt>
+          <dd>The world coordinates of the source of the ray.</dd>
+          <dt><tt>direction</tt></dt>
+          <dd>A unit-length vector, the outgoing direction of the ray in world coordinates.</dd>
+          <dt><tt>color</tt></dt>
+	  <dd>Storage for the color of the spot hit by the ray.</dd>
+	  <dt><tt>eta</tt></dt>
+	  <dd>The outgoing refraction index.</dd>
+	  <dt><tt>rtmode</tt></dt>
+	  <dd>The outgoing ray type.</dd><br><br>
+        </dl>
+	</dd>
+	      <dt><tt><strong>rayTraceData</strong>( LWRayTraceData* )</tt></dt>
+	      <dd>Trace a ray using the data provided in the LWRayTraceData structure.<br>
+	      This data is then used with <strong>rayTraceShade</strong> to shade the spot hit by the previous call to <strong>rayTraceData</strong><br>
+	      Only distance, reflection and refraction rays are available for this function.<br><br>
+	      typedef struct st_LWRayTraceData<br>
+	      {<br>
+	      <strong>send</strong><br>
+	      <ul><tt>LWDVector   rayStart<br>
+	      LWDVector   rayDir<br>
+	      LWDVector   backdrop<br>
+	      LWDVector   weight<br>
+	      double      eta<br>
+	      int         flags</ul><br>
+
+	      <strong>receive</strong><br>
+	      <ul>LWRayData   ray<br>
+	      double      len<br>
+	      LWDVector   result</tt></ul><br>
+
+	      } LWRayTraceData<br>
+	      <dl>
+        </dl>
+      </dd>
+      <dt>
+    </dl>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

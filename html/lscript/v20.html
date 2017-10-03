@@ -1,0 +1,1615 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#0000F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v2.0 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.0 Release Notes</H1>
+
+<br><br>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new function called filefind() has been added that takes
+  a file name (sans path information) and scans through the
+  directory paths in the application in order to locate the
+  file.  The path to the file is returned.
+  
+        if((where = filefind("lw.cfg")) != nil)
+        {
+            ...
+
+  This function uses those paths that are available to
+  the getdir() function in order to find the file.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A new function called filecrc() calculates the CRC-32 value
+  of the contents of a file, and returns this integer value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  LScript has a new array type known as associative arrays.
+  Associative arrays are indexed using string values instead
+  of integer indices.  Associative arrays are powerful
+  mechanisms that can be used to simulate user-defined
+  structures, such as those found in C or Pascal.
+
+  In associative arrays, the index value used (the character
+  string) is the symbol to which attributes are associated.
+  The attributes are contained in the arrays that are indexed
+  using the symbol.  Yes, it all sounds very confusing.  It
+  should be clearer, however, in practice.
+
+        fruit_color["apple"]    = "red";
+        fruit_color["banana"]   = "yellow";
+        ...
+        fruit_shape["apple"]    = "round";
+        fruit_shape["banana"]   = "curved";
+        ...
+        fruit_weight["apple"]   = 128;      // grams
+        fruit_weight["banana"]  = 117.3;    // grams
+        ...
+
+  As you can see from this short example, the name of the
+  instance of the structure is the index symbol ("apple",
+  "banana", etc.).  The individual members of each
+  structure is actually the name of each array ("fruit_color",
+  "fruit_shape", etc.).
+
+  Associative arrays can be created/initialized with the
+  new associative initializer operator '$'.  These
+  new operators are used in a similar fashion to the
+  initializer block operators ('@').
+
+        normal_array = @1,2,3,4@;
+        assoc_array  = $ .. $;
+
+  In order to initialize an associative array, however,
+  you must use pairs of elements.  The first part of
+  each pair must be a character string that is the
+  associative symbol for the data found in the second part.
+
+        fruit_color  = $ "banana", "yellow", "apple", "red" $;
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A new form of conditional expressions is available in the
+  language.  Traditional conditional expressions use the if()
+  test construct in a pre-condition position:
+
+        if(&lt;expression&gt>)
+        {
+            ...
+        }
+
+  The new in-line conditionals allow single statements to be
+  conditionally evaluated:
+
+        x = 1 if y == 15 && cos(4.35);
+        ...
+        error("Division by zero!") when z == 0;
+        ...
+        x = 1 unless y == 10 || z == 2;
+        ...
+        break if x == 5;
+        ...
+        return 5 if !upper_limit;
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  There is a new implicit 'this' container that holds the
+  results of the evaluation of the last expression.  This
+  system is not yet fully implemented, but it allows for
+  not having to handle immediate values using intermediate
+  variables:
+
+        ...
+        while(!file.eof())
+        {
+            file.read();  // the line goes into 'this'
+
+            // does the line begin with "PUB"
+            // followed by a C++ comment?
+
+            if(s~^PUB.*\/\/.*~)
+                info();   // display it to the user...
+        }
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Boolean tests are now "short circuited", allowing expressions
+  like this to be used:
+
+        ...
+        file = "C:\\CONFIG.SYS";
+        f = File(file,"r") || error("Cannot open file '",file,"'");
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LScript Generic system now supports Layout's new
+  CommandSequence system, and currently has over 160 new commands
+  to facilitate this.  CS commands are accessed by name, and they
+  exist in LScript as functions.
+
+        @version 2.0
+
+        generic
+        {
+            AddNull();
+        }
+
+  When a CS command requires parameters, they should be provided
+  as though you were calling a UDF.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The LScript pre-preprocessor now supports a new pragma
+  directive called "script".   This directive is an identifier
+  that is intended to aid LightWave's LCore system to identify
+  a script being added as a plug-in.
+
+        @script modeler
+        @script displace
+        @script generic
+        @script motion
+        @script image
+        @script replace
+        @script master
+        @script shader
+        @script channel
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  LScript now has in-language support for regular and
+  search-and-replace expressions.  Regular expressions are powerful
+  pattern matching functions that have their own special meta-
+  character langauge.  This pattern-matching system originated
+  on the UNIX operating system, and has permeated a great many
+  places in the software world.  There is a large body of reference
+  available for regular expressions, so I will not provide a
+  detailed explanation of them here.  Rather, I will tell you
+  how to employ them in LScript.
+
+  To perform pattern matching using regular expression in
+  LScript, you need to use the new "s~~" operator.  This operator
+  instructs LScript to use the regular expression provided to
+  compare against a character string to see if the pattern
+  exists.
+
+        // see if the string begins with a
+        // capital "B", followed anyplace
+        // by two consecutive "o"'s
+
+        if("Bob Hood" == s~^B.*oo~)
+        {
+            ...
+
+  Regular expressions can also be used to perform search-and-replace
+  operations on character strings.  This mechanism is accessed
+  using the "r~~~" operator.  This operator instructs LScript to
+  match the pattern provided, and to replace it with the character(s)
+  provided.  In order to access the search-and-replace mechanism,
+  the new search-and-replace assignment operator "~=" is used:
+
+        // a sed-like search-and-replace using the s/r operator
+
+        if((input = File("nfa.c","r")) == nil)
+            return;
+
+        if((output = File("nfa.bak","w")) == nil)
+            return;
+
+        while(!input.eof())
+        {
+            line = input.read();
+
+            // replace any "PRIVATE" strings found
+            // at the start of the line (^) with
+            // the characters "static "
+
+            line ~= r~^PRIVATE~static ~;
+            output.writeln(line);
+        }
+
+        input.close();
+        output.close();
+
+  Regular expression patterns can be assigned to variables, and
+  those variables used in their place:
+
+        // a sed-like search and replace using the s/r operator
+
+        if((input = File("nfa.c","r")) == nil)
+            return;
+
+        if((output = File("nfa.bak","w")) == nil)
+            return;
+
+        sr = r~^PRIVATE~static ~;
+
+        while(!input.eof())
+        {
+            line = input.read();
+
+            line ~= sr;
+            output.writeln(line);
+        }
+
+        input.close();
+        output.close();
+
+  LScript can also construct regular expressions from character
+  strings using the new regexp() function.  This can be useful
+  for allowing users to enter regular expression patterns to
+  be used:
+
+        // display lines in a file that begin with the letters "PUB"
+
+        // compile a regular expression to be used
+        expr = regexp("^PUB");
+
+        // regexp() returns 'nil' if the expression fails to compile
+        if(expr == nil)
+            return;
+
+        if((file = File("nfa.c","r")) == nil)
+            return;
+
+        while(!file.eof())
+        {
+            line = file.read();
+
+            if(line == expr)
+                info(line);
+        }
+
+  Regular expressions also recognize the 'this' container
+
+        ...
+        while(!file.eof())
+        {
+            file.read();
+
+            if(expr)
+                info();
+        }
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Multidimensional arrays no longer exist as entities within
+  LScript.  All arrays are now strictly linear.  However,
+  arrays can be assigned to specific elements of other arrays,
+  allowing multi-dimensional arrays to be constructed by the
+  script as it executes.  Such user-defined multidimensional
+  arrays are as dynamic as their linear counterparts, and
+  elements can be added to any point at will.
+
+        // generate a multidimensional array "on-the-fly"
+        a[3,5,2] = 0;
+
+  For efficiency, multi-dimensional arrays created in this
+  fashion are not "robust."  For example, the above array
+  creation generates a three-element array, whose third
+  element is an array of five elements, whose fifth element
+  is an array of two elements, whose second element has a
+  value of zero (0).  Put graphically:
+
+        a[1] -> nil
+        a[2] -> nil
+        a[3] -> [1] -> nil
+                [2] -> nil
+                [3] -> nil
+                [4] -> nil
+                [5] -> [1] -> nil
+                       [2] -> 0
+
+  To create "robust" multidimensional arrays (where all
+  elements are fully populated), it must be formally
+  declared as all multidimensional arrays were required
+  to be in LScript v1.x:
+
+        var     a[3][5][2];
+
+  Mult-dimensional arrays can be constructed by piecing
+  together linear arrays:
+
+        a[5] = "Bob";
+        b[3] = a;
+        b[3,5,2] = 'a';     // the string "Bob" now becomes "Bab"
+
+  Because arrays can now be members of other arrays,
+  arrays-as-elements can now be passed to user-defined
+  functions:
+
+            ...
+            // sub-array passing to functions
+
+            a[5] = "Bob";
+            b[2] = 99.9;
+            b[3] = a;
+            c[8] = b;
+
+            info(c);
+            info(c[8]);
+            info(c[8,3]);
+            info(c[8,3,5]);
+
+            test(c);
+            test(c[8]);
+            test(c[8,3]);
+            test(c[8,3,5]);
+        }
+
+        test: a
+        {
+            info(a);
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Images loaded into Layout (through the Image Editor) can now
+  be displayed using the ctlimage() function.  Image names
+  prefaced by a dollar sign character ($) will be resolved by
+  LScript using any loaded image files instead of trying to
+  locate an image file on disc.  Names following the dollar
+  sign metacharacter should exactly match that of the named
+  displayed for the image by Layout.
+
+        ...
+        ctlimage("$ph_019.tga",0,0);
+        ...
+
+  Images referenced in this fashion are ignored when the script
+  is compiled for run-time execution.  This means that the image
+  referenced must be available from Layout when the compiled
+  script is executed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The ctlimage() function has three new (optional) parameters
+  for use in scaling images displayed with it.  The fifth
+  parameter (following the optional transparency vector)
+  specifies the scaling factor or size of the image's width.
+  Parameter six specifies the scaling factor or size of the
+  image's height.  The final parameter (7) is a boolean flag
+  that instructs LScript to preserve the images aspect ratio.
+  By default, the aspect ratio is not preserved.
+
+  The numeric values that are provided for width and height
+  scaling are interpreted by LScript by their type.  If you
+  provide an integer value for either component, then that
+  value will be considered an absolute width (in pixels) of
+  the resulting image.  On ther other hand, if you pass a
+  number (floating point) in that position, then LScript
+  will consider it a percentage factor (where 1.0 equals 100%)
+  that will be applied to the images original width or
+  height to determine the final pixel width.  Because this
+  mechanism is not designed to enlarge images, anything that
+  causes the resulting width or height to exceed the image's
+  original dimensions will be clamped to the image's
+  original dimension.
+
+        ...
+        // display the image at (0,0), 40% of its original
+        // width and 30% of its original height
+
+        ctlimage("$ph_019.tga",0,0,,.4,.3);
+
+        ...
+        // display the image at (0,0), 100 pixels wide
+        // and 100 pixels tall, preserving its aspect
+        // ratio (which means that it will probably not
+        // be exactly 100x100 when displayed)
+
+        ctlimage("$ph_019.tga",0,0,,100,100);
+
+        ...
+        // display the image at (0,0) in its original
+        // (unaltered) form
+
+        ctlimage("$ph_019.tga",0,0);
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  User-defined functions can now be called recursively.  This
+  capability only extends to those functions that you yourself
+  define within your script.  Pre-defined functions--those
+  known to LScript, like main() or options()--cannot be called
+  recursively.
+
+  Recursion is a powerful feature, yet it can also be tricky and
+  dangerous.  Unless you understand what you are doing, you can
+  send LScript into an infinite loop (which will eventually lead
+  to a crash of the application).  LScript attempts to support
+  endless levels of recursion, however, other practical limits
+  (such as memory) restrict the depth.
+
+  Before using recursion, be sure you know what you're doing.
+  Here is a Modeler LScript that uses recursion to traverse
+  the entire root directory hierarchy to count the number of
+  directories that exist on the drive:
+
+        @warnings
+
+        output;
+        count;
+
+        main
+        {
+            count = 0;
+
+            chdir("\\");    // start at the root directory
+            do_dir();
+
+            info(count," directories processed!");
+        }
+
+        // a "depth-first" recursive directory traversal
+
+        do_dir
+        {
+            if((directories = matchdirs(".","*.*")) == nil)
+                return;
+
+            len = directories.size();
+
+            for(x = 1;x <= len;x++)
+            {
+                chdir(directories[x]);
+                ++count;
+
+                do_dir();       // <-- recursion
+
+                chdir("..");
+            }
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The LScript language now has a new iterator construct called
+  foreach().  This construct is intended to simplify the process
+  of iterating over a linear series of values.  It takes as
+  parameters a variable to be used to contain each value, and
+  an expression that will evaluate into some data type capable
+  of iteration.
+
+  The foreach() iterator accepts the following data types for
+  iteration:
+
+<ul>
+<li>integer
+<li>number
+<li>File Object Agent
+<li>Array (including Modeler LScript's points[] and polygons[]<br>automatic arrays, and Associative arrays)
+</ul>  
+
+        ...
+        editbegin();
+
+        foreach(x,polygons)
+            info(x);
+
+        editend();
+        ...
+
+        --------------------
+
+        ...
+        foreach(x,10 - 5)
+            info(x);
+        ...
+
+        --------------------
+
+        ...
+        f = File("c:\\config.sys","r");
+        foreach(x,f)
+            info(x);
+        ...
+
+        --------------------
+
+        ...
+        obj = getfirstitem(MESH);
+        foreach(x,obj)
+            info(x.name);
+        ...
+
+        --------------------
+
+        ...
+        a = @1,2,3@;
+        foreach(x,a)
+            info(x);
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  An Image Object Agent has been added to the list of Layout objects
+  to which LScript provides an interface.  getfirstitem() will now
+  accept either IMAGE or "IMAGE", returning the first image file
+  in Layout's Image list, or 'nil' if none are loaded.  Each Image
+  Object Agent contains the following attributes:
+
+    name        the name as it appears on the interface
+    isColor     a boolean indicating a color or b&w image
+    width       the image's width in pixels
+    height      the image's height in pixels
+
+  Additionally, each Image Object Agent recognizes the following
+  methods:
+
+    &lt;string&gt;            filename(&lt;frame&gt;)
+    &lt;grey>              luma(&lt;col&gt;,&lt;row&gt;)
+    &lt;r&gt;,&lt;g&gt;,&lt;b&gt;         rgb(&lt;col&gt;,&lt;row&gt;)
+    &lt;ImageObject&gt;       next(&lt;void&gt;)
+
+  The following methods are only available to LScript/PT scripts:
+
+    &lt;void&gt;              needAA(&lt;void&gt;);
+    &lt;number&gt;            lumaSpot(&lt;col&gt;,&lt;row&gt;,&lt;size&gt;,&lt;blend&gt;);
+    &lt;num&gt;,&lt;num&gt;,&lt;num&gt;   rgbSpot(&lt;col&gt;,&lt;row&gt;,&lt;size&gt;,&lt;blend&gt;);
+
+
+        generic
+        {
+            image = getfirstitem("IMAGE") || error("No images loaded!");
+
+            foreach(i,image)
+                info(i.name,": ",.i.width,",",i.height);
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Two new functions are now available in Layout LScript, called
+  loadimage() and clearimage().  These functions will,
+  respectively, load a new image file into Layouts image list,
+  and clear that image (unload it).
+  
+        generic
+        {
+            image = loadimage("f:/lw/cdrom/FilmImage.tga") || error("Can't load image!");
+            info(image.width,",",image.height);
+            clearimage(image);
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Expressions in LScript can now be chained together, when
+  appropriate.
+
+        ...  
+        // access a File Object Agent from an array element
+        v[3] = nil;
+        v[2] = File("f:/dirs.txt","r");
+        info(v[2].read().isStr());
+        ...  
+
+        ...  
+        // get the first line of a text file in one line
+        line = File("f:/dirs.txt","r").read();
+        info(line);
+        ...  
+
+        ...  
+        // access a vector
+        v[2] = <1,2,3>;
+        info(v[2].x);
+        ...  
+
+  Expression chaining cannot be used on the left of an
+  assignment, because expressions can only exist on the
+  right of an assignment statement.  For instance, the
+  following would be invalid, and generates an error:
+
+        ...  
+        v[2] = <1,2,3>;
+        v[2].x = 0;
+        ...  
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The Associative array type been added to the data types accepted
+  by the foreach() iterator.  Key values are processed in the order
+  in which they are found in the internal hash tree.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Reentrancy has been a problem for Layout LScript in certain
+  situations in previous versions.  As a specific example, if
+  a single plug-in is managing two or more objects (instances)
+  that have dependencies on each other, then it is possible
+  that the plug-in's process() function can be called when
+  the plug-in is already <i>in</i> the process() function.  LScript
+  has been unable to handle this situation because it uses
+  global variables (for historical reasons).
+
+  An instance stack has been implemented in Layout LScript v2.0
+  in order to allow this reentrancy to take place in scripts.  It
+  allows two or more objects to have interdependencies when they
+  each have the same type of LScript plug-in applied.  Here's an
+  example of an interdependency that would crash previous versions
+  of Layout LScript (based on an example provided by Alexandre Bon).
+
+    1. Add three Nulls to a scene, named "A", "B", and "C".
+    2. Give Null "A" motion.
+    3. Apply the Item Motion script below to Null "C", and
+       tell it to watch "B".
+    4. Apply this same script to Null "B" and tell it to
+       watch to "A".
+    5. Run the animation.
+
+        @version 2.0
+        @script motion
+
+        parent;
+
+        process: ma, frame, time
+        {
+            if(!parent) return;
+
+            newpos = parent.param(POSITION,time);
+            newpos.z -= 2;
+
+            ma.set(POSITION,newpos);
+        }
+
+        options
+        {
+            if(!reqbegin("Follow The Leader"))
+                return;
+
+            c1 = ctlallitems("Select parent",parent);
+
+            if(reqpost())
+                parent = getvalue(c1);
+
+            reqend();
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Improvements in LScript's virtual machine code for v2.0
+  make it possible now to use object-based array references
+  on the left of an assignment:
+
+        v[1] = <1,2,3>;
+        v[1].x = 10;
+
+        . . .
+
+        t = 1;
+        obj[t] = ObjectMan("Cow.lwo");
+        obj[t].surfaces[t] += "_Bob";
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The Layout LScript compiler will automatically select the
+  plug-in architecture for you if it detects the new "@script"
+  pragma in the selected source script.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A new debug() command has been added to the LScript
+  function toolset.  This command takes no arguments, and, when
+  it is encountered, it will attempt to establish a session
+  with the new LSIDE LScript Debugger.
+
+  If the LScript Debugger is already running, and is idle,
+  a debug session for the current script will activate.
+
+  If the LScript Debugger is not already running, LScript will
+  attempt to locate and execute the LScript Debugger.  Once it
+  is active, a debug session will begin.  LScript will look for
+  the LScript Debugger binary in the same directory as the
+  LightWave binaries and libraries.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Layout CS functions that expect an item id as their argument
+  (such as SelectItem() or GoalItem()) will accept a varying
+  combination of arguments to aid you in designating the needed
+  Layout object.
+  
+    - Integer values can be specified that are formatted as
+      they are in the LightWave scene file.  These values
+      are hexidecimal, so some bit twiddling will be necessary
+      in order to place values in the correct locations of
+      the 32-bit integer:
+
+            // select the second Mesh object
+
+            SelectItem((1 << 28) | 1);
+
+    - A string value can be provided that should evaluate
+      to the name of an object in the current scene.
+
+    - An object class can be specified (MESH, LIGHT, CAMERA),
+      followed by an integer that specifies the linear offset
+      (1-based) of the object in the list of objects of that
+      class.
+
+            // select the third Light in the scene
+
+            SelectItem(LIGHT,3);
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+- The following Layout CS functions accept an optional character
+  string to name the new object.  If a name is not provided, Layout
+  will post a requester to the user.
+
+            AddNull
+            AddBone
+            AddChildBone
+            AddDistantLight
+            AddPointLight
+            AddSpotlight
+            AddLinearLight
+            AddAreaLight
+            ReplaceWithObject
+            ReplaceWithNull
+            LoadObject
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Owing to changes in the underlying plug-in API for LightWave [6],
+  the following LScript functions, introduced in LScript v1.x, and
+  relating to surfaces, have been removed:
+
+            _getRawSurf()
+            _setRawSurf()
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A new preprocessor pragma directive has been added to control the
+  equality testing of floating-point values.  The 'fpdepth' pragma
+  specifies the number of digits to the right of the decimal that
+  are to be considered significant when floating point values
+  (numbers, vectors, etc.) are compared for equality.  The pragma
+  setting has domain over the entire run-time operation of the
+  script.
+
+        @fpdepth 3
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new object masking mechanism has been added to the language.
+  This mechanism allows objects of integral data types that support
+  it to perform a "masking" operation on themselves.  The exact
+  result of this masking function will vary by the data type.
+
+    - Floating-point values (numbers, vectors) will
+      use the masking value to render only that number
+      of digits to the right of the decimal as significant.
+
+    - Character strings will use the masking value to
+      return that number of characters from the left
+      (equivalent to strleft()).
+
+    - All other data types will evaluate to themselves
+      (i.e., masking is not applicable).
+
+  In order to mask an object, you follow the object operator
+  ('.') with an integer value.  For instance, the following
+  code will print the value "1.34":
+
+        ...
+        bob = 1.34398545;
+        info(bob.2);
+        ...
+
+  Masking operators can only be used on variables.
+
+  Expression chaining can also be used:
+
+        ...
+        bob = 1.34398545;
+        info(bob.2.asStr().isStr());        // prints 1
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A pair of new LScript plug-ins have been added to provide
+  scripting capabilities to the Layout Channel Filter plug-in
+  architecture.  'ls-cf.p' and 'lsrt-cf.p' are the text and
+  run-time support plug-ins for this architecture.
+
+  The process() UDF receives three arguments.  The first
+  is a Channel Access Object Agent, the second the current
+  frame number, and the third is the current time index.
+
+        ...
+        process: ca, frame, time
+        {
+        }
+        ...
+
+  The Channel Access Object Agent exports one data member,
+  'name', which represents the displayable name of the channel
+  to which the script is applied.  In addition, two methods are
+  available, get() and set(), for retrieving and setting
+  (respectively) the channel's data.  This data is a floating-
+  point value.
+
+  The get() method requires a time index.  The set() method
+  accepts the new value for the channel at the time index
+  provided to the process() UDF.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Item Motion LScripts can now optionally accept the Mesh Object
+  Agent to which they belong in their create() function:
+
+        @script motion
+        ...
+        create: obj
+        {
+            info(obj.filename);
+        }
+        ...
+
+  This argument is optional and may be left off of the UDF's
+  definition.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  LScript Object Agents now provide an interface to their
+  individual channels.  New methods and Object types allow
+  you to iterate through, and interact with, an object's
+  envelope channels.
+
+  The new firstChannel() method will return the first
+  channel associated with an object.  Like the firstChild()
+  method, this method must be used as the preface of an
+  iteration through all channels.  The nextChannel() method
+  returns the next channel in the list of channels for an
+  object.  Both methods will return 'nil' if there are no
+  (further) channels available.
+
+        light = getfirstitem(LIGHT);
+
+        c = light.firstChannel();
+        while(c)
+        {
+            ...
+            c = light.nextChannel();
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new Channel Object Agent has been added to the LScript
+  OA toolset.  The new Object Agent provides a structured
+  interface to individual channel functionality.  The new
+  OA methods firstChannel() and nextChannel() return this
+  new OA type.  In some circumstances, a Channel Object
+  Agent will be provided to a UDF (as in the case of the
+  create() UDF for the Channel Filter LScript).
+
+  As of this release, the Channel Object Agent exports the
+  following data members:
+
+        name        the name of the channel as it appears
+                    in the Layout interface (i.e., Graph
+                    Editor)
+
+        type        the type of the channel.  this can be
+                    one of the following: NUMBER, DISTANCE,
+                    PERCENT, ANGLE
+
+  Two methods are available:
+
+        value()     this method causes the channel to be
+                    evaluated at the specified time.  the
+                    return values is a floating-point number
+                    that should be interpreted based upon
+                    the channel's type.
+
+        event()     this method is used to activate a callback
+                    function that will be invoked whenever an
+                    event occurs on the channel.  such events
+                    could be the creation or deletion of
+                    keyframes in the envelope, or a change in
+                    the a keyframe's value.
+
+  The following Channel Filter script illustrates the usage
+  of this new Object Agent:
+
+        @warnings
+        @script channel
+        @version 2.0
+
+        create: channel
+        {
+            light = getfirstitem(LIGHT);
+
+            c = light.firstChannel();
+            while(c)
+            {
+                last if c.name == "Position.X";
+                c = light.nextChannel();
+            }
+
+            // keep abreast of changes in this
+            // channel...
+
+            c.event("lightEvent");
+        }
+
+        process: ca, frame, time
+        {
+            ca.set(0.0);
+        }
+
+        lightEvent: channel,        // Channel Object Agent
+                    event           // event code
+        {
+            // something happened to the Light's
+            // "Position.X" channel
+
+            info(event);
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  C-like character escape sequences for tabs and newlines
+  ('\t' and '\n') are now supported in strings.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A conversion function has been added that takes a character
+  value and returns its integer equivalent.  This is handy
+  for comparing non-printing characters:
+
+        if(ascii(line[x]) == '\t')
+            ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A conversion method called 'asAsc' has been added to the expression
+  chain for converting character values:
+
+        if(line[x].asAsc() == '\t')
+            ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The Scene Object Agent now has two iteration methods that are
+  used to cycle through the objects in the current scene that
+  are selected.  The methods firstSelect() and nextSelect()
+  are used in an fashion identical to other iteration methods,
+  like firstChild() and nextChild() in the Layout Object Agent.
+
+        scene = getfirstitem(SCENE);
+
+        obj = scene.firstSelect();
+        while(obj)
+        {
+            ...
+            obj = scene.nextSelect();
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The Scene Object Agent now has a data member called
+  'currenttime' that holds the time index that is currently
+  selected in the Layout interface.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The Scene Object Agent now has a data member called
+  'recursiondepth' that holds the integer recursion depth
+  used for rendering.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The Layout Object Agent (the Object Agent returned for any
+  scene object) sports four new data members to its interface.
+  Each is a boolean flag that indicates the state of the
+  indicated condition:
+
+        selected
+        childrenvisible
+        channelsvisible
+        locked
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  All Layout Object Agents now export a data member called 'genus'
+  that holds the type of the object.  It holds one of MESH, LIGHT,
+  CAMERA, BONE, SCENE, or CHANNEL.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The LScript pre-processor has a new testable condition called
+  'platform'.  This value is one of INTEL, ALPHA, SGI, MACINTOSH, or
+  SUN.  It can be tested with either the '==' or '!=' equality
+  operators.
+
+    ...
+    @if platform == ALPHA
+        info("Alpha!");
+    @end
+    @if platform == INTEL
+        info("Intel!");
+    @end
+    ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LScript pre-processor has a new testable condition called
+  'compiler'.  This value is an either/or condition.  Either it exists,
+  or it doesn't.  It can be tested for existence:
+
+    ...
+    @if compiler
+        ...
+    @end
+    ...
+
+  Or, it can be tested for non-existence:
+
+    ...
+    @if !compiler
+        ...
+    @end
+    ...
+
+  This condition is useful for hiding elements from the script
+  compiler that are invalid in the run-time environment:
+
+    ...
+    @if !compiler
+        debug();
+    @end
+    ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The AddPlugins() CS function accepts an optional string argument
+  that should be the filename of a plug-in to be added.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Layout Object Agents have a new data member called 'id' that holds
+  the integer identifier of the Layout object for which they serve
+  as proxy.  This integer identifier is the same one used by Layout
+  to uniquely identify objects in the scene file.
+
+    generic
+    {
+        obj = getfirstitem(LIGHT);
+        info(hex(obj.id));         // prints "0x20000000"
+    }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Point and polygon selections in Modeler using POINTNDX, POLYNDX,
+  POLYID and POINTID are now exact.  Element positions are no longer
+  a factor.  This means that now you can discretely select a single
+  point, even if it occupies the same space as one or more other
+  points.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The implicit 'this' container will capture and convert into an array
+  any multiple-value function returns.  Such returns are made by functions
+  like parse():
+
+        ...
+        parse(" ","Today is the day");
+        info(this[3]);      // prints "the"
+        ...
+
+  The values contained in the this[] array are only valid, however, until
+  the next expression is evaluated.  At that time, the array will be
+  reclaimed by LScript's garbage collection mechanism, and a new value
+  (possibly even a new array) will be put into its place.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The regular expression assignment operator (~=) will support both types of
+  regular expression (Search, and Search-And-Replace).  In the case of Search
+  regular expressions, the variable on the left of the assignment is not
+  modified; rather, this mechanism enables the 'this' container to be
+  populated with the tokens that match the individual patterns of the
+  expression (see the next entry for an example).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The patterns matched within a Search regular expression are implicitly
+  converted into a lexeme array held by the 'this' container when those
+  patterns are enclosed within parentheses.  For example, the following
+  invocation of the regular expression engine will <i>not</i> generate a lexeme
+  array in the 'this' container because no parenthetical groupings are
+  employed around the search patterns:
+
+        ...
+        command ~= s~[a-zA-Z]+ .+~;
+
+        info(this[2]);      // &lt;-- generates an error, "undeclared array"
+        ...
+
+  However, wrapping the patterns within parentheses will cause a lexeme
+  array to be generated and assigned to 'this':
+
+        ...
+        command ~= s~([a-zA-Z]+) (.+)~;
+
+        info(this[2]);      // &lt;-- if the pattern matched, no error
+        ...
+
+  If the pattern fails to match on the provided string value, then the
+  'this' container will not contain an array.  You can code for this
+  condition by performing a logical test of the success of the pattern
+  match before accessing 'this' as an array:
+
+        ...
+        if(command == s~([a-zA-Z]+) (.+)~)
+            info(this[2]);      // &lt;-- safe to access this[2]
+        ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Arrays can now be the source of an associative assignment.
+
+        ...
+        colors = @"Red","Green","Blue"@;
+        (red,green) = colors;   // assigns "Red" to red, and so on
+        ...
+
+  This allows the contents of the 'this' container to be accessed
+  before the contents are overwritten.
+
+        ...
+        if(command == s~([a-zA-Z]+) (.+)~)
+        {
+            (item1,item2) = this;
+            ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Several new Requester functions have been added to support
+  user-drawing features in the panel.  The drawing functions
+  can only be called from within the script's redraw callback.
+
+        reqredraw("callback")
+
+            This function establishes a callback function
+            within the script that will be activated whenever
+            the panel itself is redrawn by the Panels system.
+
+        drawpixel(&lt;color&gt;,x,y)
+
+            Draws a pixel on the panel at the specified
+            point using the specified color
+
+        drawline(&lt;color&gt;,x1,y1,x2,y2)
+
+            Draws a line on the panel between the specified
+            points using the specified color
+
+        drawbox(&lt;color&gt;,x,y,w,h)
+
+            Draws a box filled with the specified color having
+            the specified width and height positioned at the
+            specified point
+
+        drawborder(x,y,w,h)
+
+            Draws an unfilled, 3D box outline at the specified
+            point using the specified width and height.  If
+            height is 0, then a horizontal divider line will
+            be drawn.
+
+        drawtext("text",&lt;color&gt;,x,y)
+
+            Draws the provided text using the specified color
+            at the specified point
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The rotation for an object's pivot point can now be accessed
+  using the PIVOTROT constant to the param() method, or by
+  calling the new getPivotRotation() method.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Two new floating-point buffers are avaialble to LScript Image
+  Filter plug-ins.  Known as MOTIONX and MOTIONY, these buffers
+  are the vector-based motion values for objects in the scene.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Frame start/stop/step settings have been broken into separate
+  categories for preview and render.  The <b>previewstart</b>, <b>previewend</b>,
+  and <b>previewstep</b> Scene Object Agent data members represent the
+  values used by the LightWave preview system (and entered into
+  the corresponding edit fields on the user interface).  The
+  <b>renderstart</b>, <b>renderend</b>, and <b>renderstep</b> values represent those
+  used when performing an actual render of the scene.
+  
+  The render settings are synonymous with the deprecated <b>framestart</b>,
+  <b>frameend</b>, and <b>framestep</b> data members.  These
+  data members will be removed in a later release of LScript
+  in favor of <b>renderstart</b>, <b>renderend</b>, and <b>renderstep</b>.  You are
+  encouraged to replace any references to <b>framestart</b>, <b>frameend</b>,
+  and <b>framestep</b> in your existing LScript v2.0 scripts, and to
+  avoid their use in any future scripts.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

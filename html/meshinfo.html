@@ -1,0 +1,280 @@
+<html>
+
+<head>
+<title>Mesh Info</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="imageio.html"><img width="96" height="20" border="0"
+    src="images/navlt.gif" alt="Image I/O"></a></td>
+    <td width="96" align="left"><a href="raytrace.html"><img width="64" height="20" border="0"
+    src="images/navrt.gif" alt="Raytracing"></a></td>
+    <td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0"
+    src="images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+    <h3>Mesh Info</h3>
+    <p>The LWMeshInfo structure describes the geometry of an object. You can get one of these
+    from the <a href="globals/sceneobj.html">Scene Objects</a> and <a
+    href="globals/objinfo.html">Object Info</a> globals and from the access structure passed
+    to the <a href="classes/displace.html">displacement handler</a> <tt>evaluate</tt>
+    function. What it contains can vary depending on how and when you obtain it. This
+    structure is defined in the <a href="../include/lwmeshes.h">lwmeshes.h</a> header file.</p>
+    <p>Prior to LW9, polygon and vertex normals were not made available through this structure.
+    It was common for plugins to compute those normals themselves. From LW9 onwards, the polygon
+    and vertex normals are available through the meshinfo global. It is strongly encouraged that
+    these functions be used. The way normals are defined may change in future.</p>
+
+      <pre>   typedef size_t LWPntScanFunc (void *, LWPntID);
+   typedef size_t LWPolScanFunc (void *, LWPolID);
+<br>   typedef struct st_LWMeshInfo {
+      void         *<strong>priv</strong>;
+      void         (*<strong>destroy</strong>)        (LWMeshInfoID);
+      int          (*<strong>numPoints</strong>)      (LWMeshInfoID);
+      int          (*<strong>numPolygons</strong>)    (LWMeshInfoID);
+      size_t       (*<strong>scanPoints</strong>)     (LWMeshInfoID, LWPntScanFunc *, void *);
+      size_t       (*<strong>scanPolys</strong>)      (LWMeshInfoID, LWPolScanFunc *, void *);
+      void         (*<strong>pntBasePos</strong>)     (LWMeshInfoID, LWPntID, LWFVector);
+      void         (*<strong>pntOtherPos</strong>)    (LWMeshInfoID, LWPntID, LWFVector);
+      void *       (*<strong>pntVLookup</strong>)     (LWMeshInfoID, LWID, const char *);
+      int          (*<strong>pntVSelect</strong>)     (LWMeshInfoID, void *);
+      int          (*<strong>pntVGet</strong>)        (LWMeshInfoID, LWPntID, float *);
+      LWID         (*<strong>polType</strong>)        (LWMeshInfoID, LWPolID);
+      int          (*<strong>polSize</strong>)        (LWMeshInfoID, LWPolID);
+      LWPntID      (*<strong>polVertex</strong>)      (LWMeshInfoID, LWPolID, int);
+      const char * (*<strong>polTag</strong>)         (LWMeshInfoID, LWPolID, LWID);
+      int          (*<strong>pntVPGet</strong>)       (LWMeshInfoID, LWPntID, LWPolID, float *);
+      unsigned int (*<strong>polFlags</strong>)       (LWMeshInfoID, LWPolID);
+      int          (*<strong>pntVIDGet</strong>)      (LWMeshInfoID, LWPntID, float *, void *);
+      int          (*<strong>pntVPIDGet</strong>)     (LWMeshInfoID, LWPntID, LWPolID,
+                                        float *, void *);
+      int          (*<strong>polTypeFlags</strong>)   (LWMeshInfoID, LWPolID);
+      int          (*<strong>polBaseNormal</strong>)  (LWMeshInfoID, LWPolID, LWFVector);
+      int          (*<strong>polOtherNormal</strong>) (LWMeshInfoID, LWPolID, LWFVector);
+      int          (*<strong>pntBaseNormal</strong>)  (LWMeshInfoID, LWPolID, LWPntID,
+                                        LWFVector);
+      int          (*<strong>pntOtherNormal</strong>) (LWMeshInfoID, LWPolID, LWPntID,
+                                        LWFVector);
+      LWMeshIteratorID (*<strong>createMeshIterator</strong>)  (LWMeshInfoID, int);
+      void             (*<strong>destroyMeshIterator</strong>) (LWMeshInfoID, LWMeshIteratorID);
+      void*            (*<strong>iterateMesh</strong>)         (LWMeshInfoID, LWMeshIteratorID);
+      void             (*<strong>resetMeshIterator</strong>)   (LWMeshInfoID, LWMeshIteratorID);
+      int              (*<strong>setMeshEvent</strong>) (LWMeshInfoID, LWMeshEventFunc *, void *);
+   } LWMeshInfo;</pre>
+      <dl> 
+        <dt><strong><tt>priv</tt></strong></dt>
+        <dd>An opaque pointer to private data used internally by the mesh info 
+          functions.</dd>
+        <dt><tt><br>
+          <strong>destroy</strong>( meshinfo )</tt></dt>
+        <dd>Frees resources allocated by the process that created this LWMeshInfo. 
+          Call this when you're finished with the mesh info. <em>Note that this 
+          field may be NULL, indicating that you shouldn't attempt to free the 
+          mesh info.</em> Test the value of this field before trying to use it.</dd>
+        <dt><tt><br>
+          npts = <strong>numPoints</strong>( meshinfo )</tt></dt>
+        <dd>Returns the number of points in the object. If the object contains 
+          dynamically created geometry, e.g. subdivision patches or metaballs, 
+          this number may include both the control points and the points created 
+          by subdividing.</dd>
+        <dt><tt><br>
+          npols = <strong>numPolygons</strong>( meshinfo )</tt></dt>
+        <dd>Returns the number of polygons in the object, which may include polygons 
+          created by subdividing.</dd>
+        <dt><tt><br>
+          result = <strong>scanPoints</strong>( meshinfo, pointscan_func, mydata 
+          )</tt></dt>
+        <dd>Enumerate the points in the object. The callback you supply is called 
+          for each point in the object. The <tt>mydata</tt> argument is passed 
+          to the callback and can be anything it might require. Enumeration stops 
+          if your callback returns a non-zero value, and this value is then returned 
+          by <tt>scanPoints</tt>. Otherwise it returns 0.<br>
+          LW8.2: 64-bit compatibility by returning size_t;</dd>
+        <dt>&nbsp;</dt>
+        <dt><tt>result = <strong>scanPolys</strong>( meshinfo, polyscan_func, 
+          mydata )</tt></dt>
+        <dd>Enumerate the polygons in the object.<br>
+        </dd>
+        <dd>LW8.2: 64-bit compatibility by returning size_t;</dd>
+        
+        
+        <dt><tt><br>
+          <strong>pntBasePos</strong>( meshinfo, point, pos )</tt></dt>
+        <dd>Get the base, or initial, position of a point.</dd>
+        <dt><tt><br>
+          <strong>pntOtherPos</strong>( meshinfo, point, pos )</tt></dt>
+        <dd>Get an alternate position for the point. This may be the same as the 
+          base position or it may be the position of the point after some transformation. 
+          The nature of the alternate position depends on how the mesh info was 
+          created.</dd>
+        <dt><tt><br>
+          vmap = <strong>pntVLookup</strong>( meshinfo, vmap_type, vmap_name )</tt></dt>
+        <dd>Select a vertex map for reading by <tt>pntVGet</tt>. The vmap is given 
+          by its four-character identifier and its name string. The function returns 
+          a pointer that can be used later in <tt>pntVSelect</tt> to quickly select 
+          this vmap again. The pointer is NULL if no vmap was found with the given 
+          ID and name. The <a href="globals/sceneobj.html">Scene Objects</a> global 
+          allows you to examine the vmap database and retrieve the names of existing 
+          vmaps of a given type.</dd>
+        <dt><tt><br>
+          dim = <strong>pntVSelect</strong>( meshinfo, vmap )</tt></dt>
+        <dd>Select a vmap for reading vectors. The vmap is identified by a pointer 
+          returned by <tt>pntVLookup</tt>. The function returns the vmap's dimension 
+          (the number of values per point).</dd>
+        <dt><tt><br>
+          ismapped = <strong>pntVGet</strong>( meshinfo, point, val )</tt></dt>
+        <dd>Read the vmap vector for a point. The vector is read from the vmap 
+          selected by a previous call to <tt>pntVSelect</tt>. If the point is 
+          mapped (has a vmap value in the selected vmap), the <tt>val</tt> array 
+          is filled with the vmap vector for the point, and <tt>pntVGet</tt> returns 
+          true. The <tt>val</tt> array must have at least as many elements as 
+          the number returned by <tt>pntVSelect</tt>. See also <tt>pntVIDGet</tt>.</dd>
+        <dt><tt><br>
+          type = <strong>polType</strong>( meshinfo, polygon )</tt></dt>
+        <dd>Returns the type of a polygon. &quot;Polygon&quot; here refers to 
+          a number of different kinds of geometric atoms, including things like 
+          curves and bones. The polygon type codes are an extensible set of four-character 
+          identifiers. The header file <tt>lwmeshes.h</tt> defines the most common 
+          ones:
+          <p><tt>LWPOLTYPE_FACE</tt> - face<br>
+            <tt>LWPOLTYPE_CURV</tt> - higher order curve<br>
+            <tt>LWPOLTYPE_PTCH</tt> - subdivision control cage polygon<br>
+            <tt>LWPOLTYPE_MBAL</tt> - metaball<br>
+            <tt>LWPOLTYPE_BONE</tt> - bone</p>
+          Do not assume that these are the only polygon types in existence. Restricting
+          an operation to work only on particular polygon types is discouraged. For example,
+          if an operation can only be applied to polygons that are renderable, do not filter
+          out all polygons whose type is face. Instead, use the
+          <tt><strong>polTypeFlags()</strong></tt> meshinfo function to check for the
+          <tt>LWGPTF_SURFACE</tt> flag. 
+        </dd>
+        <dt><tt><br>nvert = <strong>polSize</strong>( meshinfo, polygon )</tt></dt>
+        <dd>Returns the number of vertices belonging to the polygon.</dd>
+        <dt><tt><br>
+          point = <strong>polVertex</strong>( meshinfo, polygon, vert_index )</tt></dt>
+        <dd>Returns the point ID for a polygon vertex. Vertex indexes range from 
+          0 to <tt>nvert</tt> - 1.</dd>
+        <dt><tt><br>
+          tagname = <strong>polTag</strong>( meshinfo, polygon, tagID )</tt></dt>
+        <dd>Returns the tag string of the given type associated with the polygon. 
+          A null string pointer means that the polygon does not have a tag of 
+          that type. <tt>lwmeshes.h</tt> defines the most common polygon tags. 
+          <dl> 
+            <dt><tt><br>
+              LWPTAG_SURF</tt></dt>
+            <dd>The name of the surface applied to the polygon.</dd>
+            <dt><tt>LWPTAG_PART</tt></dt>
+            <dd>The name of the polygon group the polygon belongs to.</dd>
+          </dl>
+        </dd>
+        <dt><tt><br>
+          ismapped = <strong>pntVPGet</strong>( meshinfo, point, polygon, val )</tt></dt>
+        <dd>Like <tt>pntVGet</tt>, but reads the per-polygon, or discontinuous, 
+          vmap vector for a polygon vertex. See also <tt>pntVPIDGet</tt>.</dd>
+        <dt><tt><br>
+          flags = <strong>polFlags</strong>( meshinfo, polygon )</tt></dt>
+        <dd>Returns the flags associated with the polygon. the <tt>EDPF_CCSTART</tt> 
+          and <tt>EDDF_CCEND</tt> bits determine whether the first and last points 
+          in <tt>LWPOLTYPE_CURV</tt> polygons are control points rather than actual 
+          vertices. (The constants for these flags are defined in <a
+        href="../include/lwmeshedt.h">lwmeshedt.h</a>.)</dd>
+        <dt><tt><br>
+          ismapped = <strong>pntVIDGet</strong>( meshinfo, point, val, vmap )<br>
+          ismapped = <strong>pntVPIDGet</strong>( meshinfo, point, polygon, val, 
+          vmap )</tt></dt>
+        <dd>Like <tt>pntVGet</tt> and <tt>pntVPGet</tt>, but these take the vertex 
+          map ID as an additional argument, so that it isn't necessary to first 
+          call <tt>pntVSelect</tt> to select the vertex map. This is important 
+          when your plug-in might be running in multiple threads, since the thread 
+          may change between the <tt>pntVSelect</tt> call and the <tt>pntVGet</tt> 
+          or <tt>pntVPGet</tt> calls.</dd>
+        <dt><tt><br>
+          flags = <strong>polTypeFlags</strong>( meshinfo, polygon )</tt> (LW9.0+)</dt>
+        <dd>Returns the polytype flags of the polytype associated with the polygon.
+            See the <a href="classes/polytype.html">polygon handler</a> documentation for
+            a list and explanation of the flags.</dd>
+        <dt><tt><br>
+          hasnormal = <strong>polBaseNormal</strong>( meshinfo, polygon, normal )</tt> (LW9.0+)</dt>
+        <dd>Get the base normal of a polygon. Returns 1 if the polygon has a valid normal, 0 otherwise.</dd>
+        <dt><tt><br>
+          hasnormal = <strong>polOtherNormal</strong>( meshinfo, polygon, normal )</tt> (LW9.0+)</dt>
+        <dd>Get the alternate normal of a polygon. Returns 1 if the polygon has a valid normal, 0 otherwise.</dd>
+        <dt><tt><br>
+          hasnormal = <strong>pntBaseNormal</strong>( meshinfo, polygon, point, normal )</tt> (LW9.0+)</dt>
+        <dd>Get the base normal of a vertex. If the polygon ID is defined, the normal will be
+            calculated taking surface smoothness parameters and the surrounding polygons into
+            account. If the polygon ID is not defined (0), an averaged normal of the surrounding
+            polygons is computed. Returns 1 if the vertex has a valid normal, returns 2 if the normal
+            is not smoothed, 0 for an invalid normal.</dd>
+        <dt><tt><br>
+          hasnormal= <strong>pntOtherNormal</strong>( meshinfo, polygon, point, normal )</tt> (LW9.0+)</dt>
+        <dd>Get the alternate normal of a vertex. If the polygon ID is defined, the normal will be
+            calculated taking surface smoothness parameters and the surrounding polygons into
+            account. If the polygon ID is not defined (0), an averaged normal of the surrounding
+            polygons is computed. Returns 1 if the vertex has a valid normal, returns 2 if the normal
+            is not smoothed, 0 for an invalid normal.</dd>
+        <dt><tt><br>
+          iterator= <strong>createMeshIterator</strong>( meshinfo, type )</tt> (LW9.0+)</dt>
+        <dd>Create a new mesh iterator of a given type. The iterator can be used to enumerate all
+            the elements of the given type of a mesh. The type is one of:
+            <p><tt>LWMESHITER_POLYGON</tt> - an iterator over all polygons of the mesh<br>
+               <tt>LWMESHITER_POINT</tt> - an iterator over all vertices of the mesh</p></dd>
+        <dt><tt><br>
+          <strong>destroyMeshIterator</strong>( meshinfo, iterator )</tt> (LW9.0+)</dt>
+        <dd>Destroy an iterator of the mesh. All iterators that are created for the mesh must
+            be destroyed when no longer needed.</dd>
+        <dt><tt><br>
+          element = <strong>iterateMesh</strong>( meshinfo, iterator )</tt> (LW9.0+)</dt>
+        <dd>Return the next element of the mesh iterator. The type of the returned element
+            depends on the iterator type:
+            <p><tt>LWMESHITER_POLYGON</tt> - returns an LWPolID<br>
+               <tt>LWMESHITER_POINT</tt> - returns an LWPntID</p>
+            If there is no next element, NULL is returned.</dd>
+        <dt><tt><br>
+          <strong>resetMeshIterator</strong>( meshinfo, iterator )</tt> (LW9.0+)</dt>
+        <dd>Resets an iterator of the mesh. A subsequent call of <tt><strong>iterateMesh()</strong></tt>
+            will return the first element.</dd>
+        <dt><tt><br>
+          result = <strong>setMeshEvent</strong>( meshinfo, eventFunc, userData )</tt> (LW9.2.1+)</dt>
+        <dd>Sets a callback for mesh event notifications. When something happens to the mesh, the
+          <tt>eventFunc</tt> function is called with <tt>userData</tt> as its first argument. If the
+          function is set to NULL, the callback on the mesh previously associated with the <tt>userData</tt>
+          is removed. The <tt>userData</tt> is used to uniquely identify the owner of a callback, and should
+          not be NULL, so that more than one callback can be set on a mesh. The result is zero if the
+          operation failed, non-zero otherwise.</dd>
+      </dl>
+
+
+    <p><strong>Event Callback</strong></p>
+    <p>The <tt>setMeshEvent</tt> function lets you set a callback that will be called when certain things
+    happen to a mesh:</p>
+    <pre>   typedef int (*LWMeshEventFunc) (void* userData, LWMeshInfoID mesh,
+      LWMeshEvent event, void* eventData);</pre>
+    <p><tt>userData</tt> is what was passed to <tt>setMeshEvent</tt> function. The <tt>eventData</tt> depends
+    on the event. The following events are currently defined:
+    <pre>   LWMESHEVNT_DESTROY</pre>
+    The <tt>DESTROY</tt> event occurs when the mesh is destroyed by LightWave&reg;. No event data is associated
+    with this event. Reasons for the mesh being destroyed include, but is not limited to, the user changing the
+    subdivision level of a mesh, changing the subdivision order, deletion of a mesh, or any other operation that
+    may change the structure of the mesh. Note that it is unwise to attempt to re-acquire the mesh of an object
+    during the event. Wait until the plugin's <tt>evaluate</tt>, <tt>newTime</tt> or similar is called. Otherwise
+    the object is likely to not have a valid mesh.
+
+
+    <p><strong>Example</strong></p>
+    <p>The <a href="../sample/Layout/Generic/scenscan/">SceneScan</a> sample uses an LWMeshInfo obtained from
+    the <a href="globals/objinfo.html">Object Info</a> global to build arrays of points and
+    polygons for an object, including vmap and surface data. See the <tt>getObjectDB</tt>
+    function in <tt>objectdb.c</tt>.</td>
+  </tr>
+</table>
+</body>
+</html>

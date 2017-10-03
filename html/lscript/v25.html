@@ -1,0 +1,1088 @@
+<HTML>
+
+<HEAD>
+<TITLE>LScript v2.5 Release Notes</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!-- Begin
+function openWindow(url)
+{
+    popupWin = window.open(url,'remote','scrollbars=yes,resizable=yes,width=800,height=400,left=0,top=0')
+    popupWin.focus()
+}
+
+function openWebSite(url)
+{
+    popupWin = window.open(url)
+    popupWin.focus()
+}
+
+//-->
+</SCRIPT>
+</HEAD>
+
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#FFFFFF"
+      vlink="#FFFFFF">
+
+<CENTER>
+<H1>LScript v2.5 Release Notes</H1>
+
+<br><br>
+
+<H2>New Features</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                        
+  The Image Filter LScript architecture provides a new mechanism for accessing and
+  modifying image pixel data.  The ImageFilter Object Agent is now passed to the process()
+  function of an Image Filter script if it is the only argument defined.
+
+        process: ifo
+        {
+            ...
+        }
+
+  The original process() interface continues to function within LScript v2.5 in order
+  to support older scripts.  However, <b>new scripts should be designed to employ this
+  new interface mechanism</b>.
+
+  The following data members are exported by the ImageFilter Object Agent:
+
+        <b>width</b>                                        (READ-ONLY)
+                the width, in pixels, of the current buffer
+
+        <b>height</b>                                       (READ-ONLY)
+                the height, in pixels, of the current buffer
+
+        <b>frame</b>                                        (READ-ONLY)
+                the current frame number for the main image
+
+        <b>start</b>                                        (READ-ONLY)
+                the render start time for the main image
+
+        <b>end</b>                                          (READ-ONLY)
+                the render end time for the main image
+
+        <b>red[]</b>
+                the red-pixel buffer values for the image in
+                floating-point format.  indexing is in
+                [column,row] form.
+
+        <b>green[]</b>
+                the green-pixel buffer values for the image in
+                floating-point format.  indexing is in
+                [column,row] form.
+
+        <b>blue[]</b>
+                the blue-pixel buffer values for the image in
+                floating-point format.  indexing is in
+                [column,row] form.
+
+        <b>alpha[]</b>
+                the alpha-pixel buffer values for the image in
+                floating-point format.  indexing is in
+                [column,row] form.
+
+        <b>special[]</b>                                    (READ-ONLY)
+                the special buffer values. indexing is in
+                [column,row] form.
+
+        <b>luminous[]</b>                                   (READ-ONLY)
+                the luminous buffer values. indexing is in
+                [column,row] form.
+
+        <b>diffuse[]</b>                                    (READ-ONLY)
+                the diffuse buffer values. indexing is in
+                [column,row] form.
+
+        <b>specular[]</b>                                   (READ-ONLY)
+                the specular buffer values. indexing is in
+                [column,row] form.
+
+        <b>mirror[]</b>                                     (READ-ONLY)
+                the mirror buffer values. indexing is in
+                [column,row] form.
+
+        <b>trans[]</b>                                      (READ-ONLY)
+                the trans buffer values. indexing is in
+                [column,row] form.
+
+        <b>rawred[]</b>                                     (READ-ONLY)
+                the rawred buffer values. indexing is in
+                [column,row] form.
+
+        <b>rawgreen[]</b>                                   (READ-ONLY)
+                the rawgreen buffer values. indexing is in
+                [column,row] form.
+
+        <b>rawblue[]</b>                                    (READ-ONLY)
+                the rawblue buffer values. indexing is in
+                [column,row] form.
+
+        <b>shading[]</b>                                    (READ-ONLY)
+                the shading buffer values. indexing is in
+                [column,row] form.
+
+        <b>shadow[]</b>                                     (READ-ONLY)
+                the shadow buffer values. indexing is in
+                [column,row] form.
+
+        <b>geometry[]</b>                                   (READ-ONLY)
+                the geometry buffer values. indexing is in
+                [column,row] form.
+
+        <b>depth[]</b>                                      (READ-ONLY)
+                the depth buffer values. indexing is in
+                [column,row] form.
+
+        <b>diffshade[]</b>                                  (READ-ONLY)
+                the diffshade buffer values. indexing is in
+                [column,row] form.
+
+        <b>specshade[]</b>                                  (READ-ONLY)
+                the specshade buffer values. indexing is in
+                [column,row] form.
+
+        <b>motionx[]</b>                                    (READ-ONLY)
+                the motionx buffer values. indexing is in
+                [column,row] form.
+
+        <b>motiony[]</b>                                    (READ-ONLY)
+                the motiony buffer values. indexing is in
+                [column,row] form.
+
+        <b>reflectred[]</b>                                 (READ-ONLY)
+                the reflectred buffer values. indexing is in
+                [column,row] form.
+
+        <b>reflectgreen[]</b>                               (READ-ONLY)
+                the reflectgreen buffer values. indexing is in
+                [column,row] form.
+
+        <b>reflectblue[]</b>                                (READ-ONLY)
+                the reflectblue buffer values. indexing is in
+                [column,row] form.
+
+
+  The following methods are also available:
+
+        <b>copy(&lt;left&gt;,&lt;top&gt;,&lt;right&gt;,&lt;bottom&gt;)</b>
+
+                creates a new image buffer using the image data contained
+                within the specified area (inclusive) in the current buffer.
+                a buffer identifier is returned for use with the <b>select()</b>
+                method.
+
+        <b>paste(&lt;bufferid&gt;,&lt;left&gt;,&lt;top&gt;)</b>
+
+                pastes the image data contained in the specified buffer into
+                the currently selected buffer at the given left and top offsets.
+                <b>bufferid</b> must be a value returned by the <b>copy()</b>
+                method.
+
+        <b>select([&lt;bufferid&gt;])</b>
+
+                selects an image buffer as the current working buffer.  all
+                data members and methods will function upon the selected
+                buffer after this call.  providing no arguments causes the
+                main image buffer to become current.
+
+  Using the ImageFilter Object Agent to interface with the image data provides
+  an increase in processing speed over the historical methods (bufferline(),
+  processrgb(), etc.).
+
+  Also note that pixel data accessed and altered using the ImageFilter Object
+  Agent is done entirely in floating-point format.
+
+  Using the ImageFilter Object Agent, the process() function of the
+  "Black & White" Image Filter LScript provided with LightWave can be re-written
+  as follows:
+
+        process: ifo
+        {
+            for(i = 1;i <= ifo.height;++i)
+            {
+                for(j = 1;j <= ifo.width;++j)
+                {
+                    average = (ifo.red[j,i] + ifo.green[j,i] + ifo.blue[j,i]) / 3;
+
+                    ifo.red[j,i] = average;
+                    ifo.green[j,i] = average;
+                    ifo.blue[j,i] = average;
+                }
+            }
+        }
+
+  The following example uses the <b>copy()</b>, <b>paste()</b> and <b>select()</b> methods
+  to swap the two vertical halves of an image:
+
+        process: ifo
+        {
+            buf1 = ifo.copy(1,1,ifo.width / 2,ifo.height);
+            buf2 = ifo.copy(ifo.width / 2,1,ifo.width,ifo.height);
+
+            ifo.select(buf1);
+            buf_width = ifo.width;
+            ifo.select();
+
+            ifo.paste(buf2,1,1);
+            ifo.paste(buf1,buf_width,1);
+        }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Several new surface-related Object Agents are available in LScript, the first of which
+  is the <b>Surface</b> Object Agent, from which all others are derived.  The <b>Surface()</b> constructor
+  can be used to generate an Object Agent for an existing surface, or it can be used to
+  create a new surface for an object.
+
+  The constructor can be called with no arguments, and the first surface defined in the
+  system will be returned.
+
+  If called with an integer value, the surface in the system that corresponds to that
+  index value will be returned.
+
+  Provided a surface name, the constructor will return that surface if it is already
+  defined in the system.  If it does not exist, a 'nil' value will be returned under Layout,
+  and a new surface with that name will be generated for the current object under Modeler.
+
+  Provided a Mesh Object Agent, a list of the surface names defined for that object will
+  be returned.
+
+  Under Layout, you can create a new surface for an object by providing the Mesh Object
+  Agent to receive the surface as the first argument, and the name of the surface as the
+  second.
+
+  The following channel constants have been defined in LScript for use with the Surface
+  Object Agent:
+
+        <b>SURFCOLR</b>            Base Color              (vector)
+        <b>SURFLUMI</b>            Luminosity              (number)
+        <b>SURFDIFF</b>            Diffuse                 (number)
+        <b>SURFSPEC</b>            Specularity             (number)
+        <b>SURFREFL</b>            Reflectivity            (number)
+        <b>SURFTRAN</b>            Transparency            (number)
+        <b>SURFTRNL</b>            Translucency            (number)
+        <b>SURFRIND</b>            IOR                     (number)
+        <b>SURFBUMP</b>            Bump                    (number)
+        <b>SURFGLOS</b>            Glossiness              (number)
+        <b>SURFBUF1</b>            Special Buffer 1        (number)
+        <b>SURFBUF2</b>            Special Buffer 2        (number)
+        <b>SURFBUF3</b>            Special Buffer 3        (number)
+        <b>SURFBUF4</b>            Special Buffer 4        (number)
+        <b>SURFSHRP</b>            Diffuse Sharpness       (number)
+        <b>SURFSMAN</b>            Smoothing Angle         (degrees)
+        <b>SURFRSAN</b>            Reflection Seam Angle   (degrees)
+        <b>SURFTSAN</b>            Refraction Seam Angle   (degrees)
+        <b>SURFRBLR</b>            Reflection Blur         (number)
+        <b>SURFTBLR</b>            Refraction Blur         (number)
+        <b>SURFCLRF</b>            Color Filter            (number)
+        <b>SURFCLRH</b>            Color Highlights        (number)
+        <b>SURFADTR</b>            Additive Transparency   (number)
+        <b>SURFAVAL</b>            Alpha Value             (number)
+        <b>SURFGVAL</b>            Glow Value              (number)
+        <b>SURFLCOL</b>            Line Color              (vector)
+        <b>SURFLSIZ</b>            Line Size               (number)
+        <b>SURFSIDE</b>            Sidedness               (integer)
+        <b>SURFGLOW</b>            Glow                    (Boolean)
+        <b>SURFLINE</b>            Render Outlines         (Boolean)
+        <b>SURFRIMG</b>            Reflection Image        (Image Object Agent)
+        <b>SURFTIMG</b>            Refraction Image        (Image Object Agent)
+        <b>SURFVCOL</b>            Vertex Coloring         (number)
+
+  The following data members are exported by the Surface Object Agent:
+
+        <b>name</b>
+                the name of the surface
+
+  The following methods are available:
+
+        <b>getValue(&lt;channel&gt;)</b>
+
+                returns the specific value setting for the channel (whose type is
+                defined above).
+
+        <b>getEnvelope(&lt;channel&gt;)</b>
+
+                returns the Envelope Object Agent associated with the specified
+                channel.  returns 'nil' if none exists.
+
+        <b>getTexture(&lt;channel&gt;)</b>
+
+                returns the Texture Object Agent (documented below) associated
+                with the specified channel.  returns 'nil' if none exists.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A Texture Object Agent can be generated from the Surface Object Agent (using its
+  <b>getTexture()</b> method).  This Object Agent provides an interface to a texture assigned
+  to a specific channel in a surface.  Textures have their own settings, including one or
+  more layers that accumulate to represent the visual makeup of the surface.
+
+  The following texture constants have been defined in LScript for use with the Texture
+  Object Agent:
+
+        <b>TXTRIMAGE</b>           Image Texture type
+        <b>TXTRPROCEDURE</b>       Procedural Texture type
+        <b>TXTRGRADIENT</b>        Gradient Texture type
+
+  The following methods are exported by the Object Agent:
+
+        <b>setChannelGroup(&lt;Channel Group Object Agent&gt;)</b>
+
+                sets the Texture's channel group using the provided Object Agent.
+                Envelopes created for parameters in the Texture's layers will
+                belong to this group.
+
+        <b>getChannelGroup()</b>
+
+                returns the Channel Group Object Agent for the Texture.
+
+        <b>firstLayer()</b>
+
+                returns the TextureLayer Object Agent (documented below) for the
+                first layer defined in the Texture.
+
+        <b>nextLayer(&lt;TextureLayer Object Agent&gt;)</b>
+
+                returns the TextureLayer Object Agent that follows the
+                specified TextureLayer for the Texture.
+
+        <b>addLayer(&lt;layer type&gt;)</b>
+
+                creates a new layer in the Texture of the specific type--one,
+                of <b>TXTRIMAGE</b>, <b>TXTRPROCEDURE</b> or <b>TXTRGRADIENT</b>--and returns the
+                TextureLayer Object Agent for it.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A TextureLayer Object Agent is generated by the Texture Object Agent, and serves as
+  proxy for the settings for the each layer defined in the Texture.
+
+  The following channel constants have been defined in LScript for use with the
+  TextureLayer Object Agent:
+
+        <b>TXLRPOSITION</b>        Position                (vector)
+        <b>TXLRROTATION</b>        Rotation                (vector)
+        <b>TXLRSIZE</b>            Size                    (vector)
+        <b>TXLRFALLOFF</b>         Falloff                 (vector)
+        <b>TXLRPROJECT</b>         Projection              (constant)
+        <b>TXLRAXIS</b>            Texture Axis            (integer)
+        <b>TXLRWWRAP</b>           Width Wrap              (number)
+        <b>TXLRHWRAP</b>           Height Wrap             (number)
+        <b>TXLRCOORD</b>           Coordinate System       (integer: 1==object, 2==world)
+        <b>TXLRIMAGE</b>           Image                   (Image Object Agent)
+        <b>TXLRVMAP</b>            VMap                    (VMap Object Agent)
+        <b>TXLREFOBJ</b>           Reference Object        (Layout Object Agent)
+        <b>TXLROPACITY</b>         Opacity                 (number)
+        <b>TXLRANTIALIAS</b>       Antialias               (Boolean)
+        <b>TXLRAAVALUE</b>         Antialias Threshold     (number)
+        <b>TXLRPIXBLEND</b>        Pixel Blending          (Boolean)
+        <b>TXLRWREPEAT</b>         Width Repeat            (constant)
+        <b>TXLRHREPEAT</b>         Height Repeat           (constant)
+
+  The defined constants for a texture's <b>TXLRPROJECT</b> setting are:
+
+        <b>TXPJPLANAR</b>
+        <b>TXPJCYLINDRICAL</b>
+        <b>TXPJSPHERICAL</b>
+        <b>TXPJCUBIC</b>
+        <b>TXPJFRONT</b>
+        <b>TXPJUVMAP</b>
+
+  The defined constants for a texture's <b>TXLRWREPEAT</b> and <b>TXLRHREPEAT</b> settings are:
+
+        <b>TXRPRESET</b>
+        <b>TXRPREPEAT</b>
+        <b>TXRPMIRROR</b>
+        <b>TXRPEDGE</b>
+
+  The following data members are exported by the TextureLayer Object Agent:
+
+        <b>type</b>
+                the type of the layer (<b>TXTRIMAGE</b>, <b>TXTRPROCEDURE</b> or <b>TXTRGRADIENT</b>)
+
+  The following methods are available:
+
+        <b>getValue(&lt;channel&gt;)</b>
+
+                retrieves the value of the specified channel in the layer.
+
+        <b>setValue(&lt;channel&gt;,&lt;value&gt;)</b>
+
+                sets the the specified layer channel to the provided value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+
+  The following Layout Command Sequence functions have been incorporated into
+  LScript:
+
+        MotionBlurDOFPreview()
+        BoneWeightShade()
+        BoneXRay()
+        Redraw()
+        RedrawNow()
+        RefreshNow()
+        MatchGoalOrientation()
+        KeepGoalWithinReach()
+        LimitH()
+        LimitP()
+        LimitB()
+        LimitDynamicRange()
+        MorphMTSE()
+        MorphSurfaces()
+        MatteObject()
+        UnseenByAlphaChannel()
+        UnaffectedByFog()
+        ShrinkEdgesWithDistance()
+        UseMorphedPositions()
+        FasterBones()
+        BoneStrengthMultiply()
+        BoneJointComp()
+        BoneJointCompParent()
+        BoneMuscleFlex()
+        BoneMuscleFlexParent()
+        ShadowMapFitCone()
+
+        ItemVisibility(1-7)
+        ItemColor(1-15)
+        IndirectBounces(1-8)
+        DepthBufferAA(true/false)
+        AlertLevel(1-3)
+        RayRecursionLimit(0-24)
+        RenderThreads(1,2,4,8)
+        MatteColor(r,g,b)
+        PolygonSize(&lt;float&gt;)
+        PolygonEdgeFlags(1,2,4,8,16)
+        PolygonEdgeThickness(&lt;silhouette&gt;,&lt;unshared&gt;,&lt;crease&gt;,&lt;surface&gt;,&lt;other&gt;)
+        PolygonEdgeZScale(0.0-1.0)
+        BoneSource(&lt;Object&gt;)
+        BoneMinRange(0.0-...)
+        BoneMaxRange(0.0-...)
+        BoneJointCompAmounts(&lt;float&gt;,&lt;float&gt;)
+        BoneMuscleFlexAmounts(&lt;float&gt;,&lt;float&gt;)
+        ShadowColor(r,g,b)
+        ShadowMapFuzziness(&lt;float&gt;)
+        ShadowMapAngle((0.5-89.5)
+        IncludeObject(&lt;Object&gt;)
+        ExcludeObject(&lt;Object&gt;)
+        RegionPosition(&lt;left&gt;,&lt;top&gt;,&lt;width&gt;,&lt;height&gt;)
+                                                                                                    
+        FogType(1-4)
+        FogMinDistance(&lt;float&gt;)
+        FogMaxDistance(&lt;float&gt;)
+        FogMinAmount(0.0-1.0)
+        FogMaxAmount(0.0-1.0)
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+<A NAME="BEHAVIOR">
+
+<H2>Behavioral Changes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The ChannelGroup() constructor was providing only top-level access to channel groups.
+  This prevented a depth-based search of channel groups to find the correct channel.  Along
+  with its other arguments, the ChannelGroup() constructor will now also accept an existing
+  Channel Group Object Agent to allow for recursive processing of Channel Group chains.
+
+  The following code illustrates:
+
+        @warnings
+        @script channel
+        @version 2.5
+
+        ChGroup;
+
+        create: channel
+        {
+            // locate the channel group recursively
+            ChGroup = nil;
+            GetGroupName(channel.id,ChannelGroup());
+
+            // was it found?
+            if(ChGroup != nil)
+                info(ChGroup.name + "." + channel.name);
+        }
+
+        ...
+
+        GetGroupName: cid, chgroup
+        {
+            if(ChGroup) return;
+
+            while(chgroup)
+            {
+                chchannel = chgroup.firstChannel();
+                while(chchannel)
+                {
+                    if(chchannel.id == cid)
+                    {
+                        ChGroup = chgroup;
+                        last;
+                    }
+                    chchannel = chgroup.nextChannel();
+                }
+
+                last if ChGroup;
+
+                GetGroupName(cid,ChannelGroup(chgroup));  // recursive call
+
+                chgroup = chgroup.next();
+            }
+        }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>min()</b> and <b>max()</b> functions, when provided vector arguments, now return the vector with the
+  smaller or larger (respectively) magnitude (i.e., distance from the origin).
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The label component of the <b>ctltext()</b> control is now given a light drop shadow to highlight
+  it from the other text in the control.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>reqend()</b> function call is now contextually tied to the UDF where its corresponding
+  <b>reqbegin()</b> was called.  This means that you now cannot invoke <b>reqend()</b> for a requester
+  anywhere other than where the requester was generated.  To terminate a requester from
+  any other place (e.g., a callback UDF), use the <b>reqabort()</b> function.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Initblocks can now be passed as arguments to other UDFs in a script.  They are
+  converted into arrays at the receiving end.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The range of values allowed for <b>BoneFalloffType()</b> has been expanded to 9 from 7 to allow
+  access to the ^64 and ^128 exponent falloff types.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The VMap Object Agent <b>setValue()</b> method (available only in Modeler LScript) now accepts
+  a value of 'nil' for a point identifier.  When specified for a mapped point, the
+  indicated point will be removed from the Vertex Map.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>requpdate()</b> function now accepts one or more Control Object Agent identifiers as
+  arguments.  Only those identifiers provided will be refreshed by the update call if
+  they are info or listbox types.  This change allows the update of <b>ctlinfo()</b> and
+  <b>ctllistbox()</b> controls to be performed independently.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  <b>setvalue()</b> can now be used to alter the content of a <b>ctltext()</b> control.  You can provide
+  individual string values, an array reference, or an initialization block of values.
+
+  In addition, values can be directly assigned to the control by modifying the <b>value</b> data
+  member.  You can assign a single string, an array of strings, or an initialization block
+  to alter the control's display values.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  When resolving external references--such as @insert files or external Object
+  Agents--LScript now automatically first checks the <b>\NewTek\LScripts</b> directory
+  created by the LightWave installation program.  You should begin to incorporate
+  all your external references into this location to avoid interactive file dialog
+  prompts, or outright render failures under Screamernet, due to unresolved external
+  references.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Channel Object Agent methods <b>createKey()</b>, <b>getKeyValue()</b> and <b>setKeyValue()</b> now
+  automatically convert incoming values into radian measurement, and outgoing values
+  into degrees, for an angle-based channel.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The Object Agent constructors <b>Mesh()</b>, <b>Light()</b> and <b>Camera()</b>, now accept an object id
+  under Layout.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<H2>Bug Fixes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The <b>library</b> command, when used with native-code shared libraries, was not processing
+  the referenced disc file using the correct function.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The file extension '.p' has been added as a valid native-code shared library type
+  for the <b>library</b> command.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The method used by LScript to locate an object's Channel Group entry was unnecessarily
+  complex, resulting in the wrong identifier being assigned in certain cases.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  LScript's VMap handling system was not cognizant of the fact that a map could exist
+  with zero elements per point defined (i.e., VMSELECT).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The EditServer() CS function was causing a crash of Layout when used.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  Accessing an associative array element using a string index not previously assigned a
+  value could potentially crash the application.  Now, a 'nil' value is returned.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The ctltext() control was regarding the width/height setting of a ctlposition() call,
+  resulting in potential display problems if either value was less than the actual
+  dimensions of the control.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  The AddCamera() command was not properly allowing a camera name argument.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The getWorldRotation() method was missing from LScript's method jump table, so was
+  unrecognized when referenced.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  The WROTATION constant was not being defined in the script environment.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The getTag() and setTag() Object methods were not behaving correctly.  This has
+  been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  The timeout and countdown features of compiled scripts was not functioning across
+  platforms.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The ctlfilename() argument list would not allow the width argument (#3) to be
+  omitted if you wanted only to specify the save/load flag argument (#4).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  Character strings assigned to an array created by the multiple-return values of
+  a UDF called by a callback UDF (whew!) were not being locked, making them victims
+  of the LScript garbage collector when the secondary UDF terminated.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  Sub-array references were not being correctly generated on-the-fly
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  <b>reqabort()</b> was not functioning properly with non-modal windows.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  A context collision, most directly manfist when a Generic script was activated
+  after an Image Filter is engaged, would cause a crash of the application.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                          
+  The <b>getWorldRotation()</b> method was returning the same values, regardless of the
+  the object's rotation or parenting.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The listbox and channel Requester controls were not functioning correctly under tabs.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br><br><br>
+
+<A NAME="BEHAVIOR">
+
+<H2>Experimental Features</H2>
+
+<table border=1>
+  <tr>
+    <td bgcolor="#c0c0c0">
+       This release of LScript includes what are considered "experimental" features.  Roughly defined,<br>
+       these are features that are there solely for evaluation purposes; they are not officially<br>
+       supported.  They may or may not be retained in the next release of LScript, or they may not<br>
+       exist in a subsequent release in their current form.
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+<table border=1>
+  <tr>
+    <td bgcolor="#505050">
+<pre><center>
+                         
+<A HREF="javascript:openWindow('experimental/v25/ctledit.html');">ctledit()</A>
+
+</pre>
+    </td>
+    <td bgcolor="#505050">
+<pre><center>
+                         
+<A HREF="javascript:openWindow('experimental/v25/diagnostic.html');">Diagnostic()</A>
+
+</pre>
+    </td>
+    <td bgcolor="#505050">
+<pre><center>
+                         
+<A HREF="javascript:openWindow('experimental/v25/queue.html');">Queue()</A>
+
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td bgcolor="#505050">
+<pre><center>
+                         
+<A HREF="javascript:openWindow('experimental/v25/mouse.html');">mouse functions</A>
+
+</pre>
+    </td>
+    <td bgcolor="#505050">
+<pre><center>
+                         
+<A HREF="javascript:openWindow('experimental/v25/audio.html');">audio()</A>
+
+</pre>
+    </td>
+    <td bgcolor="#505050">
+<pre><center>
+                         
+<A HREF="javascript:openWindow('experimental/v25/globalcs.html');">Global CS</A>
+
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+</CENTER>

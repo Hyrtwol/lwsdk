@@ -1,0 +1,362 @@
+<html>
+
+<head>
+<title>Classes: CustomObjHandler</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="cs.html"><img width="96" height="20"
+    border="0" src="../images/navlt.gif" alt="CommandSequence"></a></td>
+    <td width="96" align="left"><a href="displace.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="DisplacementHandler"></a></td>
+    <td width="96" align="left"><a href="../classes.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Classes"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+<h3>CustomObjHandler<br>CustomObjInterface</h3>
+<font size=-1><b>Availability</b>&nbsp; LightWave&reg; 6.0</font>
+<br><font size=-1><b>Component</b>&nbsp; Layout</font>
+<br><font size=-1><b>Header</b>&nbsp; <a href="../../include/lwcustobj.h">lwcustobj.h</a></font>
+<p>Layout uses null objects as placeholders for animation data. Nulls can
+be used as parents to add degrees of freedom to the motion of other objects,
+or as references for texturing, or as camera targets. Plug-ins can also
+rely on nulls as a way for users to interactively set parameters.
+<p>A custom object handler can be associated with a null to customize its
+appearance in Layout's interface. This is useful for providing visual feedback
+about, for example, the range or magnitude of an effect controlled by the
+null. Custom nulls will often be an adjunct to a plug-in of another class
+that uses nulls for data entry, but they can also be used by themselves
+for things like guides and rulers.
+<p>When applied to non-null objects, a custom object plug-in supplements
+LightWave&reg;'s drawing of the object in the interface. Hypervoxels, for example,
+uses a custom object handler to draw wireframe bounding spheres around
+the particles associated with an object.
+<p><b>Handler Activation Function</b>
+<pre>&nbsp;&nbsp; XCALL_( int ) MyCustomObj( int version, GlobalFunc *global,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWCustomObjHandler *local, void *serverData );</pre>
+The <tt>local</tt> argument to a custom object's activation function is
+an LWCustomObjHandler.
+<pre>&nbsp;&nbsp; typedef struct st_LWCustomObjHandler {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWInstanceFuncs *<b>inst</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWItemFuncs&nbsp;&nbsp;&nbsp;&nbsp; *<b>item</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWRenderFuncs&nbsp;&nbsp; *<b>rend</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>evaluate</b>)(LWInstance, const LWCustomObjAccess *);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int&nbsp;&nbsp;&nbsp; (*<b>flags</b>)&nbsp;&nbsp; (LWInstance);
+&nbsp;&nbsp; } LWCustomObjHandler;</pre>
+The first three members of this structure are the standard <a href="../handler.html">handler
+functions</a>. In addition to these, a custom object provides an evaluation
+function and a flags function.
+<p>The <tt>context</tt> argument to the <tt>inst->create</tt> function
+is the LWItemID of the associated object.
+      <dl> 
+        <dt> <tt><b>evaluate</b>( instance, access )</tt></dt>
+        <dd> Draw the object on the interface using the information in the access 
+          structure, described below.</dd>
+        <dt><tt>f = <b>flags</b>( instance )</tt><dt>
+        <dd> Returns bit flags combined using bitwise-or. 
+            <dl>
+		    <dt><tt>LWCOF_SCHEMA_OK</tt></dt>
+        	<dd>Tells Layout that you support drawing in schematic viewports.</dd>
+	        <dt><tt>LWCOF_VIEWPORT_INDEX</tt></dt>
+        	<dd>Tells layout to use the viewport number instead of its type in the LWCustomObjAccess view element</dd>
+        	<dt><tt>LWCOF_NO_DEPTH_BUFFER</tt></dt>
+        	<dd>Causes drawing to occur in front of other OpenGL elements, regardless of Z position.</dd>
+			<dt><tt>LWCOF_OVERLAY</tt></dt>
+			<dd>This is useful for custom object handlers attached to cameras or lights. When used, the internal camera or light drawing will 
+          be drawn before the custom one. When not used, the internal drawing
+          of the light or camera is not used at all. </dd>
+		    </dl>
+</dd>			
+			</dl>
+      <b>Interface Activation Function</b> 
+      <pre>&nbsp;&nbsp; XCALL_( int ) MyInterface( int version, GlobalFunc *global,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWInterface *local, void *serverData );</pre>
+This is the standard <a href="../handler.html#ui">interface activation</a>
+for handlers. Users open a custom object's interface by pressing an Options
+button on the Geometry tab of the Object Properties panel.
+<p><b>Custom Object Access</b>
+<p>The access structure contains drawing functions and fields indicating
+which of the interface views the object will be drawn in and whether the
+object is currently selected.
+<p>Within the limitations of the drawing functions, there aren't any restrictions
+on what your custom object may look like. But in most cases it will be
+helpful to users if your object's appearance is consistent in color and
+style with the rest of Layout's interface.
+<pre>&nbsp;&nbsp; typedef struct st_LWCustomObjAccess {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp; <b>view</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp; <b>flags</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *<b>dispData</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setColor</b>)&nbsp;&nbsp;&nbsp; (void *, float rgba[4]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setPattern</b>)&nbsp; (void *, int lpat);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setTexture</b>)&nbsp; (void *, int, unsigned char *);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setUVs</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[2], double[2], double[2],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double[2]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>point</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>line</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], double[3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>triangle</b>)&nbsp;&nbsp;&nbsp; (void *, double[3], double[3], double[3],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>quad</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], double[3], double[3],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double[3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>circle</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], double, int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>text</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], const char *, int just,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWDVector <b>viewPos</b>, <b>viewDir</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setCSysItem</b>) (void *, LWItemID item);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>polygon</b>)&nbsp;&nbsp;&nbsp;&nbsp; (void *, unsigned int numv, double[][3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>polyIndexed</b>) (void *, unsigned int numv, unsigned int verts[], double[][3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setDrawMode</b>) (void *, unsigned int mode);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>disk</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], double, int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setPart</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, unsigned int part);
+&nbsp;&nbsp; } LWCustomObjAccess;</pre>
+
+<dl>
+
+<dt><tt><b>view</b></tt></dt>
+<dd>
+The view the object will be drawn in. Possible values are:
+<dl>
+<dt><tt>LWVIEW_ZY</tt></dt>
+<dt><tt>LWVIEW_XZ</tt></dt>
+<dt><tt>LWVIEW_XY</tt></dt>
+<dt><tt>LWVIEW_PERSP</tt></dt>
+<dt><tt>LWVIEW_LIGHT</tt></dt>
+<dt><tt>LWVIEW_CAMERA</tt></dt>
+<dt><tt>LWVIEW_SCHEMA</tt></dt>
+</dl>
+<p>These refer to the orthographic, perspective, light, camera and schematic
+views available to the user in the Layout interface.
+</dd><br>
+
+
+<dt><tt><b>flags</b></tt></dt>
+<dd>
+Contains bitfields with information about the context of the render request.
+<dl>
+<dt><tt>LWCOFL_SELECTED</tt></dt>
+<dd>The object is selected, and should be rendered in a selected state.</dd>
+<dt><tt>LWCOFL_PICKING</tt></dt>
+<dd>The custom object is being evaluated to determine if it is part of a picking
+selection. The drawing functions do no actual drawing to the viewports. Instead
+they are used only to define the shape of the object.</dd>
+</dl>
+</dd><br>
+
+
+<dt><tt><b>dispData</b></tt></dt>
+<dd>
+An opaque pointer to private data used by Layout. Pass this as the first
+argument to the drawing functions.
+</dd><br>
+
+
+<dt><tt><b>setColor</b>( dispData, rgba )</tt></dt>
+<dd>
+Set the current drawing color, including the alpha level. Calling this
+is optional. By default, all drawing is done in the color set by the user
+in the Scene panel when the custom object isn't selected, and in yellow
+when the object is selected. Color settings don't persist between calls
+to the evaluation function, nor do they change the settings in the Scene
+panel.
+</dd><br>
+
+
+<dt><tt><b>setPattern</b>( dispData, linepat )</tt></dt>
+<dd>
+Set the current line pattern. The pattern codes are:
+<dl>
+<dt><tt>LWLPAT_SOLID</tt></dt>
+<dt><tt>LWLPAT_DOT</tt></dt>
+<dt><tt>LWLPAT_DASH</tt></dt>
+<dt><tt>LWLPAT_LONGDOT</tt></dt>
+</dl>
+<p>As with <tt>setColor</tt>, calling <tt>setPattern</tt> is optional.
+By default, all drawing is done with solid lines. Line pattern settings
+don't persist between evaluations.
+</dd><br>
+
+
+<dt><tt><b>setTexture</b>( dispData, size, imagebytes )</tt></dt>
+<dd>
+Set the current image for texture mapping. This image is mapped onto quads
+drawn by the <tt>quad</tt> function. The <tt>size</tt> is the width (and
+height) of the image in pixels and must be a power of 2. The pixel data
+is an OpenGL image in <tt>GL_RGBA</tt> format and <tt>GL_UNSIGNED_BYTE</tt>
+data type. Each pixel is represented by a set of four contiguous bytes
+containing red, green, blue and alpha values ranging from 0 to 255.
+</dd><br>
+
+
+<dt><tt><b>setUVs</b>( dispData, uv0, uv1, uv2, uv3 )</tt></dt>
+<dd>
+Set the UVs for texture mapping. This sets the position of the texture
+image on each polygon drawn by the <tt>quad</tt> function until the next
+call to <tt>setUVs</tt>.
+</dd><br>
+
+
+<dt><tt><b>point</b>( dispData, xyz, coord_sys )</tt></dt>
+<dd>
+Draw a point at the specified position. The point will be drawn in the
+color set by the most recent <tt>setColor</tt> call, or in the default
+color if no color was set. The coordinate system argument identifies the
+coordinates in which the position is expressed and may be one of the following:
+<dl>
+<dt><tt>LWCSYS_WORLD</tt></dt>
+<dd>
+"Absolute" coordinates, unaffected by the position, rotation and scale
+of the underlying null object.</dd>
+
+<dt><tt>LWCSYS_OBJECT</tt></dt>
+<dd>
+"Relative" coordinates. Layout will transform the point.</dd>
+
+<dt><tt>LWCSYS_ICON</tt></dt>
+<dd>
+A special coordinate system that works like <tt>LWCSYS_OBJECT</tt> but
+scales with the grid size. Layout's camera and light images are examples
+of the use of this coordinate system.</dd>
+
+<dt><tt>LWCSYS_VIEWPORT</tt></dt>
+<dd>
+Viewport pixel coordinates, with the origin at the top-left of the viewport.
+The x and y values are in pixels. The z value ranges from 0 for a point on
+the near plane, to 1 for a point on the far plane. Note that drawing exactly
+on the near or far plane may cause artifacts caused by unreliable clipping
+due to floating point imprecision.</dd>
+
+</dl>
+</dd><br>
+
+
+<dt><tt><b>line</b>( dispData, end1, end2, coord_sys )</tt></dt>
+<dd>
+Draw a line between the specified endpoints using the current color and
+line pattern.
+</dd><br>
+
+
+<dt><tt><b>triangle</b>( dispData, v1, v2, v3, coord_sys )</tt></dt>
+<dd>
+Draw a solid triangle with the specified vertices using the current color.
+</dd><br>
+
+
+<dt><tt><b>quad</b>( dispData, v1, v2, v3, v4, coord_sys )</tt></dt>
+<dd>
+Draw a solid quadrangle with the specified vertices using the current color
+or texture.
+</dd><br>
+
+
+<dt><tt><b>circle</b>( dispData, center, radius, coord_sys )</tt></dt>
+<dd>
+Draw a circle of the given radius around the specified center point using
+the current color and line pattern.
+</dd><br>
+
+
+<dt><tt><b>text</b>( dispData, pos, textline, justify, coord_sys )</tt></dt>
+<dd>
+Draw a single line of text using the current color and line pattern. The
+<tt>justify</tt> argument determines whether the text will be drawn to
+the left or right of the position, or centered on it:
+<dl>
+<dt><tt>LWJUST_LEFT</tt></dt>
+<dt><tt>LWJUST_CENTER</tt></dt>
+<dt><tt>LWJUST_RIGHT</tt></dt>
+</dl>
+</dd><br>
+
+
+<dt><tt><b>setCSysItem</b>( dispData, itemid ) <b>(LW9.3+)</b></tt></dt>
+<dd>
+Sets the item used for relative coordinate systems, namely <tt>LWCSYS_OBJECT</tt>
+and <tt>LWCSYS_ICON</tt>. This overrides the default, if any.
+</dd><br>
+
+
+<dt><tt><b>polygon</b>( dispData, numv, vertices, coord_sys ) <b>(LW9.5)</b></tt></dt>
+<dd>
+Draw a polygon using the given vertices. The array of vertices must contain at least <tt>numv</tt>
+points.
+</dd><br>
+
+
+<dt><tt><b>polyIndexed</b>( dispData, numv, indices, vertices, coord_sys ) <b>(LW9.5)</b></tt></dt>
+<dd>
+Draw a polygon where the vertices are given as indices into an array of vertices. The array of indices must contain at least <tt>numv</tt>
+indices. The array of vertices must contain at least all the points in the indices array. Not all vertices have to be used.
+</dd><br>
+
+
+<dt><tt><b>setDrawMode</b>( dispData, mode ) <b>(LW9.5)</b></tt></dt>
+<dd>
+Sets the current drawing mode. The mode is defined by combining the following flags with bitwise-or:
+<dl>
+<dt><tt>LWDRAWMODE_CULLFACE</tt></dt>
+<dd>Does not draw backfacing shapes.</dd>
+<dt><tt>LWDRAWMODE_OUTLINE</tt></dt>
+<dd>Draws using outlines instead of fill.</dd>
+<dt><tt>LWDRAWMODE_DEPTHTEST</tt></dt>
+<dd>Enables depthbuffer testing.</dd>
+<dt><tt>LWDRAWMODE_DEPTHWRITE</tt></dt>
+<dd>Enables writing to the depthbuffer.</dd>
+</dl>
+<p>The default mode is <tt>LWDRAWMODE_DEPTHTEST + LWDRAWMODE_DEPTHWRITE</tt>.
+</dd><br>
+
+<dt><tt><b>disk</b>( dispData, center, radius, coord_sys ) <b>(LW9.5)</b></tt></dt>
+<dd>
+Draw a disk (filled circle) of the given radius around the specified center point using
+the current color.
+</dd><br>
+
+<dt><tt><b>setPart</b>( dispData, part ) <b>(LW9.6)</b></tt></dt>
+<dd>
+Associate a part number with the following drawing. The parts can be numbered from 1 to 32 inclusive.
+A part number of 0 implies no particular part number association. This is currently only useful for
+implementing gizmos.
+</dd><br>
+
+</dl>
+
+
+<b>History</b>
+<p>In LightWave&reg; 7.0, <tt>LWCUSTOMOBJ_VERSION</tt> was incremented to 5
+because of significant changes to the LWCustomObjAccess structure. The
+previous version of the structure looked like this.&nbsp;
+<pre>&nbsp; typedef struct st_LWCustomObjAccess_V4 {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp; <b>view</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp; <b>flags</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void *<b>dispData</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setColor</b>)&nbsp;&nbsp; (void *, float rgb[3]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>setPattern</b>) (void *, int lpat);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>point</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>line</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], double[3], int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>triangle</b>)&nbsp;&nbsp; (void *, double[3], double[3], double[3],
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>circle</b>)&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], double, int csys);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void (*<b>text</b>)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (void *, double[3], const char *, int csys);
+&nbsp;&nbsp; } LWCustomObjAccess_V4;</pre>
+The <tt>setTexture</tt>, <tt>setUVs</tt> and <tt>quad</tt> functions are
+missing, and the <tt>text</tt> function lacks the justification argument.
+<p><b>Example</b>
+<p>The <a href="../../sample/Layout/CustomObject/barn/">barn</a> sample draws a simple barn
+or house shape. It's easy to tell which way this shape is pointing, which
+makes it useful for quickly testing programming assumptions about the effects
+of animation parameters on the orientation of objects.</td>
+</tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,1012 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE>Globals: Dopetrack Proxy</TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.1.4  (Win32)">
+	<META NAME="CREATED" CONTENT="20050328;11332837">
+	<META NAME="CHANGEDBY" CONTENT="Bob Hood">
+	<META NAME="CHANGED" CONTENT="20050328;11400800">
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		P { color: #000000 }
+		PRE { color: #000000 }
+		H3 { color: #000000 }
+		DD { color: #000000 }
+		DT { color: #000000 }
+		TT { font-size: 10pt }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" BGCOLOR="#ffffff" DIR="LTR">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 BGCOLOR="#d0d0d0" STYLE="page-break-before: always">
+	<TR>
+		<TD WIDTH=120>
+			<P ALIGN=LEFT><A HREF="panel.html"><IMG SRC="../images/navlt.gif" NAME="Graphic1" ALT="Panels" ALIGN=BOTTOM WIDTH=96 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+		<TD WIDTH=96>
+			<P ALIGN=LEFT><A HREF="preview.html"><IMG SRC="../images/navrt.gif" NAME="Graphic2" ALT="Preview Functions" ALIGN=BOTTOM WIDTH=64 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+		<TD WIDTH=96>
+			<P ALIGN=LEFT><A HREF="../globals.html"><IMG SRC="../images/navup.gif" NAME="Graphic3" ALT="Globals" ALIGN=BOTTOM WIDTH=56 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+		<TD WIDTH=288>
+			<P ALIGN=RIGHT><A HREF="../index.html"><IMG SRC="../images/proglw.gif" NAME="Graphic4" ALT="Table of Contents" ALIGN=BOTTOM WIDTH=230 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+	</TR>
+</TABLE>
+<TABLE WIDTH=700 BORDER=0 CELLPADDING=0 CELLSPACING=0>
+	<COL WIDTH=38>
+	<COL WIDTH=38>
+	<COL WIDTH=164>
+	<COL WIDTH=38>
+	<COL WIDTH=309>
+	<COL WIDTH=38>
+	<COL WIDTH=76>
+	<TR>
+		<TD COLSPAN=7 WIDTH=700>
+			<P><BR><BR>
+			</P>
+			<H3>Dopetrack Proxy</H3>
+			<P><FONT SIZE=2><STRONG>Availability</STRONG>&nbsp;
+			LightWave&reg;&nbsp;8.0</FONT><BR><FONT SIZE=2><STRONG>Component</STRONG>&nbsp;
+			Layout</FONT><BR><FONT SIZE=2><STRONG>Header</STRONG>&nbsp;
+			<A HREF="../../../../../WWW/NewTek/new_design/products/lightwave/developer/8lwsdk/docs/globals/dtproxy.html">lwdopetrack.h</A></FONT></P>
+			<P>The Layout Dopetrack allows the user to easily manage and
+			manipulate keyframes for the standard envelopes shared by all
+			Layout objects (i.e, Position, Rotation and Scaling).&nbsp; This
+			Global, specifically targeted towards the Layout Tool class,
+			allows a plug-in to take over most of the functionality of the
+			Dopetrack in order to &quot;expose&quot; to the user any
+			underlying envelopes that plug-in may have to offer.</P>
+			<P><STRONG>Global Call</STRONG></P>
+			<PRE>   LWDopetrackProxy *dtprox;
+   dtprox = global( LWDOPETRACK_GLOBAL, GFUSE_TRANSIENT );</PRE><P>
+			The global function returns a pointer to an <KBD>LWDopetrackProxy</KBD>
+			structure.</P>
+			<PRE>   typedef struct st_LWDopetrackProxy
+       void            (*toolRegister)(DTToolCallbacksID);
+       void            (*toolRelease)(void);
+
+       void            (*exposeEnvelopes)(LWEnvelopeID *,const char **,int *);
+       void            (*refreshDisplay)(void);
+
+       DTKeySelectID   (*querySelectedKeys)(void);
+       void            (*querySelection)(LWTime *,LWTime *);
+
+       const LWTime   *(*queryMarkers)(void);
+       void            (*addMarker)(LWTime);
+       void            (*remMarker)(LWTime);
+
+       DTBakeZoneID    (*queryBakeZones)(void);
+       void            (*addBakeZone)(LWTime,LWTime);
+       void            (*remBakeZone)(LWTime,LWTime);
+
+       DTOperatingMode (*queryOpMode)(void);
+
+       void            (*displayMenu)(DTMenuCallbacksID);
+
+       int             (*visible)(void);
+
+       DTDrawFuncs     drawfuncs;
+   } LWDopetrackProxy, *LWDopetrackProxyID;</PRE><P>
+			Tool-class plug-ins register with the Dopetrack as soon as they
+			are activated.&nbsp; They must provide a pointer to a structure of
+			type <CODE>DTToolCallbacks</CODE> so that the Dopetrack may
+			interactive with them&nbsp; whenever the user takes some action on
+			their exposed Envelopes.&nbsp; The <CODE>DTToolCallbacks</CODE>
+			structure contains the following members:</P>
+			<PRE>    typedef struct _dttoolcallbacks
+    {
+        DTUserEvent     userEvent;
+        DTAllow         allow;
+        DTMouse         mouseEvent;
+        DTMenuCallbacks menu;
+    } DTToolCallbacks, *DTToolCallbacksID;</PRE><P>
+			The <CODE>DTMenuCallbacks</CODE> structure contains the following
+			function pointers for handling context menu requests on the main
+			Dopetrack area:</P>
+			<PRE>    typedef struct _dtmenucallbacks
+    {
+        DTMenuCount     menuCount;
+        DTMenuSub       menuSubMenu;
+        DTMenuSep       menuSep;
+        DTMenuEnable    menuEnable;
+        DTMenuItem      menuItem;
+        DTMenuSelect    menuSelect;
+        DTMenuSelect    menuInitial;
+    } DTMenuCallbacks, *DTMenuCallbacksID;</PRE><P>
+			<STRONG>Event Support</STRONG></P>
+			<P>As the user interacts with the Dopetrack, certain events will
+			be passed back to the plug-ins.&nbsp; The <CODE>userEvent</CODE>
+			member of the <CODE>DTToolCallbacks</CODE> structure must be set
+			to the plug-in function that will be called with these events.&nbsp;
+			It is important to note that <I>for a plug-in to utilize the
+			Dopetrack Proxy mechanism, this pointer must be set</I>.&nbsp;
+			This function pointer is therefore not optional. 
+			</P>
+			<P>The function has the following prototype:</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef void
+			(*<B>DTUserEvent</B>)(DTEventParamID);</CODE></P>
+			<P>The plug-in may control the available intrinsic functions of
+			the Dopetrack (those that remain active when the plug-in takes
+			control) using the <CODE>allow</CODE> function.&nbsp; This
+			function will receive a function type (see the table that
+			follows), and may return a true value (1) if that action may be
+			performed by the user, or a false value (0) if it is to be
+			disallowed.&nbsp; This function is optional, and leaving it NULL
+			will cause the Dopetracks default actions to be performed without
+			condition.</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef int (*<B>DTAllow</B>)(DTKeyAction);</CODE></P>
+			<P>The function types that the <CODE>allow</CODE> function will be
+			one of the following: 
+			</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=4 COLSPAN=2 WIDTH=76 VALIGN=TOP></TD>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><BR><TT><B>DTACTION_SELECT</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P><BR>Keyframes have been selected</P>
+		</TD>
+		<TD ROWSPAN=4 WIDTH=76 VALIGN=TOP></TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTACTION_SHIFT</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>Keyframes have been moved (shifted).</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTACTION_SHIFT_COPY</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>Copy/paste operation of keyframes at a new location</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTACTION_CREATE_KEY</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>User request to create a new keyframe</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=7 WIDTH=700>
+			<P>Also optional is the <CODE>mouseEvent</CODE> function.&nbsp;
+			This allows the plug-in to receive mouse events (down, move and
+			up) whenever such events are generated in the Dopetrack margins.</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*<B>DTMouse</B>)(DTMouseParamID);</CODE></P>
+			<P><STRONG>Context Menu Support</STRONG></P>
+			<P>The menu callback pointers of the <CODE>DTMenuCallbacks</CODE>
+			structure (nested within the <CODE>DTToolCallbacks</CODE>
+			structure) are optional, and allow the plug-in to completely
+			replace the Dopetrack's context menu with its own functionality.&nbsp;
+			The <CODE>menuCount</CODE> pointer should return the count of
+			items that your context menu will display, the <CODE>menuItem</CODE>
+			pointer should return the text for a specific menu item index, and
+			the <CODE>menuSelect</CODE> function will be called by the
+			Dopetrack when a selection is made from your plug-in's context
+			menu.&nbsp; The <CODE>menuCount</CODE> pointer is the key to
+			enabling context menus for your plug-in, and if you place a
+			pointer into the <CODE>menuCount</CODE> value, then you must also
+			at least define <CODE>menuItem</CODE> and <CODE>menuSelect</CODE>.&nbsp;
+			All other menu pointers are optional, and may contain NULL values.</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*<B>DTMenuCount</B>)(int);<BR>&nbsp;&nbsp;&nbsp; typedef
+			int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*<B>DTMenuSub</B>)(int,int);<BR>&nbsp;&nbsp;&nbsp; typedef
+			int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*
+			(*<B>DTMenuSep</B>)(int);<BR>&nbsp;&nbsp;&nbsp; typedef
+			int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*<B>DTMenuEnable</B>)(int,int);<BR>&nbsp;&nbsp;&nbsp; typedef
+			const char * (*<B>DTMenuItem</B>)(int,int);<BR>&nbsp;&nbsp;&nbsp;
+			typedef void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*<B>DTMenuSelect</B>)(int,int);<BR>&nbsp;&nbsp;&nbsp; typedef
+			int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*<B>DTMenuInitial</B>)(void);</CODE></P>
+			<P>To support certain internal functions, a return value of zero
+			(0) from your <CODE>menuCount</CODE> function will cause a -1
+			value to be sent to your <CODE>menuSelect</CODE> function.&nbsp;
+			Please code accordingly. 
+			</P>
+			<PRE STYLE="margin-bottom: 0.2in">count = menuCount( menuID )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Returns the number of items that will appear on the menu
+				identified by <CODE>menuID</CODE>.&nbsp; Your main menu will
+				always be identified by a <CODE>menuID</CODE> of zero (0).&nbsp;
+				Any sub-menus that you define off of that main menu will have a
+				<CODE>menuID</CODE> value assigned by the <CODE>menuSubMenu()</CODE>
+				function.&nbsp; So, if you have no sub-menus defined, <CODE>menuID</CODE>
+				will always be zero. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">subMenuID = menuSubMenu( menuID, item )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Returns the menu identifier for any sub-menus that might be
+				defined on the menu <CODE>menuID</CODE>.&nbsp; For example, if
+				your main context menu contained one sub-menu that branched from
+				the third menu element, then you would return a sub-menu
+				identifier for that sub-menu when <CODE>menuID</CODE> equals 0,
+				and <CODE>item</CODE> equals 2.&nbsp; This new menu identifier
+				will then be used in a call to <CODE>menuCount()</CODE> to query
+				the number of elements on that particular menu. 
+				</DD><DD STYLE="margin-bottom: 0.2in">
+				A return value of zero (0) indicates that the specified menu
+				element is not a sub-menu. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">separray = menuSep( menuID )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Elements on a menu can be separated from one another using this
+				function.&nbsp; The returned array of integer values indicates
+				whether or not a separator should immediately follow the
+				corresponding menu element.&nbsp; A value of zero (0) means that
+				the corresponding menu element has no following separator, while
+				a value of one (1) indicates that a menu separator should follow
+				that element on the menu.&nbsp; The length of this array should
+				be of the exact size returned by the <CODE>menuCount()</CODE>
+				function for the indicated <CODE>menuID</CODE>. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">enable = menuEnable( menuID, item )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Menu items can be enabled or disabled for selection using this
+				function.&nbsp; A return value of zero (0) indicates that the
+				<CODE>item</CODE> on the specified <CODE>menuID</CODE> should be
+				disabled, while a value of one (1) indicates that is is available
+				for selection. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">string = menuItem( menuID, item )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				The Dopetrack will query the string values of menu elements using
+				this function.&nbsp; You should return a value appropriate for
+				the indicated <CODE>menuID</CODE> and <CODE>item</CODE> offset. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">menuSelect( menuID, item )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				When a selection is made by the user, its owning menu identifier
+				and offset within that menu are provided back to the plug-in.&nbsp;
+				Keep in mind that <CODE>menuID</CODE> may be a value previously
+				defined for a sub-menu, and will only refer to the main menu
+				elements when it has a value of zero (0). 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">select = menuInitial( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				An initial menu item selection can be specified by the plug-in
+				using this callback.&nbsp; The return value should be the
+				zero-based index of the menu item that should be highlighted when
+				the menu is displayed. 
+				</DD></DL>
+			<P>
+			<STRONG>Exported Dopetrack Functions</STRONG></P>
+			<PRE STYLE="margin-bottom: 0.2in">toolRegister( callbacks )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Register with the Dopetrack so that it can act as a proxy for
+				your data.&nbsp; <CODE>callbacks</CODE> is a pointer to a
+				structure of type <CODE>DTToolCallbacks</CODE>, and should be
+				appropriately populated. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">toolRelease( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				When a plug-in is finished with the Dopetrack (for example, it is
+				dropped in favor of another tool), it should call this function
+				as part of its cleanup code. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">exposeEnvelopes( envarray, axisnames, initstates )</PRE>
+			<DL>
+				<DD>
+				Envelopes (and their attendant keyframes) are exposed to the user
+				through this function.&nbsp; The <CODE>envarray</CODE> should be
+				a NULL-terminated list of <CODE>LWEnvelopeID</CODE> pointers that
+				are to be made available to the user on the Dopetrack.&nbsp;
+				Although any number of envelopes can be provided, you should be
+				aware that there is a threshold -- mandated by the current Layout
+				interface -- that will cause differences in behavior.&nbsp; If
+				you expose three or fewer envelopes, the Dopetrack will treat
+				them as it treats its normal channel processing -- that is, each
+				envelope will display as a separate 'tick' color on the Dopetrack
+				interface.&nbsp; However, if you expose more than three envelopes
+				at a time, a solid white bar will be displayed for any keyframe
+				at any time index found in the envelopes. 
+				</DD><DD>
+				&nbsp; 
+				</DD><DD>
+				The <CODE>axisnames</CODE> array allows the plug-in to re-define
+				and enable the axis buttons found in the lower left corner of the
+				Layout interface.&nbsp; The labels can be any string values
+				needed by the plug-in, but should be kept to a maximum of one
+				character for appropriate display.&nbsp; Up to three axis labels
+				may be defined&nbsp;&nbsp; As the user interacts with these axis
+				buttons, events are generated back to the plug-in regarding their
+				state. 
+				</DD><DT>
+				&nbsp; 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				<CODE>initstates</CODE> is another array that runs parallel to
+				the <CODE>axisnames</CODE> array. It indicates, by either a one
+				(1) or a zero (0), whether or not the corresponding axis button
+				should be initially enabled or disabled. 
+				</DD><DD STYLE="margin-bottom: 0.2in">
+				Please note that the pointers you provide for <CODE>envarray</CODE>
+				and <CODE>axisnames</CODE> should be persistent in your code
+				(i.e., declared <CODE>static</CODE>ally).&nbsp; The Dopetrack
+				Proxy does not make a copy of the value you provide, rather it
+				simply caches the pointer and references it as needed. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">updateDisplay( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				As the plug-in makes changes to its exposed envelopes (whether
+				through the normal course of its processing, or in response to a
+				Dopetrack event), it should call this function to refresh the
+				keyframe information displayed by the Dopetrack.&nbsp; Display
+				updating is not automatic; the Dopetrack does not track volatile
+				changes to your envelopes. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">selarray = querySelectedKeys( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				When an event is generated that the plug-in has allowed to occur
+				(implicitly or explicitly), the currently selected keyframes
+				indices can be determined using this function. <CODE>selarray</CODE>
+				is a pointer to a structure of the following type: 
+				</DD></DL>
+			<P>
+			<CODE>&nbsp;&nbsp;&nbsp; typedef struct _dtevent_keyselect_st<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<B>count</B>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *<B>indices</B>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <B>offset</B>;<BR>&nbsp;&nbsp;&nbsp;
+			} DTKeySelect, *DTKeySelectID;</CODE></P>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">Time indices selected by the
+				user will appear in the <CODE>indices</CODE> array (of <CODE>count</CODE>
+				length).&nbsp; If a shift of keyframes has taken place, the
+				<CODE>offset</CODE> (as a delta) is provided. 
+				</DD><DD STYLE="margin-bottom: 0.2in">
+				A <CODE>NULL</CODE> value will be returned if no keyframes are
+				currently selected by the user. 
+				</DD></DL>
+			<PRE STYLE="margin-left: 0.39in; margin-bottom: 0.2in">markerarray = queryMarkers( )</PRE>
+			<DL>
+				<DL>
+					<DD>
+					The user can flag individual time indices by dropping &quot;markers&quot;
+					on them.&nbsp; While these markers are not used internally by
+					the Dopetrack, they can be queried by a plug-in and processed in
+					some context-specific fashion.: 
+					</DD><DD STYLE="margin-bottom: 0.2in">
+					The <CODE>markerarray</CODE> is a linear array of LWTime values,
+					terminated by a time value of 99999.0 (defined in the
+					<CODE>lwdopetrack.h</CODE> header as <CODE>TIME_MARKER</CODE>).&nbsp;
+					A <CODE>NULL</CODE> value will be returned if no markers are
+					currently defined by the user. 
+					</DD></DL>
+			</DL>
+			<PRE STYLE="margin-left: 0.39in; margin-bottom: 0.2in">addMarker( at )</PRE>
+			<DL>
+				<DL>
+					<DD STYLE="margin-bottom: 0.2in">
+					A marker can be dropped onto the Dopetrack by the plug-in using
+					the function.&nbsp; The <CODE>at</CODE> parameter is the time
+					index where the marker should appear. 
+					</DD></DL>
+			</DL>
+			<PRE STYLE="margin-left: 0.39in; margin-bottom: 0.2in">remMarker( at )</PRE>
+			<DL>
+				<DL>
+					<DD STYLE="margin-bottom: 0.2in">
+					An existing marker on the Dopetrack can be removed using this
+					function.&nbsp; The <CODE>at</CODE> parameter is the time index
+					where the marker resides. 
+					</DD></DL>
+			</DL>
+			<PRE STYLE="margin-bottom: 0.2in">bakearray = queryBakeZones( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				The user can define ranges of frames on the Dopetrack.&nbsp; The
+				plug-in can use these ranges for whatever purpose suites its
+				context.&nbsp; This function returns a pointer to a structure of
+				the following type: 
+				</DD></DL>
+			<P>
+			<CODE>&nbsp;&nbsp;&nbsp; typedef struct _dtevent_bakezone_st<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<B>count</B>;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //
+			parallel arrays<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			*<B>start_frame</B>,*<B>end_frame</B>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWTime&nbsp;&nbsp;&nbsp;&nbsp; *<B>start_time</B>,*<B>end_time</B>;<BR>&nbsp;&nbsp;&nbsp;
+			} DTBakeZone, *DTBakeZoneID; </CODE>
+			</P>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">A <CODE>NULL</CODE> value will
+				be returned if no Bake Zones are currently defined by the user. 
+				</DD></DL>
+			<PRE STYLE="margin-left: 0.39in; margin-bottom: 0.2in">addBakeZone( start, end )</PRE>
+			<DL>
+				<DL>
+					<DD STYLE="margin-bottom: 0.2in">
+					The plug-in can define its own baking zone ranges on the
+					Dopetrack using this funciton.&nbsp; <CODE>start</CODE> and <CODE>end</CODE>
+					define the boundaries of the baking zone as time indices. 
+					</DD></DL>
+			</DL>
+			<PRE STYLE="margin-left: 0.39in; margin-bottom: 0.2in">remBakeZone( start, end )</PRE>
+			<DL>
+				<DL>
+					<DD STYLE="margin-bottom: 0.2in">
+					The plug-in can destroy a baking zone using this funciton.&nbsp;
+					<CODE>start</CODE> and <CODE>end</CODE> define the boundaries of
+					the baking zone to match. 
+					</DD></DL>
+			</DL>
+			<PRE STYLE="margin-bottom: 0.2in">querySelection( start, end )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				If a user-defined selection exists on the Dopetrack (typically
+				from a drag-select using the right mouse button), the range of
+				the selection can be determined using this function.&nbsp; The
+				<CODE>start</CODE> and <CODE>end</CODE> arguments are pointers to
+				storage of type <CODE>LWTime</CODE>, and will be filled in with
+				the beginning and ending time indices of the current selection.&nbsp;
+				If these values are identical, then no user-defined selection
+				currently exists on the Dopetrack. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">opmode = queryOpMode( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				The Dopetrack will operate globally on all nine channels at one
+				time, or discretely on a per-channel basis, depending upon the
+				mode selected by the user.&nbsp; This function will return a
+				value of type <CODE>DTOperatingMode</CODE>, which will be one of
+				<CODE>DTOPMODE_CHANNEL</CODE> or <CODE>DTOPMODE_GLOBAL</CODE>.&nbsp;
+				Plug-ins are not required to adhere to this user-selected mode,
+				as their context may or may not be conducive to such operational
+				types. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">displayMenu( menuCallbacks )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				When the user clicks the right-mouse button on the Dopetrack, the
+				Dopetrack API will automatically query the plug-in for a context
+				menu using any menu callbacks functions defined when the plug-in
+				registered.&nbsp; However, there may be times when the plug-in
+				will need to display a context menu for its own data in the left
+				or right margins of the Dopetrack (see the <B>Tool Drawing</B>
+				section later in this document). 
+				</DD><DD STYLE="margin-bottom: 0.2in">
+				This function call allows the plug-in to display an on-demand
+				context menu.&nbsp; The <CODE>menuCallbacks</CODE> pointer
+				containers the menu callback functions to be used in generating
+				and processing the context menu.&nbsp; When the user is finished
+				with the menu, the resulting menuID and selected item will be
+				reported back to the <CODE>menuSelect</CODE> callback for the
+				plug-in to process, in exactly the same fashion as when the
+				Dopetrack demands a context menu from the plug-in. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">open = visible( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				The Boolean returned by this function indicates whether or not
+				the Dopetrack is open (and, thus, visible to the user) or closed.
+								</DD></DL>
+			<P>
+			<STRONG>Interaction</STRONG></P>
+			<P>As mentioned before, events will be generated by user
+			interactions, and these events will be passed on to the registered
+			plug-in.&nbsp; Events are passed to the <CODE>userEvent</CODE>
+			function by a pointer to the following structure:</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef struct _dteventparam_st<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DTEventType
+			<B>event</B>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <B>value</B>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<B>offset</B>;<BR>&nbsp;&nbsp;&nbsp;
+			} DTEventParam, *DTEventParamID; </CODE>
+			</P>
+			<P>The <CODE>event</CODE> value will be one of the following::</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=5 WIDTH=38 VALIGN=TOP></TD>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><BR><TT><B>DTEVENT_KEYFUNCTION</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P><BR>A key function has been generated by user interaction.</P>
+		</TD>
+		<TD ROWSPAN=5 COLSPAN=2 WIDTH=114 VALIGN=TOP></TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTEVENT_BAKEZONECHANGE</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>The boundaries of a defined baking zone have been altered.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTEVENT_EDITSTATECHANGE</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>The state of the axis buttons has been altered by the user.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTEVENT_UNDO</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>The user requested an Undo action.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTEVENT_REDO</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>The user requested a Redo action.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=7 WIDTH=700>
+			<P><CODE><B>DTEVENT_KEYFUNCTION</B></CODE></P>
+			<DL>
+				<DD>A key-modification event has occurred.&nbsp; The <CODE>value</CODE>
+				data member of the provided <CODE>DTEventParam</CODE> pointer
+				will have one of the following values:&nbsp; 
+				</DD></DL>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=4 WIDTH=38 VALIGN=TOP></TD>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><BR><TT><B>DTACTION_SELECT</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P><BR>Keyframe selections have changed (added or removed)</P>
+		</TD>
+		<TD ROWSPAN=4 COLSPAN=2 WIDTH=114 VALIGN=TOP></TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTACTION_SHIFT</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>Keyframes have been shifted to a new time index</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>DTACTION_SHIFT_COPY</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>Copy/paste operation of keyframes at a new location</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201 VALIGN=TOP>
+			<P><TT><B>DTACTION_CREATE_KEY</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>User request to create a new keyframe.&nbsp; The <CODE><B>offset</B></CODE>
+			member of the DTEventParam argument will hold the time index where
+			the key is to be created.</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=7 WIDTH=700>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">Each of these key-function types
+				can be specifically allowed or disallowed by the plug-in using
+				the <CODE>allow</CODE> function pointer.&nbsp; 
+				</DD><DD STYLE="margin-bottom: 0.2in">
+				Upon receiving notification of any of these events, the plug-in
+				may query the current keyframe selection or selection range
+				settings, expose new envelope arrangements, or have the Dopetrack
+				refresh its display after modification of the exposed envelopes. 
+				</DD></DL>
+			<P>
+			<CODE><B>DTEVENT_BAKEZONECHANGE</B></CODE></P>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">The user has altered the
+				boundaries of one of the defined baking zones.&nbsp; The <CODE>value</CODE>
+				member of the <CODE>DTEventParam</CODE> structure will hold the
+				index of the altered baking zone.&nbsp; When this event is
+				received, the plug-in should immediately call the
+				<B>queryBakeZones()</B> Dopetrack function to update any cached
+				internal bake zone data.</DD></DL>
+			<P>
+			<CODE><CODE><B>DTEVENT_EDITSTATECHANGE</B></CODE></CODE></P>
+			<DL>
+				<DD>The user has altered the state of one of the axis buttons
+				that the plug-in has enabled.&nbsp; The <CODE>value</CODE> member
+				of the <CODE>DTEventParam</CODE> structure will hold a set of bit
+				flags that indicate the state of each button.&nbsp; 
+				</DD></DL>
+		</TD>
+	</TR>
+	<TR>
+		<TD ROWSPAN=3 WIDTH=38 VALIGN=TOP></TD>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><BR><TT><B>X</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P><BR>bit 1 is set if the button is enabled (1&lt;&lt;0)</P>
+		</TD>
+		<TD ROWSPAN=3 COLSPAN=2 WIDTH=114 VALIGN=TOP></TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>Y</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>bit 2 is set if the button is enabled (1&lt;&lt;1)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=2 WIDTH=201>
+			<P><TT><B>Z</B></TT></P>
+		</TD>
+		<TD COLSPAN=2 WIDTH=346>
+			<P>bit 3 is set if the buttno is enabled (1&lt;&lt;2)</P>
+		</TD>
+	</TR>
+	<TR>
+		<TD COLSPAN=7 WIDTH=700>
+			<P><STRONG><STRONG>Tool Drawing</STRONG></STRONG></P>
+			<P>The margins to the left and right of the open Dopetrack are
+			available to plug-ins for their drawing needs.&nbsp; Using a
+			series of exported drawing functions, the plug-in can display any
+			information in these areas that will aid the user in their
+			interactions.</P>
+			<P>The <CODE>drawfuncs</CODE> member of the <CODE>LWDopetrackProxy</CODE>
+			structure contains a list of drawing functions that the plug-in
+			can be used to update either of these two margin areas.</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef struct _dtdrawcallbacks<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;
+			*(*context)(int side);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*erase)(int x,int y,int w,int h);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*pixel)(int x,int y,int color);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*line)(int x1,int y1,int x2,int y2,int
+			color);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;
+			(*rectOutline)(int x,int y,int w,int h,int color);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*rectFilled)(int x,int y,int w,int h,int
+			bcolor,int fcolor);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*border)(int x,int y,int w,int h);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*divider)(int x,int y,int w);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*text)(int x,int y,int color,const char
+			*text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;
+			(*text_box)(int x,int y,int w,int h,const char *text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			void&nbsp;&nbsp; (*button)(int x,int y,int w,int h,const char
+			*text);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;
+			(*flush)(void);<BR>&nbsp;&nbsp;&nbsp; } DTDrawFuncs,
+			*DTDrawFuncsID;</CODE></P>
+			<PRE STYLE="margin-bottom: 0.2in">dim[2] context( side )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Before performing any drawing, the plug-in should make a call to
+				this function to select the margin context to receive the drawing
+				action.&nbsp; A value of zero (0) chooses the left margin, and a
+				value of one (1) chooses the right margin.&nbsp; An integer
+				pointer is returned that contains the width and height dimensions
+				of the selected margin. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">erase( x, y, w, h )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Erases the specified area of the drawing context to the
+				appropriate background color/image. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">pixel( x, y, color )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a single pixel in the specified color at the indicated
+				location. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">line( startx, starty, endx, endy, color )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a line segment in the specified color between the start and
+				end coordinates. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">recOutline( x, y, w, h, color )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a rectangular box using the specified line color. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">recFilled( x, y, w, h, bordercolor, fillcolor )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a rectangular box using the specified line <CODE>bordercolor</CODE>
+				for the outline, and the interior using the specified <CODE>fillcolor</CODE>.
+								</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">border( x, y, w, h )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a 3D-look rectangular border. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">divider( x, y, w )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a 3D-look line divider. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">text( x, y, color, text )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws provided text string at the indicated location with the
+				specified color. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">text_box( x, y, w, h, text )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws provided text string within the specified bounding box.&nbsp;
+				This function is intended for use with RichText strings. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">button( x, y, w, h, color )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Draws a button in the current LightWave interface style.&nbsp; <CODE>x</CODE>
+				and <CODE>y</CODE> are the column and row position of the upper
+				left corner of the button.&nbsp; <CODE>w</CODE> and <CODE>h</CODE>
+				are the width and height, respectively.&nbsp; You can
+				subsequently use the <CODE>text()</CODE> or <CODE>text_box()</CODE>
+				functions to draw a label upon the button face. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">flush( )</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Causes an immediate re-draw of the Dopetrack, along with its left
+				and right margin areas. 
+				</DD></DL>
+			<P>
+			<STRONG>Mouse Events</STRONG></P>
+			<P>In addition to drawing capabilities, plug-ins can register for
+			events in these areas, creating a two-way interface mechanism,
+			effectively providing these two margin areas to the plug-in for
+			their own, context-specific interface needs.&nbsp; In order to
+			receive mouse events in these areas, the plug-in needs to fill in
+			the pointer for the mouseEvent function when it registers with the
+			Dopetrack.</P>
+			<P>Three event types are provided to the plug-in's event callback,
+			defined by the following constants:</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef enum<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			DTMOUSE_DOWN,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			DTMOUSE_MOVE,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			DTMOUSE_UP<BR>&nbsp;&nbsp;&nbsp; } DTMouseEvent;</CODE></P>
+			<P>When an event occurs, the callback function will be passed a
+			pointer to a <CODE>DTMouseParam</CODE> structure.</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; typedef struct _dtevent_mouse_st<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DTMouseEvent
+			event;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int
+			context;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int
+			x,y;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int
+			w,h;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int button;<BR>&nbsp;&nbsp;&nbsp;
+			} DTMouseParam, *DTMouseParamID;</CODE></P>
+			<PRE STYLE="margin-bottom: 0.2in">event</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Contains one of <CODE>DTMOUSE_DOWN</CODE>, <CODE>DTMOUSE_MOVE</CODE>,
+				<CODE>DTMOUSE_UP</CODE>. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">context</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Will hold a zero (0) if the event took place in the left margin
+				of the Dopetrack, or one (1) if it occurred in the right margin. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">x,y</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				The location of the event.&nbsp; The values are relative to the
+				boundaries of the margin area. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">w,h</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Indicates the dimensions of the margin area where the event
+				occurred. 
+				</DD></DL>
+			<PRE STYLE="margin-bottom: 0.2in">button</PRE>
+			<DL>
+				<DD STYLE="margin-bottom: 0.2in">
+				Indicates which mouse button was pressed.&nbsp; Will hold zero
+				(0) for left, one (1) for right, and (2) for the middle button. 
+				</DD></DL>
+			<P>
+			<STRONG>Examples</STRONG></P>
+			<P>The following code fragments provide a better understanding of
+			the use of the Dopetrack Proxy mechanism. 
+			</P>
+			<P><B><FONT SIZE=2>Registration</FONT></B> 
+			</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; static DTToolCallbacks dtcallbacks = {
+			_dtUserEvent,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			_dtAllow,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			_dtMenuCount,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			NULL,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// no sub-menus defined<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			_dtMenuSep,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			NULL,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// menu items always
+			enabled<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			_dtMenuItem,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			_dtMenuSelect };<BR>&nbsp;&nbsp;&nbsp; ....<BR>&nbsp;&nbsp;&nbsp;
+			dtprox =
+			(LWDopetrackProxyID)(*global)(LWDOPETRACK_GLOBAL,GFUSE_TRANSIENT);<BR>&nbsp;&nbsp;&nbsp;
+			if(dtprox)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*dtprox-&gt;toolRegister)(&amp;dtcallbacks);</CODE></P>
+			<P><B><FONT SIZE=2>Envelope Exposure</FONT></B> 
+			</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; static LWEnvelopeID expose[4];<BR>&nbsp;&nbsp;&nbsp;
+			static const char * channel_names[] = {&quot;L&quot;,&quot;C&quot;,&quot;M&quot;,NULL};<BR>&nbsp;&nbsp;&nbsp;
+			static int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			channel_states[] = {1,0,1};<BR>&nbsp;&nbsp;&nbsp; ...<BR>&nbsp;&nbsp;&nbsp;
+			dtprox =
+			(LWDopetrackProxyID)(*global)(LWDOPETRACK_GLOBAL,GFUSE_TRANSIENT);<BR>&nbsp;&nbsp;&nbsp;
+			if(dtprox)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*dtprox-&gt;exposeEnvelopes)(expose,channel_names,channel_states);</CODE>
+						</P>
+			<P><B><FONT SIZE=2>Support Functions</FONT></B> 
+			</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp; void _dtUserEvent(DTEventParamID
+			event)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			DTKeySelectID selected_keys;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWDopetrackProxyID dtprox;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			dtprox =
+			(LWDopetrackProxyID)(*GLOBAL)(LWDOPETRACK_GLOBAL,GFUSE_TRANSIENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(!dtprox) return;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			switch(event-&gt;event)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTEVENT_KEYFUNCTION:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// the user has performed some action on the exposed
+			keys<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// regardless of the action, get the selected key
+			times<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			selected_keys = (*dtprox-&gt;querySelectedKeys)();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(!selected_keys) break; // nothing selected<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			switch(event-&gt;value)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_SELECT:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_SHIFT:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_SHIFT_COPY:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_CREATE_KEY:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTEVENT_EDITSTATECHANGE:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// the state of an axis button has changed. event-&gt;value
+			is:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// 'X' if(1&lt;&lt;0) (axis is enabled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// 'Y' if(1&lt;&lt;1) (axis is enabled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// 'Z' if(1&lt;&lt;2) (axis is enabled)<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTEVENT_UNDO:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// undo my last action<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break; </CODE>
+			</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTEVENT_REDO:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// redo my last action<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break; </CODE>
+			</P>
+			<P><CODE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			default:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// any other actions are context explicit, and<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// come only from any menu the plug-in may chose<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// to provide (see the menu functions below...)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp; int _dtAllow(DTKeyAction action)<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // this function
+			controls the intrinsic actions available<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// to anybody using the Dopetrack -- keyframe selection,
+			movement,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // and
+			value copying. the tool plug-in can allow or disallow<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// any of these specific functions.<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// any functionality beyond this is strictly defined by
+			the<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // tool plug-in,
+			and exposed to the user via the context menu<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// mechanism.<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			switch(action)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_SELECT:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// allow the user to select exposed keyframes?<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_SHIFT:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// allow the user to move selected keyframes to a new
+			location?<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_SHIFT_COPY:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// allow the user to copy values from selected
+			keyframes<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// to create new ones at a new location?<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case DTACTION_CREATE_KEY:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// allow the user to create a new keyframe?<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			default:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			return(0); // in case new options are added<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return(0);<BR>&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp; int _dtMenuCount(int menuID)<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWTime&nbsp;
+			start,end;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWDopetrackProxyID dtprox;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// how many menu items will be displayed?<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(menuID == 0)&nbsp;&nbsp; // main context menu<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			dtprox =
+			(LWDopetrackProxyID)(*GLOBAL)(LWDOPETRACK_GLOBAL,GFUSE_TRANSIENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(!dtprox) return(0);<BR><BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			(*dtprox-&gt;querySelection)(&amp;start,&amp;end);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp; if(start == end)&nbsp; // no selection exists
+			<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp; return(3);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp; return(2);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// &quot;Moe&quot; is only available with a selection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return(0);&nbsp;&nbsp;
+			// no sub-menus defined, so nothing more to check<BR>&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp; const char * _dtMenuItem(int
+			menuID,int num)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			static const char *menu_items[] =
+			{&quot;Larry&quot;,&quot;Curly&quot;,&quot;Moe&quot;};<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(menuID == 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			return(menu_items[num]);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			return(NULL);&nbsp;&nbsp; // no sub-menus defined<BR>&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp; int * _dtMenuSep(int menuID)<BR>&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; static int
+			*menu_seps[] = {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			0,&nbsp;&nbsp; //<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			1,&nbsp;&nbsp; // separator following &quot;Curly&quot; on
+			menu<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			0 }; //<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(menuID == 0)&nbsp;&nbsp; // main context menu<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			return(menu_seps); <BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			return(NULL);&nbsp;&nbsp;&nbsp;&nbsp; // no sub-menus defined <BR>&nbsp;&nbsp;&nbsp;
+			}<BR><BR>&nbsp;&nbsp;&nbsp; void _dtMenuSelect(int menuID,int
+			num)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			LWDopetrackProxyID dtprox;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// the user selected one of my menu items. perform<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			// the processing.<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			dtprox =
+			(LWDopetrackProxyID)(*GLOBAL)(LWDOPETRACK_GLOBAL,GFUSE_TRANSIENT);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(!dtprox) return;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			if(menuID == 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			switch(num)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+			{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp; case 0: // Larry<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			case 1: // Curley<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp; case 2: // Moe<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;
+			}</CODE></P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

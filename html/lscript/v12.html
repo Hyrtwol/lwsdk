@@ -1,0 +1,400 @@
+<HTML>
+<!-- @@GET/bob/lscript -->
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#0000F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v1.2 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v1.2 Release Notes</H1>
+
+<br><br>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected the LScript software to detect ScreamerNet and behave properly
+  therein.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The LWIO Object Agent, provided to load() and save() UDFs, was missing a
+  writeVector() method for working with binary files.  This has been
+  corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new surface command has been added to LScript for Modeler.
+  Copysurface() behaves like createsurface() in that it will create a new
+  surface designator, but copysurface() takes an additional (required)
+  parameter that is the name of an existing surface from whom settings will
+  be taken.
+
+            copysurface("ExistingSurface","NewSurface");
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The conversion functions integer(), number() and vector() have been
+  altered so that they will scan a provided character string until they
+  find the first numeric occurrence (a number or a period [.] followed by a
+  number) before they attempt to convert.
+
+            x = integer("My number: 55");   // returns 55
+            x = number("fskd#jdl.532(iew"); // returns .532
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LWObject Object Agent has had additional functions added.   Whereas
+  you can acquire attribute information using the param() method with a
+  specifier (POSITION, ROTATION, etc.), you can now use individual methods
+  to acquire the same information.
+
+            getPosition(&lt;time_index&gt;)
+            getRight(&lt;time_index&gt;)
+            getUp(&lt;time_index&gt;)
+            getForward(&lt;time_index&gt;)
+            getRotation(&lt;time_index&gt;)
+            getScaling(&lt;time_index&gt;)
+            getPivot(&lt;time_index&gt;)
+            getWorldPosition(&lt;time_index&gt;)
+            getWorldRight(&lt;time_index&gt;)
+            getWorldUp(&lt;time_index&gt;)
+            getWorldForward(&lt;time_index&gt;)
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The return value of the LWObject Object Agent method param() (as well as
+  the individual methods discussed previously) has been altered from three
+  individual numeric values to a single vector value.  This was done to
+  simplify operations such as comparisons and to reduce memory and
+  processing overhead by the implicit creation of arrays.
+
+          newtime: id, frame, time
+          {
+              pivot = id.param(PIVOT,time);   // 'pivot' is now a vector
+                                                // instead of 'pivot[3]'
+              ...
+
+          newtime: id, frame, time
+          {
+              pivot = id.getPivot(time);      // ditto
+              ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The file() function call has been renamed to File() in order to adhere to
+  Object Agent creation protocol.  The original function name will persist
+  through this release to allow for time to update existing scripts.  The
+  file() function will no longer exist in the next release of the LScript
+  engine.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  A new layer-management function has been added to LScript for Modeler.
+  getfull() is the inverse of getempty(), and will return an array of
+  layers that contain mesh data.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Replacement layer management functions have been added to LScript for
+  Modeler. Although no new layer functionality is added, these new names
+  are more standardized in their construction.  The existing layer
+  management functions (getempty(), fglayers(), etc.) will be retired in
+  the next release of LScript for Modeler, so please update scripts
+  appropriately.
+
+            New Name        Obsolete Name
+
+            lyrfg()         fglayers()
+            lyrbg()         bglayers()
+            lyrdata()       getfull()
+            lyrempty()      getempty()
+            lyremptyfg()    getemptyfg()
+            lyremptybg()    getemptybg()
+            lyrswap()       swaplayers()
+            lyrsetfg()      setlayer()
+            lyrsetbg()      setblayer()
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The NONPLANAR option to selpolygon() was not correctly allowing its
+  numeric argument to be optional.  This has been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The requester control mechanism has undergone an overhaul.  New functions
+  have been added that replace the existing creation functions and bring
+  new functionality to the scripting interface.  The existing control
+  creation functions addcontrol(), addtext() and all Layout-extended
+  functions (addrgb(), addcheckbox(), etc.) are now obsolete and will be
+  removed in the next release of LScript.
+
+ Function         Argument                                   Application
+
+ ctlstring()      &lt;title&gt;,&lt;string&gt;                           Modeler/Layout
+ ctlinteger()     &lt;title&gt;,&lt;integer&gt;                          Modeler/Layout
+ ctlnumber()      &lt;title&gt;,&lt;number&gt;                           Modeler/Layout
+ ctlvector()      &lt;title&gt;,&lt;vector&gt;                           Modeler/Layout
+ ctldistance()    &lt;title&gt;,&lt;number&gt;                           Modeler/Layout
+ ctlchoice()      &lt;title&gt;,&lt;button&gt;,&lt;labels&gt;[,&lt;orientation&gt;]  Modeler/Layout
+ ctltext()        &lt;title&gt;,&lt;text&gt;[,&lt;text&gt;...]                 Modeler/Layout
+ ctlcolor()       &lt;title&gt;,&lt;vector&gt;|&lt;int&gt;|&lt;int&gt;,&lt;int&gt;,&lt;int&gt;   Modeler/Layout
+ ctlsurface()     &lt;title&gt;,&lt;string&gt;                           Modeler
+ ctlfont()        &lt;title&gt;,&lt;integer&gt;                          Modeler
+
+ ctlrgb()         &lt;title&gt;,&lt;vector&gt;|&lt;int&gt;|&lt;int&gt;,&lt;int&gt;,&lt;int&gt;   Layout
+ ctlhsv()         &lt;title&gt;,&lt;vector&gt;|&lt;int&gt;|&lt;int&gt;,&lt;int&gt;,&lt;int&gt;   Layout
+ ctlcheckbox()    &lt;title&gt;,&lt;boolean&gt;                          Layout
+ ctlfilename()    &lt;title&gt;,&lt;string&gt;                           Layout
+
+ ctlallitems()    &lt;title&gt;                                    Layout
+ ctlmeshitems()   &lt;title&gt;                                    Layout
+ ctlcameraitems() &lt;title&gt;                                    Layout
+ ctllightitems()  &lt;title&gt;                                    Layout
+ ctlboneitems()   &lt;title&gt;                                    Layout
+ ctlimageitems()  &lt;title&gt;                                    Layout
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Random number generation in LScript has been altered to create a wider
+  dispersal of numbers for random() calls that happen very close to each
+  other.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The random() function has been enhanced to accept and return negative
+  integer values as well as positive.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The save() and load() UDFs were not functioning properly when called for
+  binary files (as is the case with LScript Procedural Texture).  This has
+  been corrected.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  The LScript Image Filter architecture now has two new functions
+  available, for use during image caching (see cache()).  getpixel() and
+  putpixel() allow direct column and row access to pixel data.  These
+  functions only operate if image caching is enabled.
+
+ Function   Argument                                     Return
+
+ getpixel() &lt;col&gt;,&lt;row&gt;                                  red,grn,blu,alpha
+ putpixel() &lt;col&gt;,&lt;row&gt;,&lt;red&gt;[,&lt;grn&gt;[,&lt;blu&gt;[,&lt;alpha&gt;]]]  none
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The round() function has been corrected/enhanced to accept a second, non-
+  optional integer parameter to indicate the number of decimals of
+  precision to be retained.  A value of '0' indicates that the provided
+  number is to be rounded up to the nearest whole number.
+
+            i = round(45.3465,2) // returns '45.35'
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  A new function called angle() has been added to LScript.  This function
+  will return the angle, in degrees, between two points on a specified
+  plane (XZ, YZ, or XY).  It accepts two vectors representing the two
+  points, and a third parameter that specifies the axis perpendicular to
+  the plane in which the angle should be calculated.
+
+            ...
+            editbegin();
+              pnt1 = pointinfo(points[1]);
+              pnt2 = pointinfo(points[2]);
+            editend();
+
+            info(angle(pnt1,pnt2,X),    // return angle in the YZ plane
+                 " degrees");
+            ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  The selpoint() and selpolygon() functions have been enhanced to accept
+  arrays or initialization blocks of index or identifier values when the
+  POINTID, POINTNDX, POLYID, or POLYNDX selection tags are used.
+
+            ...
+            selmode(USER);
+
+            count = editbegin();
+              a[1] = points[1];
+              a[2] = points[count];
+            editend();
+
+            selpoint(SET,POINTID,a);  // select first and last points
+            ...
+
+            ...
+            selmode(USER);
+            selpolygon(SET,POLYNDX,@1,3,5@);  // select polygons 1,3 and 5
+            ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected the engine to allow point and polygon ids to be used in
+  initialization blocks.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+  Corrected target-name construction for the LSC-LW compiler on the Mac
+  and Sun platforms.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+  Corrected memory release problems with the LSC-LW and LSC-MD compilers.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

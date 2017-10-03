@@ -1,0 +1,523 @@
+<html>
+
+<head>
+<title>Classes: NodeHandler</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="metool.html"><img width="96" height="20"
+    border="0" src="../images/navlt.gif" alt="MeshEditTool"></a></td>
+    <td width="96" align="left"><a href="objload.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="ObjectLoader"></a></td>
+    <td width="96" align="left"><a href="../classes.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Classes"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+<h3>
+NodeHandler<br>
+NodeInterface</h3>
+<font size=-1><b>Availability</b>&nbsp; LightWave&reg; 9.0</font>
+<br><font size=-1><b>Component</b>&nbsp; Layout</font>
+<br><font size=-1><b>Header</b>&nbsp; <a href="../../include/lwnodes.h">lwnodes.h</a></font>
+<p>The NodeHandler provides a Node based aproach to most texturing or image based/procedural/gradient modifyers within LightWave&reg;.</p>
+<p><b>Handler Activation Function</b>
+<pre>   XCALL_( int ) MyNode( int version, GlobalFunc *global,
+      LWNodeHandler *local, void *serverData );</pre>
+The <tt>local</tt> argument to a NodeHandler activation function is
+an LWNodeHandler.
+<pre>   typedef struct st_LWNodeHandler {
+      LWInstanceFuncs *<b>inst</b>;
+      LWItemFuncs     *<b>item</b>;
+      LWRenderFuncs   *<b>rend</b>;
+      void            (*<b>evaluate</b>)(LWInstance, LWNodalAccess*, 
+                                  NodeOutputID, NodeValue  );
+      void            (*<b>customPreview</b>)(LWInstance, int width, int height ); 
+   } LWNodeHandler;</pre>
+The first three members of this structure are the standard <a href="../handler.html">handler
+functions</a>. In addition to these, Node provides a evaluation and preview function.
+      <dl> 
+        <dt><tt><strong>evaluate</strong>( instance, access, ID, value)</tt></dt>
+        <dd>The evaluation function receives the LWNodalAccess structure.
+            <dl>
+                <dt>ID</dt><dd>The output belonging to this node.</dd>
+                <dt>value</dt><dd>Value you need to set with the output functions.</dd>
+            </dl>
+        </dd>
+        <dt><br><tt><strong>customPreview</strong>( instance, width, height )</tt></dt>
+        <dd>customPreview is called when the node has <tt>NPT_CUSTOM</tt> preview type set.</dd>
+      </dl>
+
+<p><b>Node Preview Handeling</b>
+<p>The Mode of the Preview itself is done using the following:<br>
+<pre>typedef enum { NPT_RENDER = 0, NPT_CUSTOM, NPT_OFF } <b>NodePreviewType</b>;</pre>
+<p>The Following defines how to draw in the preview area.
+
+<pre>   typedef struct LWNodeDrawFuncs_t {
+      void   (*<b>drawPixel</b>)( NodeID node, int c, int x, int y );
+      void   (*<b>drawRGBPixel</b>)( NodeID node, int r, int g, int b, int x, int y );
+      void   (*<b>drawLine</b>)( NodeID node, int c, int x, int y, int x2, int y2 );
+      void   (*<b>drawBox</b>)( NodeID node, int c, int x, int y, int w, int h );
+      void   (*<b>drawRGBBox</b>)( NodeID node, int r, int g, int b, int x, int y, int w, int h );
+      int    (*<b>textWidth</b>)( NodeID node, char *s );
+      int    (*<b>textHeight</b>)( NodeID node, char *s );
+      void   (*<b>drawText</b>)( NodeID node, char *s, int c, int x, int y );
+      void   (*<b>blitNode</b>)( NodeID node );
+   } LWNodeDrawFuncs;</pre>
+
+   <dl>
+      <tt>
+      <dt><strong>drawPixel</strong>( nodeid, color, x, y )<br>
+        <strong>drawRGBPixel</strong>( nodeid, r, g, b, x, y )</dt>
+      </tt>
+      <dd>Draw a pixel. The coordinates are relative to the upper-left corner of the node preview area.
+        The color is specified as one of the palette colors defined in lwpanel.h or as levels of
+        red, green and blue between 0 and 255.</dd>
+      <tt>
+      <dt><br>
+        <strong>drawLine</strong>( nodeid, color, x1, y1, x2, y2 )</dt>
+      </tt>
+      <dd>Draw a line connecting the endpoints.</dd>
+      <tt>
+      <dt><br>
+        <strong>drawBox</strong>( nodeid, color, x, y, w, h )<br>
+        <strong>drawRGBBox</strong>( nodeid, r, g, b, x, y, w, h )</dt>
+      </tt>
+      <dd>Draw a solid rectangle.</dd>
+      <tt>
+      <dt><br>
+        tw = <strong>textWidth</strong>( nodeid, string )<br>
+        th = <strong>textHeight</strong>( nodeid, string )</dt>
+      </tt>
+      <dd>The pixel width and height of the text in the font used by panels.</dd>
+      <tt>
+      <dt><br>
+        <strong>drawText</strong>( nodeid, string, color, x, y )</dt>
+      </tt>
+      <dd>Render a line of text.</dd>
+      <tt>
+      <dt><br>
+        <strong>blitNode</strong>( nodeid )</dt>
+      </tt>
+      <dd>Blit the node into the editor area.
+      The node will be the only node drawn on the area,
+      and all the other nodes will remain below this node.</dd>
+    </dl>
+
+
+<br><b>Interface Activation Function</b> 
+<pre>   XCALL_( int ) MyInterface( int version, GlobalFunc *global,
+      LWInterface *local, void *serverData );</pre>
+This is the standard <a href="../handler.html#ui">interface activation</a>
+for handlers.
+<p><b>Node Access</b>
+<p>The access structure contains functions and fields that will be used for the NodeHandler.
+
+<pre>   typedef struct st_LWNodalAccess {
+      int                <b>sx, sy</b>;
+      LWDVector          <b>oPos, wPos</b>;
+      LWDVector          <b>gNorm</b>;
+      LWDVector          <b>wNorm</b>;
+      LWDVector          <b>wNorm0</b>;
+      LWDVector          <b>raySource</b>;
+      double             <b>rayLength</b>;
+      double             <b>spotSize</b>;
+      double             <b>cosine</b>;
+      double             <b>bumpHeight</b>;
+      double             <b>oXfrm[9], wXfrm[9]</b>;
+      LWIlluminateFunc   *<b>illuminate</b>;
+      LWRayTraceFunc     *<b>rayTrace</b>;
+      LWRayCastFunc      *<b>rayCast</b>;
+      LWRayShadeFunc     *<b>rayShade</b>;
+      LWRayTraceModeFunc *<b>rayTraceMode</b>;
+      int                <b>bounces</b>;
+      LWItemID           <b>sourceID</b>;
+      LWItemID           <b>objID</b>;
+      int                <b>polNum</b>;
+      LWPntID            <b>verts[4]</b>;
+      float              <b>weights[4]</b>;
+      float              <b>vertsWPos[4][3]</b>;
+      LWPolID            <b>polygon</b>;
+      double             <b>incomingEta</b>;
+      int                <b>ResourceContextIndex</b>;
+      int                <b>flags</b>;
+      RandomFloatData    <b>randomData</b>;
+      LWRandomFloatFunc  *<b>randomFloat</b>;
+      LWIlluminateNormalFunc *<b>illuminateNormal</b>;
+      LWIlluminateSampleNormalFunc *<b>illuminateSampleNormal</b>;
+      double             <b>subsx, subsy</b>;
+      LWDVector          <b>rayDir</b>;
+   } LWNodalAccess;</pre>
+
+<dl>
+<dt><tt><strong>sx</strong>, <strong>sy</strong></tt></dt>
+<dd>The pixel coordinates at which the spot is visible in the rendered image. This is
+labeled <strong>PIXEL</strong> in the figure, but note that it won't necessarily be the
+spot's projection onto the viewplane. When the viewing ray originates on a reflective
+surface, for example, the pixel coordinates are usually for the source of the ray (the
+spot's reflection). The pixel coordinate origin (0, 0) is in the upper left corner of the
+image.</dd>
+<dt><tt><br>
+<strong>oPos</strong></tt></dt>
+<dd>Spot position in object (Modeler) coordinates (the (<strong>X'</strong>, <strong>Y'</strong>,
+<strong>Z'</strong>) system in the figure).</dd>
+<dt><tt><br>
+<strong>wPos</strong></tt></dt>
+<dd>Spot position in world coordinates (<strong>X</strong>, <strong>Y</strong>, <strong>Z</strong>).
+This is the position after transformation and the effects of bones, displacement and
+morphing.</dd>
+<dt><tt><br>
+<strong>gNorm</strong></tt></dt>
+<dd>Geometric normal in world coordinates. This is the raw polygonal normal at the spot,
+unperturbed by smoothing or bump mapping. </dd>
+<dt><tt><br>
+<strong>wNorm0</strong></tt></dt>
+<dd>The interpolated normal in world coordinates. This is the same as <tt>gNorm</tt>, but
+after smoothing.</dd>
+<dt><tt><br>
+<strong>spotSize</strong></tt></dt>
+<dd>Approximate spot diameter, useful for texture antialiasing. The diameter is only
+approximate because spots in general aren't circular. On a surface viewed on edge, they're
+long and thin. </dd>
+<dt><tt><br>
+<strong>raySource</strong></tt></dt>
+<dd>Origin of the incoming viewing ray in world coordinates. Labeled <strong>EYE</strong> in
+the figure, this is often the camera, but it can also, for example, be a point on a
+reflective surface. </dd>
+<dt><tt><br>
+<strong>rayLength</strong></tt></dt>
+<dd>The distance the viewing ray traveled in free space to reach this spot (ordinarily the
+distance between <tt>raySource</tt> and <tt>wPos</tt>).</dd>
+<dt><tt><br>
+<strong>cosine</strong></tt></dt>
+<dd>The cosine of the angle between the raw surface normal and a ray pointing from the spot
+back toward the <tt>raySource</tt>. This is the same as the dot product of <tt>gNorm</tt>
+and the unit vector <tt>(raySource - wPos)/rayLength</tt>. Low values correspond to high
+angles and therefore glancing views. This is also a measure of how approximate the spot
+size is. </dd>
+<dt><tt><br>
+<strong>oXfrm</strong></tt></dt>
+<dd>Object to world transformation matrix. The nine values in this array form a 3 x 3 matrix
+that describes the rotation and scaling of the object. This is useful primarily for
+transforming direction vectors (bump gradients, for example) from object to world space.
+<pre>   LWDVector ovec, wvec;
+   wvec[ 0 ] = ovec[ 0 ] * oXfrm[ 0 ]
+             + ovec[ 1 ] * oXfrm[ 1 ]
+             + ovec[ 2 ] * oXfrm[ 2 ];
+   wvec[ 1 ] = ovec[ 0 ] * oXfrm[ 3 ]
+             + ovec[ 1 ] * oXfrm[ 4 ]
+             + ovec[ 2 ] * oXfrm[ 5 ];
+   wvec[ 2 ] = ovec[ 0 ] * oXfrm[ 6 ]
+             + ovec[ 1 ] * oXfrm[ 7 ]
+             + ovec[ 2 ] * oXfrm[ 8 ];</pre>
+</dd>
+<dt><tt><br>
+<strong>wXfrm</strong></tt></dt>
+<dd>World to object transformation matrix (the inverse of <tt>oXfrm</tt>).</dd>
+<dt><tt><br>
+<strong>objID</strong></tt></dt>
+<dd>The object being shaded. It's possible for a single shader instance to be shared between
+multiple objects, so this may be different for each call to the shader's evaluation
+function. For sample sphere rendering the ID will refer to an object not in the current
+scene. </dd>
+<dt><tt><br>
+<strong>polNum</strong></tt></dt>
+<dd>An index identifying the polygon that contains the spot. It may represent other
+sub-object information in non-mesh objects. See also the <tt>polygon</tt> field.</dd>
+<dt><tt><br>
+<strong>bounces</strong></tt></dt>
+<dd>The number of times the viewing ray has branched, or bounced, before reaching this spot.
+This value can be used to limit recursion, particularly the shader's own calls to the
+raytracing functions.</dd>
+<dt><tt><br>
+<strong>sourceID</strong></tt></dt>
+<dd>The item ID of the source of the viewing ray.</dd>
+<dt><tt><br>
+<strong>verts</strong></tt></dt>
+<dd>The four vertices surrounding the spot, useful for interpolating vertex-based surface
+data.</dd>
+<dt><tt><br>
+<strong>weights</strong></tt></dt>
+<dd>The weights assigned to the four neighboring vertices.</dd>
+<dt><tt><br>
+<strong>vertsWPos</strong></tt></dt>
+<dd>The world coordinate position of the neighboring vertices.</dd>
+<dt><tt><br>
+<strong>incomingEta</strong></tt></dt>
+<dd>Incoming refraction index.</dd>
+<dt><tt><br>
+<strong>ResourceContextIndex</strong></tt></dt>
+<dd>Current CPU thread running.</dd>
+<dt><tt><br>
+<strong>flags</strong></tt></dt>
+<dd>Bit fields describing the nature of the call. The <tt>LWRT_SHADOW</tt> bit tells you
+when the evaluation function is being called during shadow computations, which you might
+want to treat differently from &quot;regular&quot; shader evaluation.</dd>
+<dt><tt><br>
+<strong>randomFloat</strong></tt></dt>
+<dd>The function generates a random number on [&gt;0, &lt;1] interval.</dd>
+<dt><tt><br>
+<strong>subsx, subsy</strong></tt></dt>
+<dd>The pixel coordinates at which the spot is visible in the rendered image with sub-pixel precision.</dd>
+<dt><tt><br>
+	<strong>rayDir</strong></tt></dt>
+<dd>The incoming ray direction.</dd>
+</dl>
+
+    <p><strong>Rendering Functions</strong>
+    <dl>
+      <dt><tt>lit = <strong>illuminate</strong>( lightID, position, direction, color )<br>
+        len = <strong>rayTrace</strong>( position, direction, color )<br>
+        len = <strong>rayCast</strong>( position, direction )<br>
+	len = <strong>rayShade</strong>( position, direction, shaderAccess )<br>
+        len = <strong>rayTraceMode</strong>( position, direction, color, eta, rtmode )<br>
+	lit = <strong>illuminateSample</strong>( lightID, position, direction, sampler, data )<br>
+	lit = <strong>illuminateNormal</strong>( lightID, position, direction, normal, color )<br>
+	lit = <strong>illuminateSampleNormal</strong>( lightID, position, direction, normal, sampler, data )<br>
+      </tt></dt>
+      <dd>See the <a href="../raytrace.html">raytracing functions</a> page for a description of
+        these.</dd>
+    </dl>
+
+<br><p><b>Input Event Types</b>
+<p>Defines Input events on Nodes.
+
+<pre>typedef enum LWNodalEvent_t {
+	NIE_CONNECT = 0,          // When an output is connected to this input.
+	NIE_DISCONNECT,           // When the output was disconnected from this input.
+	NIE_INPUTNODEDESTROY      // When the node connected to this input was destroyed.
+} LWNodalEvent;</pre>
+
+<pre>typedef int NodeInputEvent( void *userData, NodeInputID, LWNodalEvent, ConnectionType );</pre>
+
+<p>Receives the user data, the input the function belongs to, the LWNodalEvent,
+and the type of the output connected to the input this function was called for, if the event was NIE_CONNECT,
+otherwise ConnectionType is 0.</p>
+
+<p>In addition there are various types to define input and output type with the following:</p>
+
+<pre>typedef enum { 
+    NOT_COLOR = 1,
+    NOT_SCALAR,
+    NOT_VECTOR,
+    NOT_INTEGER
+} ConnectionType;</pre>
+
+<dl>
+<dt>Color type</dt><dd>An array of 3 doubles.</dd>
+<dt>Scalar type</dt><dd>A single double value.</dd>
+<dt>Vector type</dt><dd>An array of 3 doubles.</dd>
+<dt>Integer type</dt><dd>A single integer value.</dd>
+</dl>
+<br>
+
+<p><b>Node Input Functions</b>
+
+<pre>   typedef struct    LWNodeInputFuncs_t {
+      NodeInputID    (*<b>create</b>)( NodeID, ConnectionType, const char*, NodeInputEvent* );
+      void           (*<b>destroy</b>)( NodeID, NodeInputID );
+      int            (*<b>evaluate</b>)( NodeInputID, LWNodalAccess*, void* value );
+      int            (*<b>check</b>)( NodeInputID ); 
+      NodeInputID    (*<b>first</b>)( NodeID );	
+      NodeInputID    (*<b>next</b>)( NodeInputID ); 
+      NodeInputID    (*<b>previous</b>)( NodeInputID );
+      int            (*<b>numInputs</b>)( NodeID );
+      NodeInputID    (*<b>byIndex</b>)( NodeID, int );
+      int            (*<b>getIndex</b>)( NodeID, NodeInputID );
+      void           (*<b>disconnect</b>)( NodeID, NodeInputID );
+      NodeID         (*<b>node</b>)( NodeInputID );
+   } LWNodeInputFuncs;</pre>
+
+      <dl> 
+        <dt> <tt><b>create</b>( NodeID, ConnectionTyp , name, NodeInputEvent )</tt></dt>
+        <dd> Create a new input for the node.</dd>
+	<br>
+		<dt> <tt><b>destroy</b>( NodeID, NodeInputID )</tt></dt>
+        <dd> Destroy an input from the node.</dd>
+	<br>
+        <dt> <tt><b>evaluate</b>( NodeInputID, access, value )</tt></dt>
+        <dd> Evaluate an input.</dd>
+        <dd> The value will be filled with a value received from the node evaluated,</dd>
+	<dd> according to the type of the input evaluated.
+	<dd> The value must point to a variable of the corresponding type of the input.</dd>
+	<dd> For example, If the input type is NOT_SCALAR, the value should be the address of a double variable.</dd>
+	<br>
+		<dt> <tt><b>check</b>( NodeInputID )</tt></dt>
+        <dd> Check if this input is connected to.</dd>
+	<br>
+		<dt> <tt><b>first</b>( NodeID )</tt></dt>
+        <dd> Get the first input from a node.</dd>
+	<br>
+		<dt> <tt><b>next</b>( NodeInputID )</tt></dt>
+        <dd> Get the next input.</dd>
+	<br>
+		<dt> <tt><b>previous</b>( NodeInputID )</tt></dt>
+        <dd> Get the previous input.</dd>
+	<br>
+		<dt> <tt><b>numInputs</b>( NodeID )</tt></dt>
+        <dd> Get the number of inputs for this node.</dd>
+	<br>
+		<dt> <tt><b>byIndex</b>( NodeID , index )</tt></dt>
+        <dd> Get an input by it's index number.</dd>
+        <dd> The index number of the first input is 1.</dd>
+	<br>
+		<dt> <tt><b>getIndex</b>( NodeID , NodeInputID )</tt></dt>
+        <dd> Get the index number of the input.</dd>
+        <dd> If the input doesn't belong to this node, returns 0.</dd>
+        <dd> The index number of the first input is 1.</dd>
+	<br>
+		<dt> <tt><b>disconnect</b>( NodeID , NodeInputID )</tt></dt>
+		<dd> Disconnect an output from this input.</dd>
+	<br>
+		<dt> <tt><b>node</b>( NodeInputID )</tt></dt>
+        <dd> Returns the node this input belongs to.</dd>
+	<br>
+	  </dl>
+
+<p><b>Node Output Functions</b>
+
+<pre>   typedef struct    LWNodeOutputFuncs_t {
+      NodeInputID    (*<b>create</b>)( NodeID, ConnectionType, const char* );
+      void           (*<b>destroy</b>)( NodeID, NodeOutputID );
+      void           (*<b>setValue</b>)( NodeValue, void* );
+      void           (*<b>getValue</b>)( NodeValue ); 
+      ConnectionType (*<b>getType</b>)( NodeValue );
+      NodeInputID    (*<b>first</b>)( NodeID );	
+      NodeInputID    (*<b>next</b>)( NodeOutputID ); 
+      NodeInputID    (*<b>previous</b>)( NodeOutputID );
+      int            (*<b>numInputs</b>)( NodeID );
+      NodeInputID    (*<b>byIndex</b>)( NodeID, int );
+      int            (*<b>getIndex</b>)( NodeID, NodeOutputID );
+      NodeID         (*<b>node</b>)( NodeOutputID );
+   } LWNodeOutputFuncs;</pre>
+
+      <dl> 
+        <dt> <tt><b>create</b>( NodeID, ConnectionType , name )</tt></dt>
+        <dd> Create a new output for the node.</dd>
+	<br>
+		<dt> <tt><b>destroy</b>( NodeID, NodeOutputID )</tt></dt>
+        <dd> Destroy an output from the node.</dd>
+	<br>
+        <dt> <tt><b>setValue</b>( NodeValue, value )</tt></dt>
+        <dd> Set the value for the output being evaluated.</dd>
+	<dd> Call from the node evaluation function when rendering.</dd>
+	<dd> Value should be the size of the corresponding output type.</dd>
+	<dd> For example, if the output type is NOT_COLOR, the value should be an array of 3 doubles.</dd>
+	<br>
+		<dt> <tt><b>getValue</b>( NodeValue )</tt></dt>
+        <dd> Get the pointer to the value cast to the input functions evaluate call.</dd>
+	<br>
+        <dt> <tt><b>getType</b>( NodeValue )</tt></dt>
+        <dd> Get the type of the connection the value is coming from.</dd>
+	<br>
+		<dt> <tt><b>first</b>( NodeID )</tt></dt>
+        <dd> Get the first output from a node.</dd>
+	<br>
+		<dt> <tt><b>next</b>( NodeOutputID )</tt></dt>
+        <dd> Get the next output.</dd>
+	<br>
+		<dt> <tt><b>previous</b>( NodeOutputID )</tt></dt>
+        <dd> Get the previous output.</dd>
+	<br>
+		<dt> <tt><b>numInputs</b>( NodeID )</tt></dt>
+        <dd> Get the number of outputs for this node.</dd>
+	<br>
+		<dt> <tt><b>byIndex</b>( NodeID , int )</tt></dt>
+        <dd> Get an output by it's index number.</dd>
+        <dd> The index number of the first output is 1.</dd>
+	<br>
+		<dt> <tt><b>getIndex</b>( NodeID , NodeOutputID )</tt></dt>
+        <dd> Get the index number of the output.</dd>
+        <dd> If the output doesn't belong to this node, returns 0.</dd>
+        <dd> The index number of the first output is 1.</dd>
+	<br>
+		<dt> <tt><b>node</b>( NodeOutputID )</tt></dt>
+        <dd> Returns the node this output belongs to.</dd>
+	<br>
+	  </dl>
+	  
+<p><b>Node Functions</b>
+
+<pre>   typedef struct    LWNodeFuncs_t {
+      const char     (*<b>nodeName</b>)( NodeID );
+      const char     (*<b>serverUserName</b>)( NodeID );
+      LWChanGroupID  (*<b>chanGrp</b>)( NodeID );
+      void           (*<b>setNodeColor</b>)( NodeID, int[3] );
+      void           (*<b>setNodeColor3</b>)( NodeID, int r, int g, int b );
+      void           (*<b>setNodePreviewType</b>)( NodeID, NodePreviewType );
+      void           (*<b>UpdateNodePreview</b>)( NodeID );
+  } LWNodeFuncs;</pre>
+      <dl>
+        <dt> <tt><b>nodeName</b>( NodeID )</tt></dt>
+        <dd> Get the name for the node in the editor.</dd>
+        <dd> Will be the name of the node, with it's index number added to it. Ie. "Texture (1)", etc.</dd>
+	<br>
+		<dt> <tt><b>serverUserName</b>( NodeID )</tt></dt>
+        <dd> Get the server name for this node.</dd>
+	<br>
+        <dt> <tt><b>chanGrp</b>( NodeID )</tt></dt>
+        <dd> Get the channel group for this node.</dd>
+	<br>
+		<dt> <tt><b>setNodeColor</b>( NodeID, int )</tt></dt>
+		<dd> Set the color for this node as an array of 3 integers.</dd>
+	<br>
+        <dt> <tt><b>setNodeColor3</b>( NodeID, r, g, b )</tt></dt>
+        <dd> Set the color for this node. using separated R, G and B values.</dd>
+	<br>
+		<dt> <tt><b>setNodePreviewType</b>( NodeID, NodePreviewType )</tt></dt>
+        <dd> Set the preview type for this node.</dd>
+	<br>
+		<dt> <tt><b>UpdateNodePreview</b>( NodeID )</tt></dt>
+        <dd> Do an immediate interface update for this node. Draws the preview, only for this node.</dd>
+	<br>
+      </dl>
+	  
+<p><b>Blending Modes</b>
+
+<pre>   typedef enum {	
+      Blend_Normal,		
+      Blend_Additive,		
+      Blend_Subtractive,	
+      Blend_Multiply,
+      Blend_Screen,		
+      Blend_Darken,		
+      Blend_Lighten,		
+      Blend_Difference,
+      Blend_Negative,		
+      Blend_ColorDodge,	
+      Blend_ColorBurn,	
+      Blend_Red,
+      Blend_Green,		
+      Blend_Blue 
+  } BlendingMode;</pre>
+<br>
+
+<p><b>Node Utility Functions</b>
+<pre>   typedef struct LWNodeUtilityFuncs_t {
+     void    (*Blend)( LWDVector, LWDVector, LWDVector, double, BlendingMode );
+     void    (*NodeAutosize)( NodeID, LWDVector scale, LWDVector position );
+  } LWNodeUtilityFuncs;</pre>
+<dl>
+<dt><tt><b>Blend</b>( Result, BG , FG , ALPHA , BlendingMode )</tt>
+<dd>Blend two nodes using the blending modes above, input includes foreground, background and alpha.</dd><br>
+<dt><tt><b>NodeAutosize</b>( NodeID, LWDVector scale, LWDVector position )</tt></dt>
+<dd>Scale and position vectors will be filled with the automatic values.</dd>
+</dl>
+<br>
+
+<p><b>Example</b>
+<p>The <a href="../../sample/Layout/Shader/specular_node/">Specular Node</a> sample demonstrates how to create a specular shading model node.
+
+</tr>
+</table>
+</body>
+</html>

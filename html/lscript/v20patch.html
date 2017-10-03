@@ -1,0 +1,273 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00FF00"
+      vlink="#00FF00">
+
+<TITLE>LScript v2.0 Patch Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.0 Patch Release Notes</H1>
+
+<table BORDER=1>
+  <tr>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v201">v2.0.1</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v202">v2.0.2</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+
+<A NAME=v201>
+
+<pre>
+<H3>patch: v2.0.1       released: 07.01.00</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A condition where the same variable name is used both as an IPC queue slot
+  reference and a local variable in an assignment caused the IPC mechanism to
+  break.
+
+        MyQueue$startFrame = startFrame;        // Bad Bob!  Bad!
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The foreach() iterator code was referencing the wrong variable when it
+  initialized the iteration sequence, causing a crash.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Corrected the layer-handling code to disregard reported layer limits
+  in Modeler 6 (layers are created as they are referenced, and there is
+  no practical limit).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Corrected the layer-handling code to use Modeler's new unlimited layer
+  management API calls.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The new array code in LScript was not correctly generating new arrays
+  upon reference.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The creation of "robust" arrays was being completely bypassed, thus
+  leaving declared multidimensional arrays holding only 'nil'.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v202>
+
+<pre>
+<H3>patch: v2.0.2       released: 07.15.00</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Corrected a bug in the renamesurface() function that renamed
+  a surface back to itself.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Corrected nextsurface() to accept a 'nil' argument to retrieve
+  the first surface.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Replace regular expression contained some code from the
+  initial development of LScript regular expressions that didn't
+  work correctly with the final implementation.  A crash was the
+  typical result when used.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The regexp() function would only construct Search regular
+  expressions.  It has been modified to generate Replace regular
+  expressions if two separate arguments are provided for compiling.
+
+  The first argument is the regular expression to match, the second
+  argument is the string to be used to replace any sequence of
+  characters that match.
+
+        search = regexp("^PUB");                // create a Search
+
+        replace = regexp("^PUB","static ");     // create a Replace
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Position() CS function was not properly accepting LScript
+  vector data types.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  LScript's byte-code compiler would become unstable, resulting
+  in a crash or a hang, if multi-byte characters were embedded in
+  the script.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<table>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF">
+        LScript v2.0.2 Archives
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF" size="-1">
+        (contains <strong>all</strong> plug-ins)
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v202_x86/ls202x86.zip">Intel</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     SGI
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Sun
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v202_mac/ls202mac.sit">Macintosh</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Alpha
+</font>
+  </tr>
+</table>
+
+<br><br>
+
+</CENTER>

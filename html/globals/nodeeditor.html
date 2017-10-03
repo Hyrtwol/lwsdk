@@ -1,0 +1,192 @@
+<html>
+
+<head>
+<title>Globals: Node Editor Functions</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="mtutil.html"><img width="96" height="20"
+    border="0" src="../images/navlt.gif" alt="Multithreading Utilities"></a></td>
+    <td width="96" align="left"><a href="objinfo.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="Object Info"></a></td>
+    <td width="96" align="left"><a href="../globals.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Globals"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+<H3>Node Editor</H3>
+<P><FONT SIZE=2><B>Availability</B>&nbsp; LightWave&reg; 9.0</FONT>
+<BR><FONT SIZE=2><B>Component</B>&nbsp; <FONT SIZE=2>Layout,Modeler</FONT> </FONT><BR><FONT SIZE=2><B>Header</B>&nbsp;
+<A HREF="../../include/lwnodeeditor.h">lwnodeeditor.h</A></FONT> 
+</P>
+<P>This global provides access to a user interface for editing nodes. </P>
+<P><STRONG>Global Call</STRONG></P>
+<PRE>   LWNodeEditorFuncs *nodeedf;
+   nodeedf = global( LWNODEEDITORFUNCS_GLOBAL, GFUSE_TRANSIENT );</PRE><P>
+<B>Root Node Functions</B> </P>
+<PRE> typedef struct LWRootNode_t {
+ NodePreviewType  previewType;
+ LWError          (*<B>init</B>)( NodeEditorID, int );
+ LWError          (*<B>newTime</B>)( NodeEditorID, LWFrame, LWTime );
+ void             (*<B>cleanup</B>)( NodeEditorID );
+ LWXPanelID       (*<B>rootPanel</B>)( NodeEditorID ); 
+ LWError          (*<B>rootOptions</B>)( NodeEditorID );
+ void             (*<B>rootPreview</B>)( NodeEditorID,
+		    LWNodalAccess*, LWDVector );
+ void             (*<B>rootCustomPreview</B>)( NodeEditorID,
+		    int, int );
+ } LWRootNode;</PRE><P>
+			The root node, is the destination node that all the other nodes
+			connect to.<BR>The client needs to evaluate the inputs, and handle
+			the implementation for whatever class it is used with.</P>
+			<DL>
+				<DT><TT><B>init</B>( editor , mode )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Init for the root node. For initializing render data for the root
+				node.</DD><DT>
+				<TT><B>newTime</B>( editor, frame, time )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Newtime for the root node. 
+				</DD><DT>
+				<TT><B>cleanup</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Cleanup for the root node. 
+				</DD><DT>
+				<TT><B>rootPanel</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Embedded xpanel, for the &ldquo;Node Properties&rdquo; panel.</DD><DT>
+				<TT><B>rootOptions</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Options is called when no xpanel is defined for the root node. 
+				</DD><DT>
+				<TT><B>rootPreview</B>( editor, access, color )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Preview function to draw the preview sphere for the root node.
+				The color is the resulting pixel color which the client should fill in.
+				The color will be scaled and clamped into [0, 255] range internally.
+				</DD><DT>
+				<TT><B>rootCustomPreview</B>( editor, width, height )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Custom preview function, for doing custom previews for the root
+				node.
+				</DD></DL>
+			<P>
+			<B>Node Editor Functions</B> 
+			</P>
+			<PRE> typedef struct st_LWNodeEditorFuncs {
+ NodeEditorID       (*<B>create</B>)( const char*, const char*, LWRootNode*, 
+                    void* );
+ void               (*<B>destroy</B>)( NodeEditorID );
+ void               (*<B>rename</B>)( const char*, NodeEditorID ); 
+ void               (*<B>setUpdateFunc</B>)( NodeEditorID, 
+                    nodeEditorUpdateFunc* );
+ LWError            (*<B>copy</B>)( NodeEditorID, NodeEditorID );
+ LWError            (*<B>save</B>)( NodeEditorID, const LWSaveState* );
+ LWError            (*<B>load</B>)( NodeEditorID, const LWLoadState* );
+ LWError            (*<B>init</B>)( NodeEditorID, int );
+ LWError            (*<B>newTime</B>)( NodeEditorID, LWFrame, LWTime );
+ void               (*<B>cleanup</B>)( NodeEditorID );
+ NodeInputID        (*<B>addInput</B>)( NodeEditorID, ConnectionType, 
+                    const char*, NodeInputEvent* );
+ void               (*<B>setEnvGroup</B>)( NodeEditorID, LWChanGroupID );
+ void               (*<B>setAutosize</B>)( NodeEditorID, nodeAutoSizeFunc* );
+ void               (*<B>setUserData</B>)( NodeEditorID, void* );
+ void               *(*<B>getUserData</B>)( NodeEditorID );
+ int                (*<B>numberOfNodes</B>)( NodeEditorID );
+ NodeInputID        (*<B>getInputByName</B>)( NodeEditorID, const char* );
+ NodeInputID        (*<B>getInputByIndex</B>)( NodeEditorID, int );
+ unsigned short int (*<B>getState</B>)( NodeEditorID );
+ void               (*<B>setState</B>)( NodeEditorID, unsigned short int );
+ int                (*<B>OpenNodeEditor</B>)( NodeEditorID );
+ int                (*<B>isOpenNodeEditor</B>)( NodeEditorID );
+ NodeID             (*<B>getRootNodeID</B>)( NodeEditorID );
+} LWNodeEditorFuncs;</PRE><P>
+			The node editor functions.</P>
+			<DL>
+			<DT><TT><B>create</B>( rootname, paneltitle, rootnodefuncs, userdata )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Create a node editor ID. 
+				</DD><DT>
+				<TT><B>destroy</B>( editor )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Destroy a node editor ID. 
+				</DD><DT>
+				<TT><B>rename</B>( newname, editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Rename the editor. It is essentially the title for the editor
+				window. 
+				</DD><DT>
+				<TT><B>setUpdateFunc</B>( editor, UpdateFunc )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Set the update function for the editor. 
+				</DD><DT>
+				<TT><B>copy</B>( to, from )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Copy the node editor data. 
+				</DD><DT>
+				<TT><B>save</B>( editor, SaveState )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Save the node editor data. 
+				</DD><DT>
+				<TT><B>load</B>( editor, LoadState )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Load the node editor data. 
+				</DD><DT>
+				<TT><B>init</B>( editor, mode )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Init needs to be called when rendering is being initialized.
+				<BR>This function calls Init for all the nodes in the editor.</DD><DT>
+				<TT><B>newTime</B>( editor, frame, time )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				This function calls newTime for all the nodes in the editor.</DD><DT>
+				<TT><B>cleanup</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				This function calls cleanup for all the nodes in the editor.<BR>Must
+				be called after evaluation is done, if Init was called.</DD><DT>
+				<TT><B>addInput</B>( editor, ConnectionType, name, InputEvent )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Add an input to the root node. 
+				</DD><DT>
+				<TT><B>setEnvGroup</B>( editor, ChanGroupID )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Set the envelope group for the editor. All node envelope groups
+				are parented into this group. 
+				</DD><DT>
+				<TT><B>setAutosize</B>( editor, AutoSizeFunc )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Set the autosize function for the editor.</DD><DT>
+				<TT><B>setUserData</B>( editor, userdata )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Set the userdata for this editor. 
+				</DD><DT>
+				<TT><B>getUserData</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Get the userdata from this editor. 
+				</DD><DT>
+				<TT><B>numberOfNodes</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Returns the number of nodes in this editor. 
+				</DD><DT>
+				<TT><B>getInputByName</B>( editor, inputname )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Get an input from the root node, by it's name. 
+				</DD><DT>
+				<TT><B>getInputByIndex</B>( editor, index )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Get an input from the root node, by it's index. 
+				</DD><DT>
+				<TT><B>getState</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Get the state. Enabled/Disabled. 
+				</DD><DT>
+				<TT><B>setState</B>( editor, state )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Set the state. 0 disables the rendering for this editor, and 1 enables it.
+				</DD><DT>
+				<TT><B>OpenNodeEditor</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Open the editor window. 
+				</DD><DT>
+				<TT><B>isOpenNodeEditor</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Is the node editor open, and set to this NodeEditorID?
+				</DD></DT>
+				<TT><B>getRootNodeID</B>( editor )</TT></DT><DD STYLE="margin-bottom: 0.2in">
+				Get the NodeID of the root node from this editor.
+				</DD></DL>
+			<P>
+			<B>Example</B> 
+			</P>
+			<P>The <A HREF="../../sample/Layout/DisplacementMap/nodedisp/nodedisp.c">Node Displacement</A>
+			sample is a displacement plugin that utilises a node editor to create the displacement.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

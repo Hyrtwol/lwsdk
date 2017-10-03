@@ -1,0 +1,247 @@
+<head>
+    <meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+    <title>9.2 Changes</title>
+    <style type="text/css">
+        <!--
+        tt { font-size: 10pt } 
+        pre { font-size: 10pt }
+    --></style>
+</head>
+<body lang="en-US" text="#000000" bgcolor="#ffffff" dir="LTR">
+    <table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+        <tr>
+            <td width="120" align="left"><a href="9.html"><img width="96" height="20" border="0" src="images/navlt.gif" alt="9.0 Changes"></a></td>
+            <td width="96" align="left"><a href="93.html"><img width="64" height="20" border="0" src="images/navrt.gif" alt="9.3 Changes"></a></td>
+            <td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0" src="images/proglw.gif" alt="Table of Contents"></a></td>
+        </tr>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="600"><br>
+                <h3>9.2 Changes</h3>
+                <p><small>March 21st, 2007</small>
+                </p>
+                <p>This is a list of the changes in the LightWave&reg; 9.2 release that affect the 
+                    SDK.</p>
+                <p><tt><a href="filefmts/lwsc4.html">lwsc4.html</a></tt>
+                    <ul>
+                        <li>
+                            Changes have been made to the scene file format to add baked object 
+                            identifiers.</li>
+                    </ul>
+                <p><tt><a href="globals/panel.html">panel.html</a></tt>
+                    <ul>
+                        <li>
+                            <tt>CHANNEL_CTL</tt>, <tt>*ITEM_CTL</tt>, and <tt>TREE_CTL</tt> use pointer values,
+                            not integer values as was previously incorrectly documented.</li>
+                    </ul>
+
+                <p><tt><a href="globals/xpanel.html">xpanel.html</a></tt>
+                    <ul>
+                        <li>
+                            Added text transformation callback, to allow value display to be customized.</li>
+                   </ul>
+
+                <p><tt><a href="../include/lwserver.h">lwserver.h</a></tt>
+                    <ul>
+                        <li>
+                            Added the Server Info global to allow plug-ins to query information about 
+                            server modules defined in the system.</li>
+                    </ul>
+                <p><tt><a href="../include/lwmaster.h">lwmaster.h</a></tt>
+                    <ul>
+                        <li>Added notification of changes in plugin state.</li>
+                        <li>Added the LWEVNT_NOTIFY_RENDER_ABORTED event notification.</li>
+                    </ul>
+                <p><tt><a href="../include/lwfilter.h">lwfilter.h</a></tt>
+                    <ul>
+                        <li>
+                            Added <tt>rayTraceMode</tt> and <tt>illuminateSample</tt> raytrace functions to <tt>
+                                LWPixelAccess</tt>.</li>
+                        <li>
+                            Added the LWPFF_MULTITHREADED flag.</li>
+                        <li>
+                            Incremented the pixel filter handler version to 6.</li>
+                    </ul>
+                <p><tt><a href="../include/lwvolume.h">lwvolume.h</a></tt>
+                    <ul>
+                        <li>
+                            Added <tt>illuminateSample</tt> to volumentric access structure.</li>
+                        <li>
+                        Incremented volumetric handler to version 6.<li>
+                        <li>
+                            Added <tt>illuminateSample</tt> to <tt>LWVRayFuncs->SetRenderFuncs()</tt>.</li>
+                        <li>
+                            Incremented VRayFuncs global to version 3.</li>
+                    </ul>
+                <p><tt><a href="../include/lwrender.h">lwrender.h</a></tt>
+                    <ul>
+                        <li>
+                            Added functions to <tt>LWCameraInfo</tt>:
+                            <ul>
+                                <li><tt>motionBlurPasses</tt></li>
+                                <li><tt>shutterEfficiency</tt></li>
+                                <li><tt>noiseSampler</tt></li>
+                                <li><tt>filmSize</tt></li>
+                                <li><tt>frameTiming</tt></li>
+                                <li><tt>antiAliasing</tt></li>
+                                <li><tt>overSampling</tt></li>
+                                <li><tt>diaphragm</tt></li>
+                            </ul>
+                        </li>
+                        <li>
+                            Incremented LWCameraInfo global to version 5.</li>
+                        <li>
+                            The retrieval of global camera controlled values through the
+                            camera info global has changed. The requirement that the camera
+                            be the current render camera for the global values to be returned
+                            has been removed.</li>
+                        <li>
+                            The camera evaluation functions global has been incremented to version 2
+                            to incorporate the changes made to the camera handler API (see below).
+                            Due to the extent of the changes, version 1 of this global is no longer
+                            supported.</li>
+                        <li>
+                            Changed the name of the <tt>LWOBJF_NODESENABLE</tt> flag to the more
+                            accurate and descriptive <tt>LWOBJF_NODEDISPENABLED</tt>. The flag is
+                            now also documented.</li>
+                        <li>
+                            The <tt>LWOBJF_NODEFORMERSAPPLIED</tt> object flag now takes into account
+                            all types of deformations.</li>
+                    </ul>
+                <p><tt><a href="../include/lwcamera.h">lwcamera.h</a></tt>
+                    <ul>
+                        <li>The camera handler API has undergone a significant make-over to support the
+                            improved motion blur and depth of field rendering. Camera evaluation is now
+                            also given a lens position and a time fraction. A <tt>newFrame()</tt> function
+                            has been added that is called at the start of a frame evaluation. The <tt>newPass()</tt>
+                            function has been removed. As a result, version 1 camera handler plugins are
+                            no longer supported and will not load.</li>
+                    </ul>
+
+                <p><tt><a href="../include/lwimage.h">lwimage.h</a></tt>
+                    <ul>
+                        <li>Incremented LWImageList global to version 5:
+                            <ul>
+                                <li>Added a <tt>create</tt> function to create new images in memory</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+
+                <p><a href="commands/layout.html">Commands: Layout</a></p>
+                <ul>
+                    <li>
+                        Several new related commands have been added to allow management of Master 
+                        class plugins.
+                        <ul>
+                            <li>
+                                <tt>ActivateMaster</tt></li>
+                            <li>
+                                <tt>ActivateMasterUnique</tt></li>
+                            <li>
+                                <tt>RemoveMaster</tt></li>
+                        </ul>
+                    </li>
+                    <li>
+                        Added commands to set the number of motion blur samples for the camera.
+                        <ul>
+                            <li>
+                                <tt>MotionBlurPasses</tt></li>
+                            <li>
+                                <tt>GlobalMotionBlurPasses</tt></li>
+                        </ul></li>
+                    <li>
+                        Added <tt>NoiseSampler</tt> command to set the noise sampler for the camera.</li>
+                </ul>
+                <p><a href="commands/layout.html">API</a></p>
+                <ul>
+                    <li>
+                        Support has been added for Mac OS X universal binary 
+                        plugins using the CFBundle method.</li>
+                </ul>
+                <p>LScript v2.9</p>
+                <ul>
+                    <li>
+                        LScript has been updated for the Macintosh OS X Universal Binary (UB)
+                        build of LightWave.
+                        <ul>
+                            <li>The <tt>getsep()</tt> function now reports the correct separator
+                            character (<tt>'/'</tt>) when running under the Universal Binary build.</li>
+                            <li>The <tt>platform()</tt> function now returns <tt>MACUB</tt> when
+                            running under the Universal Binary build.  (The <tt>MACINTOSH</tt> return value
+                            will now indicate the CFM version of Mac LightWave.)</li>
+                            <ul>
+                            <li><code>if(platform() == MACUB)</code></li>
+                            </ul>
+                            <li>The preprocessor <tt>@if</tt> test now supports <tt>MACUB</tt> as an
+                            indicator that LScript is running under the Universal Binary build.  (Again,
+                            <tt>MACINTOSH</tt> now represents the CFM build.)  For example:</li>
+                            <ul>
+                            <li><code>@if platform == MACUB</code></li>
+                            </ul>
+                        </ul>
+                    </li>
+                    <li>
+                        The <tt>ctlfilename()</tt> and <tt>ctlstring()</tt> functions now handle text
+                        lengths limited only by your computer's available memory.
+                    </li>
+                    <li>
+                        Support has been added for Master Event Notifications (see <a href="../include/lwmaster.h">lwmaster.h</a>)
+                        in the process() callback.  To enable Notifications for your script, you must provide the
+                        notification flags when requested, e.g.:<br>
+                        <pre>
+flags
+{
+    return(LWMASTF_LAYOUT,LWMASTF_RECEIVE_NOTIFICATIONS);
+}
+                        </pre>
+                    </li>
+                    <li>
+                        The Requester Control Object Agent has a new data member, <tt>label</tt>.  By
+                        reading and writing this value, you can alter the label text of a control that
+                        displays a label.
+                    </li>
+                    <li>
+                        A new file requester function called <tt>getmultifile()</tt> is now available.
+                        This is an open requester that allows multiple files to be selected by the user.
+                    </li>
+                    <li>
+                        The LScript Symbolic Debugger now supports debugging of scripts comprised of
+                        multiple "parts" (i.e., constructed using the @insert command).  When debugging
+                        a script that includes other parts, the debugger will make each available
+                        via a tab interface.  These parts can be selected, navigated, and breakpoints
+                        set or cleared even if they are not currently the focus of the debug session.
+                    </li>
+                </ul>
+
+                <p>Support for LP64 programming model</a></tt>
+                    <ul>
+                        <li>
+                            The use of 'long' has been removed in favor of 'int'.  The purpose
+                            of this change is to support LP64 programming models (where 'long' is 8 bytes, pointers are
+                            8 bytes).  In the previous LWSDK version, all currently supported platforms of LightWave treated 'long' as 4 bytes.
+                            The Macintosh architectures ppc64 and x86_64 use the LP64 programming model, whereas the i386 and ppc architectures use the ILP32
+                            programming model.  Windows x64 uses the LLP64
+                            programming model (where 'int' is 4 bytes, 'long' is 4 bytes, 'long long' is 8 bytes, pointers are 8 bytes).
+                            Windows (32bit as in Win2k and WinXP) uses the ILP32 programming model (where 'int' is 4 bytes, 'long' is 4 bytes, pointers are 4 bytes).
+                            This version of LWSDK is not compatible with any LP32 programming model versions of LightWave (e.g. pre-Windows 2000 or pre-Mac OS X).
+                            This will cause some (if only a minor) inconvenience for those needing to update existing plugin code.
+                            Starting with this LWSDK version, you can begin to develop Macintosh universal binaries with both 32bit and 64bit versions.
+                        </li>
+                        <li>
+                            Keep the size of pointers in mind when using the LWItemID data type, which is a pointer type (of which
+                            only the lower 32bits are used).  Macros to help typecast pointers to 32 bit values are provided in lwtypes.h
+                            (PTR2UINT and PTR2INT).  These are helpful in I/O operations on LWItemID data.  There are currently no
+                            8 byte read or write features in the LWSDK.
+                        </li>
+                    </ul>
+
+            </td>
+        </tr>
+    </table>
+    <p><br>
+        <br>
+    </p>
+</body>
+</html>

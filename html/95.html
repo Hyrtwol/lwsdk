@@ -1,0 +1,487 @@
+<head>
+    <meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+    <title>9.5 Changes</title>
+    <style type="text/css">
+        <!--
+                tt { font-size: 10pt } 
+                pre { font-size: 10pt }
+        --></style>
+</head>
+<body lang="en-US" text="#000000" bgcolor="#ffffff" dir="LTR">
+    <table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+        <tr>
+            <td width="120" align="left"><a href="931.html"><img width="96" height="20" border="0" src="images/navlt.gif" alt="9.3.1 Changes"></a></td>
+            <td width="96" align="left"><a href="96.html"><img width="64" height="20" border="0" src="images/navrt.gif" alt="9.6 Changess"></a></td>
+            <td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0" src="images/proglw.gif" alt="Table of Contents"></a></td>
+        </tr>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="600"><br>
+                <h3>9.5 Changes</h3>
+                <p><small>June 20, 2008</small>
+                </p>
+                <p>This is a list of the changes in the LightWave&reg; 9.5 release that affect the 
+                    SDK.</p>
+
+                <p><tt><a href="../include/lwtimer.h">lwtimer.h</a></tt>
+                    <ul>
+                        <li>
+                            Added the LWTimer access interface for constructing timer instances.
+                        </li>
+                    </ul>
+
+                <p><tt><a href="filefmts/lwsc5.html">lwsc5.html</a></tt>
+                    <ul>
+                        <li>
+                            The MorphTarget tag in the LightWave scene file has been promoted
+                            to an object identifier instead of an object index.</li>
+                        <li>
+                            The UseBonesFrom tag in the LightWave scene file has been promoted
+                            to an object identifier instead of an object index.</li>
+                    </ul>
+
+                <p><tt><a href="../include/lwimage.h">lwimage.h</a></tt>
+                    <ul>
+                         <li>
+                           Functions have been added to get EXIF and MakerNote information from an image.
+                           This has increased the <tt>LWImageUtil</tt> global version to 3.
+                         </li>
+                    </ul>
+                 </p>
+
+                <p><tt><a href="../include/lwimageio.h">lwimageio.h</a></tt>
+                    <ul>
+                         <li>
+                           EXIF and MakerNote support has been added to image loading and saving.
+                         </li>
+                    </ul>
+                 </p>
+
+                 <p><tt><a href="../include/lwmaster.h">lwmaster.h</a></tt>
+                    <ul>
+                         <li>
+                           Added the following Master plug-in handler notifications:
+                           <ul>
+                               <li><tt>LWEVNT_NOTIFY_LIST_UPDATE_OBJECTS</tt></li>
+                               <li><tt>LWEVNT_NOTIFY_LIST_UPDATE_LIGHTS</tt></li>
+                               <li><tt>LWEVNT_NOTIFY_LIST_UPDATE_CAMERAS</tt></li>
+                               <li><tt>LWEVNT_NOTIFY_LIST_UPDATE_BONES</tt></li>
+                           </ul>
+                         </li>
+                         <li>
+                           Plugin change notification has a new <tt>LWEVNT_PLUGIN_DESTROYING</tt> event code
+                           to indicate that a plugin is about to be destroyed (in contrast to the plugin having
+                           been destroyed).
+                         </li>
+                    </ul>
+                 </p>
+
+                 <p><tt><a href="../include/lwcustobj.h">lwcustobj.h</a></tt>
+                    <ul>
+                         <li>
+                           Added functions to the <tt>LWCustomObjAccess</tt> structure to draw polygons and disks,
+                           and manipulate the drawing mode.
+                         </li>
+                    </ul>
+                 </p>
+
+                 <p><tt><a href="../include/lwrender.h">lwrender.h</a></tt>
+                    <ul>
+                         <li>
+                           Added function to the <tt>LWInterfaceInfo</tt> global to retrieve the actual RGBA color
+                           with which an item is drawn in the viewport. As a consequence, the version number of
+                           the global has been incremented to 6.
+                         </li>
+                         <li>
+                           Added function to <tt>LWInterfaceInfo</tt> to get the per-item icon scale factor.
+                         </li>
+                         <li>
+                           The version of the <tt>LWViewportInfo</tt> global has been incremented to 4, with
+                           the addition of the <tt><b>viewItem</b></tt> function to retrieve the ID of the item
+                           through which the camera or light viewport is viewing.
+                         </li>
+                         <li>
+                           The controller related function in <tt>LWItemInfo</tt> have been expanded to also
+                           return information about the new position and scale controllers.
+                         </li>
+                         <li>
+                           IK settings have been expanded to include the setting of an objective for a goal. A
+                           <tt><b>goalObjective</b></tt> function has been added to <tt>LWItemInfo</tt> to
+                           query the currently set objective. <tt><b>ikfkBlending</b></tt>, <tt><b>ikInitialState</b></tt>,
+                           <tt><b>ikInitialStateFrame</b></tt>, and <tt><b>ikSoft</b></tt> functions have been added to
+                           support the new IK features. The version number of the global has been bumped to 5.
+                         </li>
+                         <li>
+                           Goal strength can now be enveloped. The <tt><b>goalStrength</b></tt> function in
+                           <tt>LWItemInfo</tt> has therefore gained a time input argument.
+                         </li>
+                         <li>
+                           A random float function (<tt>LWRandomFloatFunc</tt>) was added to <tt>LWNodalAccess</tt>,
+                           <tt>LWShaderAccess</tt>, <tt>LWVolumeAccess</tt> and <tt>LWPixelAccess</tt>. The purpose of
+                           the function is to generate the same noise pattern for unchanged frames and between threads.
+                           The function generates a random number on the [&gt;0, &lt;1] interval.
+                         </li>
+                         <li>
+                           New illumination functions (<tt>LWIlluminateNormalFunc</tt> and <tt>LWIlluminateSampleNormalFunc</tt>)
+                           were added to the Rendering Functions.
+                           See the <a href="raytrace.html">raytracing functions</a> page for a description of these.
+                         </li>
+                         <li>
+                           The motion flag <tt>LWITEMF_USE_IKCHAINVALS</tt> has been added, to indicate whether or not the
+                           item uses IK values from the chain.
+                         </li>
+                         <li>
+                           Bones can now be one of two types: the traditional Z-axis aligned bone, or the new joint-style bone.
+                           A function has been added to the <tt>LWBoneInfo</tt> global to obtain the bone type. The version number
+                           of the global has been increased to 4.
+                         </li>
+                         <li>
+                           Functions have been added to <tt>LWBoneInfo</tt> to obtain the bone twist value, and the bone
+                           rest and final coordinate transformation system.
+                         </li>
+                         <li>
+                           Support for the new pole vector motion controller has been added with a <tt><b>pole</b></tt>
+                           function in <tt>LWItemInfo</tt> global, and <tt>LWMOTCTL_POLE</tt> constant.
+                         </li>
+                         <li>
+                           Added the <tt>LWROPT_CACHERADIOSITY</tt> flag for the SceneInfo <tt>renderOpts</tt> to indicate
+                           the state of the cache radiosity setting.
+                         </li>
+                         <li>
+                           The various "Same As Item" motion controller settings can be queried through several new
+                           functions in the <tt>LWItemInfo</tt> global, and a matching <tt>LWMOTCTL_SAMEITEM</tt>
+                           controller constant has been added.
+                         </li>
+                    </ul>
+                 </p>
+
+
+                 <p><tt><a href="../include/lwshader.h">lwshader.h</a></tt>
+                    <ul>
+                        <li>
+                          Sub-pixel precision pixel location <tt>subsx,subsy</tt>, and an incoming ray direction <tt>rayDir</tt> have been
+                          added to the <tt>LWShaderAccess</tt> structure.
+                        </li>
+                    </ul>
+                 </p>
+
+                 <p><tt><a href="../include/lwnodes.h">lwnodes.h</a></tt>
+                    <ul>
+                        <li>
+                          Sub-pixel precision pixel location <tt>subsx,subsy</tt>, and an incoming ray direction <tt>rayDir</tt> have been
+                          added to the <tt>LWNodalAccess</tt> structure.
+                        </li>
+                    </ul>
+                 </p>
+
+
+                 <p><tt><a href="../include/lwvolume.h">lwvolume.h</a></tt>
+                    <ul>
+                        <li>
+                          LWVRayFuncs was incremented to version 4. <tt>LWVRayFuncs->SetRenderFuncs()</tt> will now accept a function
+                          pointer to a <tt>LWRandomFloatFunc</tt> function.
+                        </li>
+                    </ul>
+                 </p>
+
+
+                 <p><tt><a href="../include/lwgizmo.h">lwgizmo.h</a></tt>
+                    <ul>
+                         <li>
+                           Gizmos can now participate in viewport picking by setting a <tt><b>pickItems</b></tt>
+                           function. The function is used to determine what items should be picked if the user
+                           picks the gizmo drawing. The version number of the gizmo interface has therefore been
+                           incremented to 2.
+                         </li>
+                    </ul>
+                 </p>
+
+
+                 <p><tt><a href="../include/lwlight.h">lwlight.h</a></tt>
+                    <ul>
+                         <li>
+                           A new plugin class has been added to implement light types. Also added is
+                           a matching global (<tt>LWLIGHTEVALUATIONFUNCS_GLOBAL</tt>) to allow plugins
+                           to evaluate lights.
+                         </li>
+                         <li>
+                           There is of course some <a href="classes/light.html">documentation</a> for
+                           the new class.
+                         </li>
+                    </ul>
+                 </p>
+
+                 <p><tt><a href="../include/lwmtutil.h">lwmtutil.h</a></tt>
+                    <ul>
+                         <li>
+                           A function <tt><b>groupWait</b></tt> has been added to wait for group
+                           completion with a timeout.
+                         </li>
+                         <li>
+                           Support for read/write locks has been added.
+                         </li>
+                         <li>
+                           The version number of the global has been increased to 2.
+                         </li>
+                         <li>
+                           The number of available locks per group has been increased to 129.
+                         </li>
+                    </ul>
+                 </p>
+
+                <p><a href="commands/layout.html">Commands: Layout</a></p>
+                <ul>
+                    <li>
+                        New commands added:
+                        <ul>
+                            <li><tt>RenameLayer</tt></li>
+                            <li><tt>PositionServerByItemID</tt></li>
+                            <li><tt>ObjGIUseGlobal</tt></li>
+                            <li><tt>ObjGIRaysPerEvaluation</tt></li>
+                            <li><tt>ObjGISecondaryBounceRays</tt></li>
+                            <li><tt>ObjGIRadiosityTolerance</tt></li>
+                            <li><tt>ObjGIMinPixelSpacing</tt></li>
+                            <li><tt>ObjGIMaxPixelSpacing</tt></li>
+                            <li><tt>UnseenByRadiosity</tt></li>
+                        </ul>
+                    </li>
+                    <li>
+                        The following scene-export commands have been added to Layout as replacements for
+                        the "SaveLWSC1", "SaveLWSC3", and "SaveLWSC4" commands (which are now deprecated):
+                        <ul>
+                            <li><tt>SaveLWSC_4_0</tt>
+                                <ul>
+                                  <li>Represents the version 1 scene file format</li>
+                                  <li>Replaces the "SaveLWSC1" command</li>
+                                </ul>
+                            </li>
+                            <li><tt>SaveLWSC_5_6</tt>
+                                <ul>
+                                  <li>Represents the version 2 scene file format</li>
+                                </ul>
+                            </li>
+                            <li><tt>SaveLWSC_6_0</tt>
+                                <ul>
+                                  <li>Represents the version 3 scene file format</li>
+                                  <li>Replaces the "SaveLWSC3" command</li>
+                                </ul>
+                            </li>
+                            <li><tt>SaveLWSC_9_2</tt>
+                                <ul>
+                                  <li>Represents the version 4 scene file format</li>
+                                  <li>Replaces the "SaveLWSC4" command</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        Commands have been added to support the position and scale controllers. These are the
+                        obvious extension of the existing heading, pitch, and bank controller commands:
+                        <ul>
+                            <li><tt>XController <strong>n</strong>controller</tt></li>
+                            <li><tt>YController <strong>n</strong>controller</tt></li>
+                            <li><tt>ZController <strong>n</strong>controller</tt></li>
+                            <li><tt>SXController <strong>n</strong>controller</tt></li>
+                            <li><tt>SYController <strong>n</strong>controller</tt></li>
+                            <li><tt>SZController <strong>n</strong>controller</tt></li>
+                            <li><tt>XLimits <strong>g</strong>min <strong>g</strong>max</tt></li>
+                            <li><tt>YLimits <strong>g</strong>min <strong>g</strong>max</tt></li>
+                            <li><tt>ZLimits <strong>g</strong>min <strong>g</strong>max</tt></li>
+                            <li><tt>SXLimits <strong>g</strong>min <strong>g</strong>max</tt></li>
+                            <li><tt>SYLimits <strong>g</strong>min <strong>g</strong>max</tt></li>
+                            <li><tt>SZLimits <strong>g</strong>min <strong>g</strong>max</tt></li>
+                            <li><tt>RecordMinPosition</tt></li>
+                            <li><tt>RecordMaxPosition</tt></li>
+                            <li><tt>RecordMinScale</tt></li>
+                            <li><tt>RecordMaxScale</tt></li>
+                            <li><tt>LimitX</tt></li>
+                            <li><tt>LimitY</tt></li>
+                            <li><tt>LimitZ</tt></li>
+                            <li><tt>LimitSX</tt></li>
+                            <li><tt>LimitSY</tt></li>
+                            <li><tt>LimitSZ</tt></li>
+                            <li><tt>LimitX</tt></li>
+                            <li><tt>LimitY</tt></li>
+                            <li><tt>XStiffness <strong>g</strong>stiffness</tt></li>
+                            <li><tt>YStiffness <strong>g</strong>stiffness</tt></li>
+                            <li><tt>ZStiffness <strong>g</strong>stiffness</tt></li>
+                            <li><tt>SXStiffness <strong>g</strong>stiffness</tt></li>
+                            <li><tt>SYStiffness <strong>g</strong>stiffness</tt></li>
+                            <li><tt>SZStiffness <strong>g</strong>stiffness</tt></li>
+                        </ul>
+                    </li>
+                    <li>
+                        New commands to support new IK features:
+                        <ul>
+                            <li><tt>GoalObjective <strong>n</strong>objective</tt></li>
+                            <li><tt>IKFKBlending <strong>g</strong>blend</tt></li>
+                            <li><tt>IKInitialState <strong>n</strong>state</tt></li>
+                            <li><tt>IKInitialStateFrame <strong>n</strong>frame</tt></li>
+                            <li><tt>SoftIK <strong>n</strong>type</tt></li>
+                            <li><tt>SoftIKDistanceType <strong>n</strong>type</tt></li>
+                            <li><tt>SoftIKMin <strong>g</strong>min</tt></li>
+                            <li><tt>SoftIKMax <strong>g</strong>max</tt></li>
+                            <li><tt>UseIKChainVals <strong>n</strong>state</tt></li>
+                        </ul>
+                    </li>
+                    <li>
+                       The <tt>ItemIconScale <strong>g</strong>scale</tt> command has been added to control the
+                       size of individual icons representing items such as lights, camera, and bones in
+                       the Layout viewports.
+                    </li>
+                    <li>
+                       Commands have been added to support joint-style bones:
+                       <ul>
+                            <li><tt>AddJoint <strong>s</strong>name</tt></li>
+                            <li><tt>AddChildJoint <strong>s</strong>name</tt></li>
+                            <li><tt>DrawJoints</tt></li>
+                            <li><tt>DrawChildJoints</tt></li>
+                            <li><tt>BoneType <strong>n</strong>type</tt></li>
+                       </ul>
+                    </li>
+                    <li>
+                       The <tt>UpdateMotion</tt> command has been added to force any pending motion updates
+                       to be processed.
+                    </li>
+                    <li>
+                       <tt>LoadElementsFromScene</tt> has been added to support the improved load from
+                         scene functionality. The command is provided with a description of the elements
+                         to load from the scene. The <tt>LoadFromScene</tt> command now asks the user for
+                         the elements to load.
+                    </li>
+                    <li>
+                       The <tt>PoleItem</tt> command has been added to set the pole item for the selected item.
+                    </li>
+                    <li>
+                       There is now a <tt>LockAxis</tt> command which is like the <tt>EnableXH/YP/ZB</tt>
+                       commands, except that it takes a channel number and a lock state, and therefore is not
+                       dependent on the currently active tool.
+                    </li>
+                </ul>
+
+                <p>Layout: Load From Scene</p>
+                  <ul>
+                    <li>
+                      Layout's load-from-scene functionality has received the following improvements:
+                      <ol>
+                        <li>The name of a layer, if present, is now displayed next to the layer entry.</li>
+                        <li>The content directory of the selected scene temporarily replaces the current setting during a
+                            load-from-scene, ensuring all objects and dependencies can be found.</li>
+                      </ol>
+                    </li>
+                  </ul>
+
+                <p>LScript v2.13</p>
+                <ul>
+                    <li>
+                        The behavior of the Mesh(), Light() and Camera() Object Agent generators has been altered
+                        with respect to object ids.  Previously, if provided with an object id that was invalid, or not
+                        of the specific type (e.g., a Light object id passed to Mesh()), LScript would generate
+                        an error message and halt the script.  Now, a <code>nil</code> value is returned instead.
+                    </li>
+                    <li>
+                        The Mesh() Object Agent generator previously required an object name in order to generate
+                        a Bone Object Agent.  Now a bone object id can be provided and, if valid, a Bone Object
+                        Agent will be returned.
+                    </li>
+                    <li>
+                        The preprocessor command <tt>@insert</tt> now recognizes the metacharacter '@' at the
+                        start of the insertion string.  This metacharacter indicates relative pathing for the
+                        file to be inserted, allowing files to be located relative to the location of the original
+                        script.<br><br>
+                        For example, say you have two files in the same folder, one named "file1.ls" and the other
+                        named "file2.ls".  Further, the first file performs an <tt>@insert</tt> of the second file.
+                        In order to successfully insert the second file without the need of maintaining specific
+                        absolute pathing, you need only specify the name of the second file preceeded by the '@'
+                        symbol:<br><br>
+                        <table>
+                          <tr>
+                            <td width=100>
+                            </td>
+                            <td>
+                              <code>@insert "@file2.ls"</code> 
+                            </td>
+                          </tr>
+                        </table><br>
+                    </li>
+                    <li>
+                        A new function called <tt>getfolder()</tt> has been added.  This function is similar to
+                        <tt>getfile()</tt> except it only allows the user to select folders.  It takes two
+                        optional parameters: the first is the title of the dialog (defaults to "Select A Folder"); the
+                        second is a starting path.  Returns a string representing the path to the selected folder,
+                        or returns <tt>nil</tt> if the user cancelled.
+                    </li>
+                    <li>
+                        A Requester control corresponding to the <tt>getfolder()</tt> function has been added, called
+                        <tt>ctlfoldername()</tt>.  This control accepts the same arguments as <tt>ctlfilename()</tt>,
+                        with the exception of the last argument ('load').<br><br>
+                        <table>
+                          <tr>
+                            <td width=100>
+                            </td>
+                            <td>
+                              <code>
+                                path = "E:\\thirdParty\\Icons";<br>
+                                ...<br>
+                                c1 = ctlfoldername("Source folder",path);
+                              </code>
+                            </td>
+                          </tr>
+                        </table><br>
+                    </li>
+                    <li>
+                        The SceneInfo.renderopts[] array has been expanded to encompass new flag values.  The renderopts[]
+                        array now maps to the following 27 render options flags:<br><br>
+                        <table>
+                          <tr>
+                            <td>
+                            <pre>
+    [1]  LWROPT_SHADOWTRACE
+    [2]  LWROPT_REFLECTTRACE
+    [3]  LWROPT_REFRACTTRACE
+    [4]  LWROPT_FIELDS
+    [5]  LWROPT_EVENFIELDS
+    [6]  LWROPT_MOTIONBLUR
+    [7]  LWROPT_DEPTHOFFIELD
+    [8]  LWROPT_LIMITEDREGION
+    [9]  LWROPT_PARTICLEBLUR
+    [10] LWROPT_ENHANCEDAA
+    [11] LWROPT_SAVEANIM
+    [12] LWROPT_SAVERGB
+    [13] LWROPT_SAVEALPHA
+    [14] LWROPT_ZBUFFERAA
+    [15] LWROPT_RTTRANSPARENCIES
+    [16] LWROPT_RADIOSITY
+    [17] LWROPT_CAUSTICS
+    [18] LWROPT_OCCLUSION
+    [19] LWROPT_RENDERLINES
+    [20] LWROPT_INTERPOLATED
+    [21] LWROPT_BLURBACKGROUND
+    [22] LWROPT_USETRANSPARENCY
+    [23] LWROPT_VOLUMETRICRADIOSITY
+    [24] LWROPT_USEAMBIENT
+    [25] LWROPT_DIRECTIONALRAYS
+    [26] LWROPT_LIMITDYNAMICRANGE
+    [27] LWROPT_CACHERADIOSITY
+                            </pre>
+                            </td>
+                          </tr>
+                        </table>                        
+                    </li>
+                    <li>
+                        The following new Command Sequence functions have been added to LScript:<br><br>
+                        <ul>
+                          <li>UnseenByRadiosity()</li>
+                        </ul>
+                    </li>
+                </ul>
+
+            </td>
+        </tr>
+    </table>
+    <p><br>
+        <br>
+    </p>
+</body>
+</html>

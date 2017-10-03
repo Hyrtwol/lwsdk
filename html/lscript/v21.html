@@ -1,0 +1,1700 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#0000F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v2.1 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.1 Release Notes</H1>
+
+<br><br>
+<H3>[ <blink>Please Note</blink> ]</H3>
+
+<font size="+1"><strong>Due to changes in the plug-in API, LScript v2.1<br>
+requires LightWave [6.5] to function properly.</strong></font>
+
+<br><br><br><br>
+
+<H2>New Features</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                                    
+  The facilities of the Layout LScript getfirstitem() command have been made obsolete by a
+  series of new Object Agent constructors.  The existence of these new constructors deprecates
+  the getfirstitem() function, and it will likely be removed from LScript in a later release.
+
+  Five new Object Agent constructor functions have been added to LScript:
+
+        Mesh()
+        Camera()
+        Image()
+        Light()
+        Scene()
+
+  Each of these Object Agent constructors returns an Object Agent identical to that of the
+  getfirstitem() function.  Each also accepts the same types of arguments as the getfirstitem()
+  function, with the exception of the type of the Object Agent (i.e., MESH, CAMERA, etc.).
+  Objects can be identified by name (string) or by index (integer).  In addition, you can
+  call the constructor without arguments and an Object Agent will be generated for the first
+  object of that type found in the system:
+
+<font color="#00FFFF">        obj = Mesh("Cow");          // access object "Cow"
+        obj = Camera(2);            // access 2nd scene camera
+        obj = Light();              // work with the first scene light</font>
+
+  As with any Object Agent returned by getfirstitem(), you can iterate over all objects of
+  that type using the next() method.
+
+  The main difference between these constructors and getfirstitem() is that the Mesh()
+  constructor, and some of the methods and data exported by the Object Agents it generates,
+  are now global.  The Mesh() constructor can be called from any LScript, either Modeler
+  or Layout.
+
+  In Modeler, an exception exists that allows you to access the currently active mesh.  By
+  using an index value of zero (0), an Object Agent will be generated for the currently
+  selected mesh object.
+  
+<font color="#00FFFF">        obj = Mesh(0);              // gimme the current object</font>
+
+  The new methods avaialble from the Mesh() Object Agent in all environments (except where
+  noted) are:
+
+        pointCount([<font color="FFFF00">&lt;layer&gt;</font>])
+
+            This method reports the total number of points
+            in the Mesh object, or optionally in an individual
+            layer of Mesh (use the new 'totallayers' data member
+            to determine the valid layers in the object).
+
+        polygonCount([<font color="FFFF00">&lt;layer&gt;</font>])
+
+            Reports the number of polygons in the object, or
+            optionally in an individual layer of the Mesh.
+
+        layer(<font color="FFFF00">&lt;point&gt;</font>|<font color="FFFF00">&lt;polygon&gt;</font>)
+
+            Returns the integer layer number that contains
+            the identified point or polygon.
+
+        position([<font color="FFFF00">&lt;point&gt;</font>][<font color="FFFF00">&lt;polygon&gt;</font>][<font color="FFFF00">&lt;layer&gt;</font>])
+
+            This method returns one of two types of values,
+            depending upon the argument provided.
+
+            If the argument is a Point identifier, then the
+            vector position of the point is returned.
+
+            If the argument is a Polygon identifier, then the
+            bounding box of the polygon is returned as a low
+            and high vector.
+
+            If the argument is an integer layer identifier,
+            then the bounding box of the mesh data found in
+            that layer are returned as a low/high vector pair.
+
+            Finally, if no argument is provided, then the
+            sum-total bounding box of all mesh data found in
+            all valid layers are returned as a low/high vector
+            pair.
+
+        vertexCount(<font color="FFFF00">&lt;polygon&gt;</font>)
+
+            Reports the integer count of the number of vertices
+            that comprise the identified Polygon.
+
+        vertex(<font color="FFFF00">&lt;polygon&gt;</font>,<font color="FFFF00">&lt;index&gt;</font>)
+
+            Returns the Point identifier found at the indicated
+            index offset of the identified Polygon.
+
+        select()
+
+            Cause the object for which the Agent is proxy to
+            become the current selection.  In Layout, this selects
+            the object in the scene.  In Modeler, this switches the
+            object into the active edit.
+
+        select(<font color="FFFF00">&lt;point&gt;</font>|<font color="FFFF00">&lt;polygon&gt;</font>)           <b>(MODELER ONLY)</b>
+
+            Selects the identified Polygon or Point.  Because
+            component selection is unique to mesh editing, this
+            method is only available when executing under Modeler.
+
+  New and altered data members for the Mesh Object Agent:
+
+        id                                  <b>(MODELER ONLY)</b>
+
+            This data member holds a string used internally
+            by Modeler to uniquely identify the loaded object.
+
+        name                                <b>(MODELER ONLY)</b>
+
+            This data member holds a character string that
+            represents the identifier for the object seen by
+            the user in the GUI.
+
+        filename                            <b>(MODELER ONLY)</b>
+
+            Holds the full-path filename for the object.  If
+            the object has yet to be saved to disc, then this
+            value will be 'nil'.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  A new Object Agent type exists globally in LScript, providing an interface to access Vertex
+  Maps within the LightWave environment.  The constructor is called VMap(), and in most cases
+  can be used globally.
+
+  This constructor returns a VMap Object Agent.  VMaps can be identified by name (string) or
+  by integer index of a particular VMap type.  These VMap types are described below.
+  
+                VMSELECT            "select"
+                VMWEIGHT            "weight"
+                VMSUBPATCH          "subpatch"
+                VMTEXTURE           "texture"
+                VMMORPH             "morph"
+                VMSPOT              "spot"
+                VMRGB               "rgb"
+                VMRGBA              "rgba"
+
+  VMap() will return 'nil' if no Vertex Maps of that type currently exist in the system.
+
+  Invoking VMap() without a specific Vertex Map type argument will cause VMap() to return
+  the first Vertex Map it encounteres in the system.  From this starting Vertex Map, all
+  other existing maps can be iterated through using the next() method.  Iterating through
+  maps using next() does not regard type boundaries, so you must watch the type of the
+  Vertex Map is you wish to process only specific types.
+
+  The following data members are exported by the Vertex Map Object Agent:
+
+        name
+
+            The name of the Vertex Map associated with the
+            Object Agent.
+
+        dimensions
+
+            The number of values associated with each vertex in
+            the map.  This value can be zero (0).
+
+        type
+
+            The type of the Vertex Map associated with the Object
+            Agent.  It will be one of the constant values defined
+            above (VMSELECT, VMWEIGHT, etc.).
+
+  The following methods are exported:
+
+        count()
+
+            Returns the total number of Vertex Maps of the Object
+            Agent type found in the current environment.
+
+        isMapped(<font color="FFFF00">&lt;point&gt;</font>)
+
+            Reports whether or not the specified point identifier
+            exists in the map.  The return value is true or false.
+
+        getValue(<font color="FFFF00">&lt;point&gt;</font>[,<font color="FFFF00">&lt;index&gt;</font>])
+
+            Returns the value(s) associated with the specified point
+            identifier in the Vertex Map.  If a specific value index
+            is not provided, the count of items returned will be
+            equal to the value contained in the 'dimensions' data
+            member.  If the point does not exist in the Vertex Map,
+            or the dimensions of the Vertex Map are zero (0), then
+            'nil' is returned (use isMapped() and/or the 'dimensions'
+            data member to avoid these situations).
+
+        setValue(<font color="FFFF00">&lt;point&gt;</font>,<font color="FFFF00">&lt;value&gt;</font>|<font color="FFFF00">&lt;array&gt;</font>[,<font color="FFFF00">&lt;index&gt;</font>])     <b>(MODELER ONLY)</b>
+
+            Sets the value(s) of a specified point identifier in the
+            Vertex Map.  If an individual value is provided, then that
+            value is placed into the first value slot for the point.
+            An optional index value will position the individual
+            value into that value slot for the point.
+
+            An array of values can also be provided to be used as
+            the values for the point identifier.  If no optional
+            index is included, then each element in the array will
+            be placed into the corresponding value slot for the
+            point identifier in the Vertex Map.  If an index is
+            provided, then elements in the array will begin
+            populating the values for the point identifer at the
+            indicated index offset.
+
+            Modification of a Vertex Map using the setValue()
+            method is considered mesh editing, and can only be
+            performed within Modeler LScript.  Consequently, this
+            method does not exist in Object Agents generated from
+            Layout LScripts.  Further, you must be within an
+            initiated Mesh Edit session before you can successfully
+            invoke this method.
+
+  The following is an example Modeler LScript that allows the user to select an existing Weight
+  VMap, and will then apply a scaling factor uniformly to each of its values:
+
+<font color="#00FFFF">        @version 2.1
+        @warnings
+
+        main
+        {
+            vmap = VMap(VMWEIGHT) || error("No weight maps in mesh!");
+
+            while(vmap && vmap.type == VMWEIGHT)
+            {
+                vmapnames += vmap.name;
+                vmap = vmap.next();
+            }
+
+            reqbegin("Scale Weight VMap",true);
+
+            c1 = ctlpopup("VMap",1,vmapnames);
+            c2 = ctlnumber("Scale by (%)",50.0);
+
+            return if !reqpost();
+
+            vndx = getvalue(c1);
+            amount = getvalue(c2) / 100.0;
+
+            reqend();
+
+            vmap = VMap(vmapnames[vndx]) || error("Could not instance VMap '",vmapnames[vndx],"'!");
+
+            selmode(USER);
+
+            moninit(editbegin());
+
+            foreach(p,points)
+            {
+                if(vmap.isMapped(p))
+                {
+                    values = vmap.getValue(p);
+
+                    for(x = 1;x &lt;= vmap.dimensions;x++)
+                        values[x] *= amount;
+
+                    vmap.setValue(p,values);
+                }
+
+                monstep();
+            }
+
+            monend();
+            editend();
+        }</font>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  A new Object Agent type exists within Layout LScript, providing access to defined channel
+  groups.  The ChannelGroup() Object Agent constructor returns a ChannelGroup Object Agent.
+  This Object Agent is similar to a standard Layout Object Agent in its interface, but
+  only supports a limited subset of the methods and data members.  Its primary purpose is
+  to provide a means of enumerating Channel Groups in Layout, some of which may be "hidden"
+  (i.e., unassociated with an actual object).
+
+  ChannelGroup() will return 'nil' if no channel groups exist in Layout (which is a highly
+  unlikely situation, but you should still code for the possibility in the interests of
+  good programming).
+
+  Calling ChannelGroup() without a specific channel group name will return the first channel
+  group defined in the system.  From this starting point, all other existing channel groups
+  can be iterated through using the next() method.  As with any Layout Object Agent, next()
+  will return 'nil' when no further channel groups exist.
+
+  The ChannelGroup() constructor also accepts a channel group identifier (as a string) so
+  that you can generate an Object Agent for a specific channel group.  For instance, to
+  access the channel group generated by the LW_MasterChannel plug-in:
+
+<font color="#00FFFF">        group = ChannelGroup("MC");</font>
+
+  Of course, if the LW_MasterChannel plug-in is not active, then this call to ChannelGroup()
+  will return 'nil'.
+
+  The following data members are exported by the ChannelGroup Object Agent:
+
+        name
+
+            The name of the channel group for which the Object
+            Agent serves as proxy.
+
+        parent
+
+            Holds the parent channel group of the current
+            Object Agent.  If no parent exists, this data member
+            wil be 'nil'.
+
+  The following methods are exported:
+
+        firstChannel()
+        nextChannel()
+
+            Each of these returns a Channel Object Agent (see
+            later in this document for new methods and data members
+            available from Channel Object Agents).
+
+        next()
+
+            Returns the next channel group in the list.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  LScript's internal IPC mechanism can now be "localized" to the current host (Modeler,
+  Screamernet, etc.).  This prevents other processes running the same IPC script on the
+  same machine from colliding with established Queues.  This mechanism is enabled with
+  the new "@localipc" pragma.
+
+  Please note that this mechanism will not function correctly under Mac operating systems
+  up through version 9.  IPC Queues will continue to be global regardless of the presence
+  of this pragma in the script.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Linear arrays can now be appended (or created) using the overloaded '+=' assignment
+  operator.  When applied to an existing array, the data being added is placed into
+  a new element at the end of the existing linear list of elements:
+
+<font color="#00FFFF">        a[1] = "Bob";
+        a[2] = 1.0;
+        a += &lt;1,2,3&gt;;       // placed into a[3]</font>
+
+  In addition, new linear arrays can be generated automatically when the overloaded
+  '+=' oeprator is used with a variable containing a 'nil' value:
+
+<font color="#00FFFF">        vmapnames = nil;
+        while(vmap)
+        {
+            vmapnames += vmap.name;
+            vmap = vmap.next();
+        }</font>
+
+  Because LScript automatically initializes unused variables with a 'nil' value, the
+  explicit assignment of 'nil' illustrated in the code fragment above is only
+  necessary if the variable contains a value other than 'nil', or is already
+  hosting an existing array.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The LScript pre-processor supports a new sequential variable designator.  The
+  constructor is formed by surrounding an elipse ('..') with integer values that
+  serve as the range of values to generate.  The base variable name precedes the
+  initial integer value, and is used to generate each declared variable.
+
+  For instance, this sequential veriable designator:
+
+<font color="#00FFFF">        c1..5;</font>
+
+  will be expanded by the pre-processor to:
+
+<font color="#00FFFF">        c1,c2,c3,c4,c5;</font>
+
+  Sequential variable designators can be used anywhere in your script code you
+  would normally declare multiple variables.  The following code, for example:
+
+<font color="#00FFFF">        (lex1..5) = parse(" ",line);
+        info(lex1..5);</font>
+
+  is functionally equivalent to:
+
+<font color="#00FFFF">        (lex1,lex2,lex3,lex4,lex5) = parse(" ",line);
+        info(lex1,lex2,lex3,lex4,lex5);</font>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Many new Panels-based requester controls have been added to LScript.
+
+        ctlpercent(<font color="FFFF00">&lt;title&gt;</font>,<font color="FFFF00">&lt;initial_value&gt;</font>)
+
+            A floating-point mini-slider field that displays values
+            as percentages.  Returns a floating-point value with
+            getvalue().
+
+        ctlangle(<font color="FFFF00">&lt;title&gt;</font>,<font color="FFFF00">&lt;initial_value&gt;</font>)
+
+            A floating-point mini-slider field that displays values
+            as angles (in degrees).  Returns a floating-point value
+            with getvalue().
+
+            Note that angles values are in radians.  Use the LScript
+            rad() and deg() functions to convert between degrees and
+            radians if you wish to work in degrees.
+
+        ctlchannel(<font color="FFFF00">&lt;title&gt;</font>,<font color="FFFF00">&lt;width&gt;</font>,<font color="FFFF00">&lt;height&gt;</font>[,<font color="FFFF00">&lt;selected_channel&gt;</font>])
+
+            A tree-based area that displays all objects in the scene
+            that have channels, allowing an individual channel to be
+            selected.
+
+            Note that <font color="FFFF00">&lt;width&gt;</font> is expressed in pixels, while <font color="FFFF00">&lt;height&gt;</font>
+            is expressed in number of visible rows.
+
+            Note that <font color="FFFF00">&lt;selected_channel&gt;</font> must be a valid Channel
+            Object Agent instance.
+
+            Returns a Channel Object Agent instance with getvalue().
+
+        ctlbutton(<font color="FFFF00">&lt;label&gt;</font>,<font color="FFFF00">&lt;width&gt;</font>,<font color="FFFF00">&lt;action_udf&gt;</font>)
+
+            A "do-something-now" button that triggers a pre-defined
+            user-defined function within the script.
+
+            Note that <font color="FFFF00">&lt;width&gt;</font> is expressed in pixels.
+
+            The following script illustrates the use of the setup
+            for, and use of, ctlbutton() control:
+
+<font color="#00FFFF">                    @version 2.1
+                    @warnings
+
+                    c1..2;
+
+                    generic
+                    {
+                        reqbegin("Testing");
+
+                        c1 = ctlbutton("Increment",150,"addcount");
+                        c2 = ctlinteger("Count",1);
+
+                        reqpost();
+                    }
+
+                    addcount
+                    {
+                        setvalue(c2,getvalue(c2) + 1);
+                    }</font>
+
+        ctlstate(<font color="FFFF00">&lt;label&gt;</font>,<font color="FFFF00">&lt;initial_value&gt;</font>,<font color="FFFF00">&lt;width&gt;</font>,<font color="FFFF00">&lt;action_udf&gt;</font>)
+
+            A boolean button, equivalent to a checkbox.  Like ctlbutton(),
+            it triggers a pre-defined user-defined function (<font color="FFFF00">&lt;action_udf&gt;</font>)
+            within the script.  Unlike ctlbutton(), the UDF takes a value
+            that represents the current state of the boolean control.
+            A false (0) means it is off, a true (1) means it is on.
+
+            Note that <font color="FFFF00">&lt;width&gt;</font> is expressed in pixels.
+
+            The following script illustrates the use of the setup
+            for, and use of, ctlstate() control:
+
+<font color="#00FFFF">                    @version 2.1
+                    @warnings
+
+                    generic
+                    {
+                        reqbegin("State Control");
+
+                        c1 = ctlstate("Testing",true,100,"stateCallback");
+
+                        reqpost();
+                    }
+
+                    stateCallback: val
+                    {
+                        info(val);      // 0 - off, 1 - on
+                    }</font>
+
+        ctllistbox(<font color="FFFF00">&lt;title&gt;</font>,<font color="FFFF00">&lt;width&gt;</font>,<font color="FFFF00">&lt;height&gt;</font>,<font color="FFFF00">&lt;count_udf&gt;</font>,<font color="FFFF00">&lt;name_udf&gt;</font>[,<font color="FFFF00">&lt;event_udf&gt;</font>])
+
+            A listbox control that displays a single-column
+            collection of text entries.
+
+            Note that <font color="FFFF00">&lt;width&gt;</font> is expressed in pixels, while <font color="FFFF00">&lt;height&gt;</font>
+            is expressed in number of visible rows.
+
+            Two user-defined functions must be defined within the
+            script to return the total number of items in the
+            listbox (<font color="FFFF00">&lt;count_udf&gt;</font>) and the string value at an
+            indicated index offset in the listbox (<font color="FFFF00">&lt;name_udf&gt;</font>).
+            An optional <font color="FFFF00">&lt;event_udf&gt;</font> can be defined and specified
+            that will receive control whenever an event is triggered
+            within the listbox (i.e., an item is selected).
+
+            The <font color="FFFF00">&lt;count_udf&gt;</font> accepts no arguments, and returns the
+            integer count of items.
+
+            The <font color="FFFF00">&lt;name_udf&gt;</font> accepts the integer index value being
+            queried, and returns a single string value to be placed
+            into that slot.
+
+            The optional <font color="FFFF00">&lt;event_udf&gt;</font> accepts the integer index
+            value of the selected item, and returns nothing.
+
+            The following script illustrates the setup for, and
+            use of, the ctllistbox() control:
+
+<font color="#00FFFF">                    @version 2.1
+                    @warnings
+
+                    c1;
+
+                    lb_items;
+
+                    main
+                    {
+                        for(x = 1;x &lt;= 5;x++)
+                            lb_items += "Item_" + x;
+
+                        reqbegin("Testing List Box");
+
+                        c1 = ctllistbox("Items",300,10,"lb_count","lb_name","lb_event");
+
+                        reqpost();
+                    }
+
+                    lb_count
+                    {
+                        return(lb_items.size());
+                    }
+
+                    lb_name: index
+                    {
+                        return(lb_items[index]);
+                    }
+
+                    lb_event: index
+                    {
+                        info("You selected '",lb_items[index],"'!");
+                    }</font>
+
+            In addition, the following script illustrates how
+            button controls can be used to manage and interact
+            with the listbox contents:
+
+<font color="#00FFFF">                    @version 2.1
+                    @warnings
+
+                    c1..3;
+
+                    lb_items;
+
+                    main
+                    {
+                        for(x = 1;x &lt;= 5;x++)
+                            lb_items += "Item_" + x;
+
+                        reqbegin("Testing List Box");
+
+                        c1 = ctllistbox("Items",300,10,"lb_count","lb_name");
+                        c2 = ctlbutton("Add",200,"add_button");
+                        c3 = ctlbutton("Delete",200,"del_button");
+
+                        reqpost();
+                    }
+
+                    lb_count
+                    {
+                        // don't use size() here because that
+                        // counts all elements, even if they have
+                        // 'nil'.
+
+                        return(lb_items.count());
+                    }
+
+                    lb_name: index
+                    {
+                        return(lb_items[index]);
+                    }
+
+                    add_button
+                    {
+                        lb_items += "Item_" + (lb_items.size() + 1);
+                        setvalue(c1,lb_items.count());
+                    }
+
+                    del_button
+                    {
+                        sel = getvalue(c1);
+
+                        lb_items[sel] = nil;
+                        lb_items.pack();
+                        lb_items.trunc();
+
+                        setvalue(c1,lb_items.count());
+                    }</font>
+
+            Note that, because of refresh pathways in the Panels
+            subsystem, the current selection in the listbox must
+            be updated in order to get the listbox to refresh
+            on the open panel.  Panels has been optimized to
+            avoid refreshes if you set the selection to the
+            current selection, so you must select a new value
+            each time to trigger the refresh.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  Several new CommandSequence functions have been added to Modeler LScript to support
+  Modeler [6].
+
+        close()
+
+            Closes the active object.  If it has been modified,
+            then the user will be prompted to save the mesh data
+            before it is removed.
+
+        closeall()
+
+            Closes ALL objects in Modeler.  If any objects have
+            been modified, then the user will be prompted to save
+            each mesh before it is removed.
+
+        exit()
+
+            Terminates Modeler.  Any modified mesh data in the
+            system will cause a prompt to be presented to the
+            user for saving before Modeler terminates.
+
+        swaphidden()
+
+            Toggles hidden mesh data in the current object
+            to become visible, while hiding currently visible
+            mesh.
+
+        setlayername([<font color="FFFF00">&lt;string&gt;</font>])
+
+            Sets the name for the currently selected foreground
+            layer(s).  Calling the function with no arguments
+            removes any previously set layer names.
+
+        setobject(<font color="FFFF00">&lt;string&gt;</font>[,<font color="FFFF00">&lt;index&gt;</font>])
+
+            Selects the active Modeler object.  The optional
+            index value specifies which object to select from
+            among objects with the same name.
+
+        setpivot(<font color="FFFF00">&lt;vector&gt;</font>)
+
+            Sets the pivot point for the current object to the
+            specific location.
+
+        unweld()
+
+            Disconnects the shared vertices of two or more
+            polygons so that each has a complete set of unshared
+            points.
+
+        weldaverage()
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The smoothshift() command now has a third optional argument that specifies the scaling
+  factor to be applied as a floating-point value.
+
+        smoothshift(<font color="FFFF00">&lt;distance&gt;</font>[,<font color="FFFF00">&lt;maxangle&gt;</font>[,<font color="FFFF00">&lt;scale&gt;</font>]])
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  A new time() function is available now that will return, as multiple items, the hour,
+  minute, second, and tick values for the current time.  If a time value is provided as
+  an argument (defined as the number of seconds that have elapsed since January 1st, 1900),
+  then returns values are relative to that time index.
+
+  The hour is in 24-hour military form, so values range from 0 to 23.  The minutes and
+  seconds range from 0 to 59.
+
+  The 'tick' value is the number of seconds that that have elapsed since January 1st, 1900.
+
+<font color="#00FFFF">        ...
+        (h,m,s,t) = time();
+        ...</font>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  A new date() function is available now that will return, as multiple items, the day of
+  the month, month, 4-digit year, day of the week, and the day of the year (a.k.a. julian
+  value), string value for the current month, and string value for the current day of the
+  week.  If a time index value is provided as an argument (defined as the number of seconds
+  that have elapsed since January 1st, 1900), then the date() return values are relative to
+  that time index.
+
+  The day of the week begins at Sunday==1, and the day of the year runs from 1 to 365.
+
+<font color="#00FFFF">        ...
+        (d,m,y,w,j,sm,sw) = date();
+        ...</font>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The selpolygon() Modeler LScript function now accepts a PART selection condition, which
+  is parametered by the string part name to be selected.
+
+<font color="#00FFFF">        ...
+        selmode(USER);
+        selpolygon(SET,PART,"LeftButtock");
+        ...</font>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The following Layout Command Sequence functions have been added to LScript (Generic and
+  Master), synchronizing LScript with Layout build 474:
+
+        PreviousSibling()
+        NextSibling()
+        CenterItem()
+        ShowSafeAreas()
+        ShowFieldChart()
+        CacheRadiosity()
+        CacheCaustics()
+        CacheShadowMap()
+        EditPlugins()
+        FitAll()
+        FitSelected()
+        EnableVIPER()
+        RayTraceShadows()
+        RayTraceReflection()
+        RayTraceRefraction()
+        FogType()
+        FogMinDistance()
+        FogMaxDistance()
+        FogMinAmount()
+        FogMaxAmount()
+        LightIntensityTool()
+        TopView()
+        BottomView()
+        BackView()
+        FrontView()
+        RightView()
+        LeftView()
+        SchematicView()
+        EnableVolumetricLights()
+        AddPartigon()
+        EnhancedAA()
+        PolygonEdgeColor(<font color="FFFF00">&lt;red&gt;</font>,<font color="FFFF00">&lt;green&gt;</font>,<font color="FFFF00">&lt;blue&gt;</font>|<font color="FFFF00">&lt;red,green,blue&gt;</font>)
+        MaskPosition(<font color="FFFF00">&lt;left&gt;</font>,<font color="FFFF00">&lt;top&gt;</font>,<font color="FFFF00">&lt;width&gt;</font>,<font color="FFFF00">&lt;height&gt;</font>)
+        MaskColor(<font color="FFFF00">&lt;red&gt;</font>,<font color="FFFF00">&lt;green&gt;</font>,<font color="FFFF00">&lt;blue&gt;</font>|<font color="FFFF00">&lt;red,green,blue&gt;</font>)
+        IncludeLight(<font color="FFFF00">&lt;id&gt;</font>|<font color="FFFF00">&lt;index&gt;</font>)
+        ExcludeLight(<font color="FFFF00">&lt;id&gt;</font>|<font color="FFFF00">&lt;index&gt;</font>)
+        Antialiasing([1-9])
+        AddEnvelope(<font color="FFFF00">&lt;channel&gt;</font>)
+        RemoveEnvelope(<font color="FFFF00">&lt;channel&gt;</font>)
+        FogColor(<font color="FFFF00">&lt;red&gt;</font>,<font color="FFFF00">&lt;green&gt;</font>,<font color="FFFF00">&lt;blue&gt;</font>|<font color="FFFF00">&lt;red,green,blue&gt;</font>)
+        AutoConfirm(true|false)
+        MorphTarget(<font color="FFFF00">&lt;name&gt;</font>|<font color="FFFF00">&lt;type&gt;</font>,<font color="FFFF00">&lt;index&gt;</font>|<font color="FFFF00">&lt;id&gt;</font>)
+        SaveSceneCopy(<font color="FFFF00">&lt;filename&gt;</font>)
+        SchematicPosition(<font color="FFFF00">&lt;x&gt;</font>,<font color="FFFF00">&lt;y&gt;</font>)
+        RadiosityTolerance(<font color="FFFF00">&lt;number&gt;</font>)
+        SaveObject(<font color="FFFF00">&lt;filename&gt;</font>)
+        SaveObjectCopy(<font color="FFFF00">&lt;filename&gt;</font>)
+        SaveTransformed(<font color="FFFF00">&lt;filename&gt;</font>)
+
+  Color values should be specified as floating-point values.
+
+  Calling Antialiasing() without arguments turns antialiasing off for the selected Camera.
+  The values 1-9 correspond to the antialiasing values available as of Layout build 459.
+
+  <b>NOTE</b>: be aware that running LScript v2.1 with builds of LightWave Layout prior
+  to 474 may generate error messages concerning unknown Command Sequence functions.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  A filestat() function has been added to return various system-related values associated
+  with the file on disc.  When passed a valid filename, filestat() returns (in order)
+  the file's last access time, creation time, and last modification time, the file size,
+  the number of links to the file (useful only under UNIX or NTFS file systems), the
+  file owner's user id (useful only under UNIX), and the file's group id (also useful
+  only under UNIX).
+
+<font color="#00FFFF">        ...
+        (a,c,m,s,l,u,g) = filestat("/etc/profile");
+        ...</font>
+
+  All values are integer, and the access, creation, and modification times are suitable
+  for use as arguments to the time() and date() functions.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The addcurve() function now optionally accepts a third parameter to indicate the state
+  of the curve.  You can now provide START or END flags to indicate the control structure
+  of the curve.  If no parameter is provided, then no controls will be applied to the curve.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  Two new functions have been added to the LScript toolset for gathering information about
+  the host application's version.
+
+        hostVersion()
+
+            returns the host application's version number
+            as a floating-point value.  It contains the
+            major and minor values of the version.  For
+            example, 6.1.
+
+        hostBuild()
+        
+            returns the sub-version build value of the
+            application as an integer.  Because LightWave
+            build numbers are linear and are never reset,
+            this value is a more accurate means of
+            determining application feature sets than the
+            version number.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The pre-processor's @if/@end conditional code system has two new values that can be used as
+  conditions.  The 'host_version' constant represents the application's current version as a
+  floating-point value, and the 'host_build' contains the host application's current build
+  number as an integer.
+
+<font color="#00FFFF">        ...
+        @if host_build &gt; 410
+        ...
+        @end
+        ...</font>
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  Two new Requester commands have been added for Layout.  These new commands enable non-modal
+  Requester panels in LScript.
+
+  <b>reqopen()</b> can be used in place of reqpost() to open the Requester panel in non-modal
+  mode.  In this mode, the panel remains open and interactive to the user even after the
+  options() UDF has terminated.  In order to process changes to panel controls in non-modal
+  mode, controls must have an active refresh callback applied.  As controls are modified,
+  these refresh callbacks are invoked by LScript, and the script's process() UDF is
+  subsequently invoked by Layout to refresh the object's onscreen attributes.
+
+  <b>reqisopen()</b> is used to determine whether or not a Requester panel opened non-modally
+  is currently open.  A Boolean true is returned if the panel is currently open.  A non-modal
+  panel can be closed by calling reqend().
+
+<font color="#00FFFF">        ...
+        if(reqisopen())
+            reqend();
+        else
+        {
+            reqbegin(myObj.name);
+
+            c1 = ctlangle("Heading",rad(myHeading));
+            c2 = ctlangle("Pitch",rad(myPitch));
+            c3 = ctlangle("Bank",rad(myBank));
+
+            ctlrefresh(c1,"heading_refresh");
+            ctlrefresh(c2,"pitch_refresh");
+            ctlrefresh(c3,"bank_refresh");
+
+            reqopen();
+        }
+        ...</font>
+
+  Non-modal Requester panels are only available to Layout LScripts, with Generic LScripts
+  excluded.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  A plethora of new data members and methods have been added to the Channel Object Agent,
+  bringing it to maturity.
+
+  The following data members have been added:
+
+        keyCount
+
+            Returns the number of keys contained in the envelope
+            associated with the channel.
+
+        keys[]
+
+            A linear array that holds the keyframe identifiers
+            for all the keys contained in the envelope.  It will
+            always be 'keyCount' in length.
+
+        preBehavior
+
+            Holds the type of the pre-behavior associated with
+            the envelope.  It will be one of CHAN_RESET,
+            CHAN_CONSTANT, CHAN_REPEAT, CHAN_OSCILLATE,
+            CHAN_OFFSET, CHAN_LINEAR.  The string values
+            "reset", "constant", "repeat", "oscillate",
+            "offset", or "linear" can also be used.
+
+            Unlike most, this data member is NOT read-only.
+            Assigning one of the above constants to it will
+            actually alter the pre-behavior of the associated
+            envelope.
+
+        postBehavior
+
+            Holds the type of the post-behavior associated with
+            the envelope.  With the exception of it's name, this
+            data member functions identically to the 'preBehavior'
+            data member.  It returns or alters the post-behavioral
+            setting for the envelope.
+
+  The following methods have been added:
+
+        keyExists(<font color="FFFF00">&lt;time&gt;</font>)
+
+            Returns either 'nil' if no key exists at the specified
+            time index, or the identifier of the keyframe if it
+            does.
+
+        setKeyValue(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;value&gt;</font>)
+
+            Sets the value of the provided keyframe to the provided
+            value.  <font color="FFFF00">&lt;value&gt;</font>'s are always floating-point numbers.
+
+        setKeyTime(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;time&gt;</font>)
+
+            Alters the time index for the specified keyframe.
+
+        setKeyCurve(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;shape&gt;</font>)
+
+            Sets the type of interpolation that is used to evaluate
+            the keyframe.  This can be one of CHAN_TCB, CHAN_HERMITE,
+            CHAN_BEZIER, CHAN_LINEAR, CHAN_STEPPED.  In addition, the
+            strings "TCB", "Hermite", "Bezier", "Linear", and "Stepped"
+            are also acceptable.
+
+        setKeyHermite(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;parm1&gt;</font>,<font color="FFFF00">&lt;parm2&gt;</font>,<font color="FFFF00">&lt;parm3&gt;</font>,<font color="FFFF00">&lt;parm4&gt;</font>)
+
+            This method allows you to set the four Hermite Spline
+            coefficients.  If you don't understand their use,
+            you probably won't be using this method anyway.
+
+        setKeyTension(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;value&gt;</font>)
+
+            Sets the tension value for the specified keyframe.
+
+        setKeyContinuity(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;value&gt;</font>)
+
+            Sets the continuity value for the specified keyframe.
+
+        setKeyBias(<font color="FFFF00">&lt;key&gt;</font>,<font color="FFFF00">&lt;value&gt;</font>)
+
+            Sets the bias value for the specified keyframe.
+
+        getKeyValue(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the floating-point value associated with the
+            specified keyframe.
+
+        getKeyTime(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the time index for the specified keyframe.
+
+        getKeyCurve(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the curve type for the specified keyframe.
+            See the entry for setKeyCurve() for a list of the
+            constant values that are returned.
+
+        getKeyHermite(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the four Hermite Spline coefficients that
+            are currently in use for the specified keyframe.
+            If getKeyCurve() does not return CHAN_HERMITE, then
+            you probably don't want to call this method.
+
+        getKeyTension(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the current tension setting for the keyframe.
+
+        getKeyContinuity(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the current continuity setting for the keyframe.
+
+        getKeyBias(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Returns the current bias setting for the keyframe.
+
+        createKey(<font color="FFFF00">&lt;time&gt;</font>,<font color="FFFF00">&lt;value&gt;</font>)
+
+            This method creates a new keyframe at the specified
+            time index with the provided initial value.  If the
+            key is created successfully, the keyframe identifier
+            is returned, otherwise 'nil' is returned.  This method
+            will cause the 'keyCount' and 'keys[]' data members
+            to instantly update.
+
+        deleteKey(<font color="FFFF00">&lt;key&gt;</font>)
+
+            Keyframes can be deleted from the channel's envelope
+            with this method.  Because this method also causes
+            the 'keyCount' and 'keys[]' data members to update
+            in real time, you need to be very careful when using
+            it within loops that are based no these data members.
+
+  Keyframe identifiers are not directly usable by your script, and are returned to you as
+  integer data types.  Their only purpose is for use as arguments to methods that require
+  them.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  A new Envelope Object Agent has been added to LScript.  The Envelope() constructor takes
+  three arguments, the last of which is optional:
+
+        Envelope(<font color="FFFF00">&lt;name&gt;</font>,<font color="FFFF00">&lt;type&gt;</font>[,<font color="FFFF00">&lt;group&gt;</font>])
+
+            The <font color="FFFF00">&lt;name&gt;</font> argument is a string identifier for the new
+            envelope.  The <font color="FFFF00">&lt;type&gt;</font> value is one of CHAN_NUMBER,
+            CHAN_DISTANCE, CHAN_PERCENT, or CHAN_ANGLE.
+            
+            The optional <font color="FFFF00">&lt;group&gt;</font> argument is a string value that
+            identifies the group within which the new envelope will
+            reside.  If the <font color="FFFF00">&lt;group&gt;</font> indicated does not already exist,
+            LScript will create it.
+
+  This Object Agent shares the same methods and data members as those just added to the
+  Channel Object Agent (see above).  In addition, it provides the following
+  Envelope-specific methods:
+
+        copy(<font color="FFFF00">&lt;Envelope&gt;</font>)
+
+            This method will copy into the instance the values found
+            in the provided Envelope Object Agent.
+
+        edit()
+
+            The contents and settings of the Envelope will be displayed
+            to the user for their interaction.
+
+        save()
+        load()
+
+            These two methods are used to stream the Envelope's settings
+            and data into and out of the scene file.  They are context-
+            sensitive, meaning that they can only be called during those
+            particular phases of Layout--i.e., the save() method can only
+            be invoked from the save() UDF, and the load() method can only
+            be invoked from within the load() UDF.  Hellfire and damnation
+            shall be your earthly reward should you attempt to use them
+            outside of their respective context.
+
+        persist([<font color="FFFF00">&lt;Boolean&gt;</font>])
+
+            Envelopes (and groups) generated by your script are
+            automatically destroy by LScript when your script terminates.
+            You can cause them to remain in Layout's internal channel
+            group listing by calling this method.  If called without
+            arguments, the Envelope will be flagged as persistent.  A
+            Boolean 'false' value will allow the Envelope to be removed
+            by LScript at script termination.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  A new format() function can be used to format a string by performing
+  token substitution within the string with provided values.  This is
+  much like C's printf() function.  It can be used with individual
+  data elements, but is intended more for use with arrays.
+
+        format(<font color="FFFF00">&lt;template&gt;</font>,<font color="FFFF00">&lt;data&gt;</font>[,<font color="FFFF00">&lt;data&gt;</font>...])
+
+  Tokens are indicated by a dollar sign ($) followed by the numeric
+  index value to be taken from the arguments provided.  Index value
+  need not be sequential, nor must you access all elements.
+
+  Individual arguments can be either a list of single data types
+  (variables or constants), or you can provide a single array value
+  to the used in the substitution.  <b>YOU CANNOT PROVIDE BOTH</b>.
+
+  The function returns a string value that has all substitutions
+  performed:
+
+        ...
+        d = date();
+        info(format("Today is $7, $6 $1, $3",d));
+
+        (h,m) = time();
+
+        ap = "AM";
+        if(h &gt; 11)
+        {
+            ap = "PM";
+            h -= 12 if h &gt 12;
+        }
+        h = 12 if h == 0;
+
+        info(format("Time is currently $1:$2" + ap,h,m));
+        ...
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+
+<H2>Behavioral Changes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                                    
+  The following legacy requester control creation functions have been removed from LScript:
+
+        addcontrol()
+        addtext()
+        addhsv()
+        addrgb()
+        additems()
+        addcheckbox()
+        addfilename()
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The following legacy Modeler layer management functions have been removed from LScript:
+
+        fglayers()
+        bglayers()
+        getempty()
+        getfull()
+        getemptyfg()
+        getemptybg()
+        swaplayers()
+        setlayer()
+        setblayer()
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  In LightWave [6], the Panels interface mechanism is no longer implemented as a plug-in.
+  Rather, it has become a subsystem of LightWave itself.  Because of this, there is no
+  longer a possibility that Panels will not be available to any LScript.  For this reason,
+  the reqbegin() function no longer returns any value indicating the presence or absence
+  of the Panels plug-in.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  In an effort to migrate LScripts to the more-robust Panels interface mechanism, the
+  reqbegin() function in Modeler LScript now inversely interprets the optional boolean
+  value that can be provided to it.  In past releases of LScript, if the optional boolean
+  value provided indicated 'true', then the Panels interface system was used (if available)
+  to construct the script's requester panel.  A value of 'false' (or no value at all)
+  caused Modeler's internal panel creation mechanism to be employed.
+
+  This has now been completely reversed.  Now, the Panels subsystem is selected by default,
+  and you must indicate a boolean 'true' value to select Modeler's internal requester
+  system.  <b>THIS MEANS THAT ALL MODELER SCRIPTS THAT POST REQUESTERS MUST BE CHANGED</b> if
+  they are going to be run under LScript v2.1.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The Displacement Map support for the "BEFOREBONES" flag() value has been renamed to
+  "PREBONE".
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The Channel Object Agent constants introduced in LScript v2.0 have all been renamed to
+  include a "CHAN_" prefix.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<H2>Bug Fixes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                                    
+  Corrected argument handling in Object Agent methods to account for multiple-element
+  arguments (such as Init Blocks).
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The type of the Object Agent provided to the Item Animation create() function was hard-coded
+  as type MESH.  I must have forgotten my Ginkgo biloba that day.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Recursive plug-in invocations (such as occur when you ask an Item Animation script to return
+  the world position of the object to which it is attached) were trashing their own instance
+  data because the internal switching stack was not cognizant of situations where the instance
+  data was already installed globally.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  Passing a 'nil' value as an array index would crash the application.  This has been trapped.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The lyrsetfg(), lyrsetbg(), lyrswap() and boundingbox() functions were not compliant with
+  Modeler's new unlimited layer mechanism, leaving them limited to only reaching layer numbers
+  32 or less (the number of bits in an integer).
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The File Object Agent write() method, while already coded to work with linear arrays as
+  arguments, was performing processing intended for non-binary-mode files when the files were
+  in binary mode, leading, in some cases, to memory overruns and crashes.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Corrected the following Layout Command Sequence functions to accept a vector argument as
+  well as three floating-point values:
+
+        Position()
+        Rotation()
+        Scale()
+        PivotPosition()
+        PivotRotation()
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The Image Object Agent rgb() method was using bad index values when returning the RGB data.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The Image Object Agent wasn't being treated correctly by the Requester subsystem, making
+  access to its data/members impossible.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The foreach() iterator was not initializing its variable container, letting it start at
+  whatever value it might already have been holding.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Object Agent data member validation was broken, allowing references to invalid data members
+  (i.e., "shadow" instead of "shadows") to go quietly unpunished.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The Mac LScript random() function was not working correctly, returning the same number
+  each time it was called.  This was likely due to Apple's philosophy of disallowing
+  uniqueness.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Requester separator controls were not being properly initialized when they were assigned to
+  specific Tab control pages using ctlpage().
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  Function argument variables could not be assigned values within the UDF to override their
+  passed or default values.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  The LScript debugger interface code contained a bug that would not correctly identify a
+  sub-UDF variable when an attempt was made in the LSIDE Debugger to add a watch for it.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  CommandSequence calls could not be made from the Master options() UDF without causing a
+  crash.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+
+  Index values used to declare arrays could be less than 1, leading to weird errors or
+  crashes.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+
+  The mathematical assignment operators <font color="FFFF00">+=</font>, <font color="FFFF00">-=</font>, <font color="FFFF00">*=</font>, and <font color="FFFF00">/=</font> would generate an error message
+  when an integer appeared on the left, and a floating point value on the right.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

@@ -1,0 +1,337 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04E86C4A0B6124410076C6BF /* blotch.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C480B6124410076C6BF /* blotch.c */; };
+		04E86C560B61244C0076C6BF /* servmain.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C500B61244C0076C6BF /* servmain.c */; };
+		04E86C570B61244C0076C6BF /* shutdown.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C510B61244C0076C6BF /* shutdown.c */; };
+		04E86C580B61244C0076C6BF /* startup.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C520B61244C0076C6BF /* startup.c */; };
+		04E86C590B61244C0076C6BF /* username.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C530B61244C0076C6BF /* username.c */; };
+		04E86C670B6124760076C6BF /* servmain.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C500B61244C0076C6BF /* servmain.c */; };
+		04E86C680B6124760076C6BF /* shutdown.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C510B61244C0076C6BF /* shutdown.c */; };
+		04E86C690B6124760076C6BF /* startup.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C520B61244C0076C6BF /* startup.c */; };
+		04E86C6A0B6124760076C6BF /* username.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C530B61244C0076C6BF /* username.c */; };
+		04E86C6C0B6124760076C6BF /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+		04E86C720B6124850076C6BF /* blotchv.c in Sources */ = {isa = PBXBuildFile; fileRef = 04E86C490B6124410076C6BF /* blotchv.c */; };
+		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04E86C480B6124410076C6BF /* blotch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = blotch.c; sourceTree = "<group>"; };
+		04E86C490B6124410076C6BF /* blotchv.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = blotchv.c; sourceTree = "<group>"; };
+		04E86C4F0B61244C0076C6BF /* servdesc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = servdesc.c; path = ../../../../source/servdesc.c; sourceTree = SOURCE_ROOT; };
+		04E86C500B61244C0076C6BF /* servmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = servmain.c; path = ../../../../source/servmain.c; sourceTree = SOURCE_ROOT; };
+		04E86C510B61244C0076C6BF /* shutdown.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shutdown.c; path = ../../../../source/shutdown.c; sourceTree = SOURCE_ROOT; };
+		04E86C520B61244C0076C6BF /* startup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = startup.c; path = ../../../../source/startup.c; sourceTree = SOURCE_ROOT; };
+		04E86C530B61244C0076C6BF /* username.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = username.c; path = ../../../../source/username.c; sourceTree = SOURCE_ROOT; };
+		04E86C700B6124760076C6BF /* blotch.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = blotch.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		8D576316048677EA00EA77CD /* blotch.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = blotch.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		04E86C6B0B6124760076C6BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04E86C6C0B6124760076C6BF /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D576313048677EA00EA77CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04E86C4D0B6124430076C6BF /* lwsdk */ = {
+			isa = PBXGroup;
+			children = (
+				04E86C4F0B61244C0076C6BF /* servdesc.c */,
+				04E86C500B61244C0076C6BF /* servmain.c */,
+				04E86C510B61244C0076C6BF /* shutdown.c */,
+				04E86C520B61244C0076C6BF /* startup.c */,
+				04E86C530B61244C0076C6BF /* username.c */,
+			);
+			name = lwsdk;
+			sourceTree = "<group>";
+		};
+		089C166AFE841209C02AAC07 /* blotch */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+			);
+			name = blotch;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D576317048677EA00EA77CD /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				04E86C480B6124410076C6BF /* blotch.c */,
+				04E86C490B6124410076C6BF /* blotchv.c */,
+				04E86C4D0B6124430076C6BF /* lwsdk */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D576316048677EA00EA77CD /* blotch.plugin */,
+				04E86C700B6124760076C6BF /* blotch.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		04E86C610B6124760076C6BF /* blotchv */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 04E86C6D0B6124760076C6BF /* Build configuration list for PBXNativeTarget "blotchv" */;
+			buildPhases = (
+				04E86C620B6124760076C6BF /* Resources */,
+				04E86C640B6124760076C6BF /* Sources */,
+				04E86C6B0B6124760076C6BF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = blotchv;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = blotch;
+			productReference = 04E86C700B6124760076C6BF /* blotch.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+		8D57630D048677EA00EA77CD /* blotch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "blotch" */;
+			buildPhases = (
+				8D57630F048677EA00EA77CD /* Resources */,
+				8D576311048677EA00EA77CD /* Sources */,
+				8D576313048677EA00EA77CD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = blotch;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = blotch;
+			productReference = 8D576316048677EA00EA77CD /* blotch.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB911E08733D790010E9CD /* Build configuration list for PBXProject "blotch" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* blotch */;
+			projectDirPath = "";
+			targets = (
+				8D57630D048677EA00EA77CD /* blotch */,
+				04E86C610B6124760076C6BF /* blotchv */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		04E86C620B6124760076C6BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D57630F048677EA00EA77CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		04E86C640B6124760076C6BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04E86C670B6124760076C6BF /* servmain.c in Sources */,
+				04E86C680B6124760076C6BF /* shutdown.c in Sources */,
+				04E86C690B6124760076C6BF /* startup.c in Sources */,
+				04E86C6A0B6124760076C6BF /* username.c in Sources */,
+				04E86C720B6124850076C6BF /* blotchv.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8D576311048677EA00EA77CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04E86C4A0B6124410076C6BF /* blotch.c in Sources */,
+				04E86C560B61244C0076C6BF /* servmain.c in Sources */,
+				04E86C570B61244C0076C6BF /* shutdown.c in Sources */,
+				04E86C580B61244C0076C6BF /* startup.c in Sources */,
+				04E86C590B61244C0076C6BF /* username.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		04E86C6E0B6124760076C6BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = blotch;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		04E86C6F0B6124760076C6BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = blotch;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+		1DEB911B08733D790010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = blotch;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB911C08733D790010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = blotch;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+		1DEB911F08733D790010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = _MACOS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB912008733D790010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = _MACOS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		04E86C6D0B6124760076C6BF /* Build configuration list for PBXNativeTarget "blotchv" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				04E86C6E0B6124760076C6BF /* Debug */,
+				04E86C6F0B6124760076C6BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "blotch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB911B08733D790010E9CD /* Debug */,
+				1DEB911C08733D790010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB911E08733D790010E9CD /* Build configuration list for PBXProject "blotch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB911F08733D790010E9CD /* Debug */,
+				1DEB912008733D790010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

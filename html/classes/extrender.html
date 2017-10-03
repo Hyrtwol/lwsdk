@@ -1,0 +1,66 @@
+<html>
+
+<head>
+<title>Classes: ExtRendererHandler</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="environ.html"><img width="96" height="20" border="0"
+    src="../images/navlt.gif" alt="EnvironmentHandler"></a></td>
+    <td width="96" align="left"><a href="freq.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="FileRequester"></a></td>
+    <td width="96" align="left"><a href="../classes.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Classes"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+    <h3>ExtRendererHandler</h3>
+    <p><small><strong>Availability</strong>&nbsp; LightWave&reg; 9.6</small><br>
+    <small><strong>Component</strong>&nbsp; Layout</small><br>
+    <small><strong>Header</strong>&nbsp; <a href="../../include/lwextrend.h">lwextrend.h</a></small></p>
+    <p>External renderer handlers replace the LightWave&reg; renderer. The external renderer obtains information
+    about the scene through the LWSDK, and can do some limited manipulation through the command interface. When
+    an external renderer is called, LightWave&reg; will be in a rendering state. External renderers are supported
+    in both Layout and ScreamerNet.</p>
+    <p><strong>Handler Activation Function</strong></p>
+    <pre>   XCALL_( int ) MyExtRenderer( int version, GlobalFunc *global,
+      LWExtRendererHandler *local, void *serverData );</pre>
+    <p>The <tt>local</tt> argument to an extern renderer handler's activation function is an
+    LWExtRendererHandler.</p>
+    <pre>   typedef struct st_LWExtRendererHandler {
+      LWInstanceFuncs *<strong>inst</strong>;
+      LWItemFuncs     *<strong>item</strong>;
+      int            (*<strong>options</strong>)(LWInstance);
+      int            (*<strong>render</strong>) (LWInstance, int, int, int, EXTRENDERERIMAGE *, int);
+   } LWExtRendererHandler;</pre>
+    <p>The first two members of this structure are standard <a href="../handler.html">handler
+    functions</a>. The <tt>context</tt> argument to the <tt>inst-&gt;create</tt> function is
+    currently undefined.</p>
+    <p>In addition to the standard handler functions, an external renderer handler provides an options
+    function and the all-important render function.
+    <dl>
+      <dt><tt>success = <strong>options</strong>( instance )</tt></dt>
+      <dd>Callback used by LightWave&reg; intended to present the user with any options for the renderer.
+          Returns 0 on failure, 1 for success.</dd>
+      <br>
+      <dt><tt>success = <strong>render</strong>( instance, first_frame, last_frame, frame_step,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;render_image, render_mode )</tt></dt>
+      <dd>The function that does the actual rendering. The render mode is one of <tt>LWRENDERINGMODE</tt> in
+          <a href="../../include/lwrender.h">lwrender.h</a>. When the external renderer finishes rendering a frame, it can
+          use the supplied <tt>render_image</tt> function to have the frame displayed and/or written to disk. The
+          <tt>LWPixmap</tt> the external renderer provides will be destroyed by this. Returns 0 on failure, 1 when
+          the render was successful.</dd>
+    </dl>
+  </tr>
+</table>
+</body>
+</html>

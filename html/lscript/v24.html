@@ -1,0 +1,450 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00F0F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v2.4 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.4 Release Notes</H1>
+
+<br><br>
+
+<H2>New Features</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A Layout object's world rotation values can now be calculated using the new <b>WROTATION</b>
+  param() method flag, or the new <b>getWorldRotation()</b> method.  If the object is unparented,
+  then <b>WROTATION</b>/<b>getWorldRotation()</b> returns a value equivalent to <b>ROTATION</b>/<b>getRotation()</b>.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>ctlpage()</b> Requester function now accepts an array of Control Object Agents in
+  addition to a comma-separated list.  The array reference must be the second and last
+  argument to the function.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new control type called <b>ctlmenu()</b> has been added to the Requester mechanism.  This
+  control type consists of a button that displays a popup menu when pressed.
+
+  The first argument is the title of the button.  Next, a list of the items that will
+  appear on the menu when displayed.  As with <b>ctlpopup()</b>, this list can be an array
+  reference or an initialization block of values.  A required callback function is then
+  defined to process any selections made from the menu.  A fourth optional argument will
+  define a callback used to enable/disable individual menu entries.
+
+  A special entry value is recognized as a menu separator.  An entry that begins with
+  at least two equal signs (=) will cause a separator to be added to the popup menu
+  at the indicated location.
+
+  The menu value returned to either callback function corresponds directly to the linear
+  value of the entry in the original items.  However, separator entries will never be
+  processed.
+
+        @version 2.4
+        @warnings
+
+        menu_items = @"New Session","Close Session","=====","Quit"@;
+
+        generic
+        {
+            reqbegin("Testing");
+            c1 = ctlmenu("Sessions",menu_items,"menu_select","menu_active");
+
+            reqpost();
+            reqend();
+        }
+
+        menu_select: item
+        {
+            info("You selected '",menu_items[item],"'");
+        }
+
+        menu_active: item
+        {
+            return(item != 2);
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Two new Requester functions, <b>drawtextwidth()</b> and <b>drawtextheight()</b>, have been added to
+  determine the display width and height, in pixels, of a text string.  They each take
+  a single character string, and return an integer value representing this pixel width
+  or height.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new information display control is available to Requesters.  Created with <b>ctlinfo()</b>,
+  it defines an area on the Requester panel into which subsequent drawing will occur
+  when a specified UDF callback is invoked.  All drawing into this area is clipped by
+  LScript.
+
+  Three arguments are required by the <b>ctlinfo()</b> function.  The first two are integer values
+  that specify the width and height of the display area.  The third argument defines
+  the UDF to be called when the informational area needs to be redrawn.  This UDF takes
+  no arguments, and has access to all the Requester redraw functions (<b>drawtext()</b>,
+  <b>drawpixel()</b>, etc.).
+
+        @version 2.4
+        @warnings
+
+        @define MSG     "This is cool!"
+
+        msg_x = 101;
+
+        generic
+        {
+            reqbegin("Testing");
+            c1 = ctlinfo(100,30,"info_redraw");
+
+            reqpost("marquee",50);
+            reqend();
+        }
+
+        info_redraw
+        {
+            drawbox(<132,130,132>,0,0,100,30);
+            if(msg_x > 100)
+                msg_x = -1 * drawtextwidth(MSG);
+            drawtext(MSG,<0,0,0>,msg_x, integer((30 - drawtextheight(MSG)) / 2));
+            drawborder(0,0,100,30,true);
+        }
+
+        marquee
+        {
+            msg_x += 2;
+            requpdate();
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Layout Object Agents now provide methods for managing each object's scene tag information.
+
+  The <b>getTag()</b> method takes an integer index value, and returns the tag value for that index,
+  or 'nil' is no tag exists.
+
+  The <b>setTag()</b> method take an index value, and a string tag value, and applies it to the
+  object.  When the current scene is saved, the tag information will be stored into the
+  scene file in association with the object.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<A NAME="BEHAVIOR">
+
+<H2>Behavioral Changes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>ctltext()</b> Requester function has been augmented to accept an Array reference as either
+  the first (and only) argument, or the second (and final) from which text strings will be
+  extracted.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The <b>requpdate()</b> function now triggers a redraw in any visible <b>ctlinfo()</b> area.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>drawborder()</b> Requester redraw function now accepts a fifth optional Boolean argument
+  that indicates the indentation of the border to be drawn.  If omitted (or <b>false</b>), then
+  the border is draw with a "raised" look.   If <b>true</b>, then the border has a "sunken" look.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The <b>ctlactive()</b> and <b>ctlvisible()</b> Requester functions have been augmented to accept an
+  Array of Control identifiers as the third (and final) argument.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The "Ok" button, and the button area, has been removed from non-modal Requester
+  panels to futher integrate scripts with the overall LightWave look-and-feel.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<H2>Bug Fixes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A memory leak existed in the code that processes the <b>points[]</b> Object Agent data
+  member reference.  The leak did not involve memory allocated by LScript, and so
+  was not released when the script terminated.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Requester key handling had a bug that could crash the application under certain
+  circumstances.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The LScript pre-processor was unaware of the fact that the script it was processing
+  was simply being installed instead of executed.  This made the pre-processor enforce
+  certain pragma directives at inappropriate times.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Layout LScript compiler was not setting an internal architecture flag before
+  compiling the specified script, leading to a loss of architecture-specific constant
+  definitions in the output file.  This lack of definition caused operational
+  anomalies with the Layout LScript run-time system.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Control identifier type, while housed well within an array, was not being
+  properly identified by LScript when accessed as an array element.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  LScript's Requester mechanism was not correctly handling situations where an open
+  panel launches another.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Particle Object Agent was not being handled properly in all cases involving
+  array duplication.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Non-modal windows would not re-open again once closed because LScript was confused
+  about the fact that it had actually been closed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Controls generated by the <b>ctltext()</b> function were not functioning properly with the
+  <b>visible()</b> method.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The ommission of an "else" in LScript's code made it impossible to access any of
+  the Custom Object Agent's data members.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Internal switching problems were occurring with requester panels, leading to crashes
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  L-value expressions (those on the left of an assignment) involving arrays were not
+  being flagged correctly by LScript, leading to evaluation failure (and possibly a
+  crash).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Associative array handling could cause a crash when an assignment was attempted on
+  an array not already flagged as associative.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

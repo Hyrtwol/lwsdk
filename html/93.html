@@ -1,0 +1,157 @@
+<head>
+    <meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+    <title>9.3 Changes</title>
+    <style type="text/css">
+        <!--
+        tt { font-size: 10pt } 
+        pre { font-size: 10pt }
+    --></style>
+</head>
+<body lang="en-US" text="#000000" bgcolor="#ffffff" dir="LTR">
+    <table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+        <tr>
+            <td width="120" align="left"><a href="92.html"><img width="96" height="20" border="0" src="images/navlt.gif" alt="9.2 Changes"></a></td>
+            <td width="96" align="left"><a href="931.html"><img width="64" height="20" border="0" src="images/navrt.gif" alt="9.3.1 Changes"></a></td>
+            <td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0" src="images/proglw.gif" alt="Table of Contents"></a></td>
+        </tr>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="600"><br>
+                <h3>9.3 Changes</h3>
+                <p><small>July 29th, 2007</small>
+                </p>
+                <p>This is a list of the changes in the LightWave&reg; 9.3 release that affect the 
+                    SDK.</p>
+                <p><a href="handler.html/#gizmo">Gizmos</a></p>
+                    <ul>
+                        <li>
+                            Gizmos are a new handler class available to most Layout plugin classes.
+                            They complement or replace interface handlers.
+                            A gizmo is like an interface drawn in a viewport, similar to layout tools.
+                            Users can interact with gizmos through dragging handles.
+                        </li>
+                    </ul>
+                <p><tt><a href="../include/lwmeshes.h">lwmeshes.h</a></tt>
+                    <ul>
+                        <li>
+                            Added event callback capability, to inform plugin when the meshinfo is being destroyed.</li>
+                    </ul>
+                <p><tt><a href="../include/lwxpanel.h">lwxpanel.h</a></tt>
+                    <ul>
+                        <li>
+                           The <tt>LWXPanelTextXFormFunc</tt> callback, set through the <tt>XpTEXTXFORMFUNC</tt> tag,
+                           has been changed to include the panel and control IDs.
+                        </li>
+                        <li>
+                           The <tt>"zoomfactor-env"</tt> control has been added for camera plugins.
+                        </li>
+                    </ul>
+                <p><tt><a href="../include/lwcustobj.h">lwcustobj.h</a></tt>
+                    <ul>
+                         <li>
+                            The <tt><b>setCSysItem</b></tt> function has been added to <tt>LWCustomObjAccess</tt>
+                            to set the item used for <tt>LWCSYS_OBJECT</tt> and <tt>LWCSYS_ICON</tt>
+                            coordinate systems.
+                         </li>
+         </ul>
+         <p><tt><a href="../include/lwrender.h">lwrender.h</a></tt>
+                    <ul>
+                         <li>
+                Added the double sided area lights information to the sceneinfo global.
+                         </li>
+                    </ul>
+                <p><a href="commands/layout.html">Commands: Layout</a></p>
+                <ul>
+                    <li>
+                        Nine new commands have been added to allow management of scene Compositing elements.
+                        <ul>
+                            <li><tt>SetBackgroundImage</tt></li>
+                            <li><tt>SetForegroundImage</tt></li>
+                            <li><tt>SetForegroundAlphaImage</tt></li>
+                            <li><tt>SyncImageToFrame</tt></li>
+                            <li><tt>EnableForegroundFaderAlpha</tt></li>
+                            <li><tt>SetForegroundDissolve</tt></li>
+                            <li><tt>EnableForegroundKey</tt></li>
+                            <li><tt>SetLowClipColor</tt></li>
+                            <li><tt>SetHighClipColor</tt></li>
+                        </ul>
+                    </li>
+                </ul>
+                <p>LScript v2.11</p>
+                <ul>
+                    <li>
+                        Three new platform() codes have been added to LScript:  WIN32, WIN64, and MAC64.  The
+                        Windows codes break down as follows:
+                        <table>
+                          <tr>
+                            <td width=20></td><td width=100>INTEL</td><td>(32-bit Windows)</td>
+                          </tr>
+                          <tr>
+                            <td></td><td>WIN32</td><td>(32-bit Windows)</td>
+                          </tr>
+                          <tr>
+                            <td></td><td>WIN64</td><td>(64-bit Windows)</td>
+                          </tr>
+                        </table>
+                        The Macintosh codes are a bit more diverse:                        
+                        <table>
+                          <tr>
+                            <td width=20></td><td width=100>MACINTOSH</td><td>(32-bit non-MACH)</td>
+                          </tr>
+                          <tr>
+                            <td></td><td>MACUB</td><td>(32-bit MACH)</td>
+                          </tr>
+                          <tr>
+                            <td></td><td>MAC64</td><td>(64-bit MACH)</td>
+                          </tr>
+                        </table>
+                    </li>
+                    <li>
+                        The new Compositing commands (see above) have been added to LScript as native commands.  The
+                        image setting commands accept a string name, an integer index value, or an Image Object Agent:<br><br>
+                        <table>
+                        <tr>
+                        <td width=50></td>
+                        <td>
+<code>
+SetBackgroundImage(3);<br>
+SetForegroundImage("Thorin.jpg");<br>
+SetForegroundAlphaImage(getfirstitem(IMAGE));<br>
+EnableForegroundFaderAlpha(true);<br>
+SetForegroundDissolve(0.5);<br>
+EnableForegroundKey(true);<br>
+SetLowClipColor(0.0,0.5,0.9);<br>
+SetHighClipColor(0.85,0.0,1.0);<br>
+SyncImageToFrame(1);<br>
+</code>
+                        </td>
+                        </tr>
+                        </table><br>
+                        In order to clear an image from a particular spot, you can pass in  "(none)" as the image
+                        name, or you can simply use 'nil':<br><br>
+                        <table>
+                        <tr>
+                        <td width=50></td>
+                        <td>
+<code>
+SetBackgroundImage("(none)");   // no background image<br>
+SetForegroundImage(nil);        // no foreground image<br>
+</code>
+                        </td>
+                        </tr>
+                        </table><br>
+                        Note that turning off either the foreground or foreground alpha images in this way will have a
+                        cascading effect on other compositing settings dependent upon having valid images in those
+                        slots.  They will be disabled if they were previously active.
+                    </li>
+                </ul>
+
+            </td>
+        </tr>
+    </table>
+    <p><br>
+        <br>
+    </p>
+</body>
+</html>

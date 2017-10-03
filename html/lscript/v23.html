@@ -1,0 +1,1057 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00F0F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v2.3 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.3 Release Notes</H1>
+
+<br><br>
+
+<H2>New Features</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Scene Object Agent now provides information pertaining to the state of the Layout's
+  dynamic update setting.  This information is available in the <b>dynamicupdate</b> data member,
+  and will be one of the following:
+
+        DYNUP_OFF
+        DYNUP_DELAYED
+        DYNUP_INTERACTIVE
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A new method is available in the Scene Object Agent to determine the display state of
+  an object in the scene.  Given either the name of an existing object, or that object's
+  proxy, the <b>visibility()</b> method will return one of the following indicators:
+
+        VIS_VISIBLE
+        VIS_HIDDEN
+        VIS_BOUNDINGBOX
+        VIS_VERTICES
+        VIS_WIREFRAME
+        VIS_FFWIREFRAME
+        VIS_SHADED
+        VIS_TEXTURED
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new method exists in the Scene Object Agent to retrieve the X and Y position of an
+  object's entry in Layout's schematic view.  Provided a name or proxy, the <b>schemaPosition()</b>
+  method will return two floating-point values representing this position.
+
+  Coupled with the <b>SchematicPosition()</b> Command Sequence function, a script can manage
+  the complete arrangement of Layout's schematic viewport.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>displayopts[]</b> data member, belonging to the Scene Object Agent, provides information
+  regarding display-related settings in Layout.  The following are the specific elements
+  in the array:
+
+        displayopts[1]      Boolean 'true' if Motion Paths are displayed
+        displayopts[2]      Boolean 'true' if Handles are displayed
+        displayopts[3]      Boolean 'true' if IK Chains are displayed
+        displayopts[4]      Boolean 'true' if Cages are displayed
+        displayopts[5]      Boolean 'true' if Safe Areas are displayed
+        displayopts[6]      Boolean 'true' if Field Charts are displayed
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The new <b>generalopts[]</b> Scene Object Agent data member provides information regarding
+  general settings in Layout.  The following are the specific elements in the array:
+
+        generalopts[1]      Boolean 'true' if Hide Tool Bar is enabled
+        generalopts[2]      Boolean 'true' if Right Tool Bar is enabled
+        generalopts[3]      Boolean 'true' if Parent In Place is enabled
+        generalopts[4]      Boolean 'true' if Fractional Frame is enabled
+        generalopts[5]      Boolean 'true' if Keys In Slider is enabled
+        generalopts[6]      Boolean 'true' if Play Exact Rate is enabled
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Layout Object Agents export a new data member, <b>visibility</b>, that contains one of the
+  values returned by the Scene Object Agent's <b>visibility()</b> method.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new <b>schemaPosition()</b> method has been added to Layout Object Agents that will return
+  two floating-point values that represent the object's position in Layout's schematic
+  viewport.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Both the Scene and Layout Object Agents export a new method called <b>server()</b>.  This method
+  will return the name of an active plug-in applied to the object.  The first argument is
+  the plug-in class to be queried.  The second is an optional index value for selecting
+  a specific plug-in.
+
+  The plug-in class can be a literal string (like "ItemMotionHandler"), or you can use
+  one of the following pre-defined constants:
+
+<b>        SERVER_ANIMLOADER_H         SERVER_ANIMLOADER_I
+        SERVER_ANIMSAVER_H          SERVER_ANIMSAVER_I
+        SERVER_CHANNEL_H            SERVER_CHANNEL_I
+        SERVER_CUSTOMOBJ_H          SERVER_CUSTOMOBJ_I
+        SERVER_DISPLACEMENT_H       SERVER_DISPLACEMENT_I
+        SERVER_ENVIRONMENT_H        SERVER_ENVIRONMENT_I
+        SERVER_IMAGEFILTER_H        SERVER_IMAGEFILTER_I
+        SERVER_PIXELFILTER_H        SERVER_PIXELFILTER_I
+        SERVER_FRAMEBUFFER_H        SERVER_FRAMEBUFFER_I
+        SERVER_MASTER_H             SERVER_MASTER_I
+        SERVER_ITEMMOTION_H         SERVER_ITEMMOTION_I
+        SERVER_OBJREPLACEMENT_H     SERVER_OBJREPLACEMENT_I
+        SERVER_SHADER_H             SERVER_SHADER_I
+        SERVER_TEXTURE_H            SERVER_TEXTURE_I
+        SERVER_VOLUMETRIC_H         SERVER_VOLUMETRIC_I</b>
+
+  Where <b>_H</b> indicates a Handler-type server (i.e., "ItemMotionHandler") and <b>_I</b> indicates
+  an Interface-type server (i.e., "ItemMotionInterface").
+
+  Certain classes of plug-in are itemless, such as Image Filter and Master.  While you can
+  provide these class types to a Layout Object, you will only get a valid return value if
+  you use these with the Scene Object Agent (and, of course, plug-ins of that type are
+  active).  Likewise for classes that <i>are</i> associated with objects; they will not
+  return valid values with the Scene Object Agent.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The sort methods (<b>sortA()</b> and <b>sortD()</b>) now support Point and Polygon identifiers when
+  encountered in arrays.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A new integral data type method called <b>reduce()</b> has been added.  This method will remove
+  duplicate values from the data type (useful mostly for strings and arrays).  Duplicate values
+  are expected to be in linear order--i.e., adjacent to one another.  You should probably
+  employ one of the sort methods before invoking <b>reduce()</b>.
+
+  The following is an example of using the <b>reduce()</b> method.  A linear series of Polygon
+  identifiers are gathered into an array in a situation where there is a high probablity of
+  duplication.  Subsequent calls to <b>sortA()</b> and <b>reduce()</b> remove any duplicate entries from
+  the resulting array:
+
+        ...
+        for(x = 1;x <= pointCnt;x++)
+        {
+            rawPolys = points[x].polygon();
+            polyCnt = rawPolys.count();
+
+            for(y = 1;y <= polyCnt;y++)
+                polySelect += rawPolys[y];
+        }
+
+        polySelect.sortA();
+        polySelect.reduce();
+        ...
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Requester mechanism supports an optional idle-time callback.  The <b>reqpost()</b>/<b>reqopen()</b>
+  functions will now accept up to two new arguments to enable idle-time processing.  The first
+  argument is the name of the UDF to be invoked.  The UDF takes no arguments, and is enabled to
+  allow for drawing on the Requester panel.  The second optional argument is the timeout interval
+  (in milliseconds) to be used between calls to the idle-time UDF.  If ommitted, the default
+  timeout value is 500 milliseconds (one-half of a second).
+
+        generic
+        {
+            reqbegin("Testing Idle");
+
+            c1 = ctlnumber("Number",1.0);
+
+            reqpost("idleTest");   // called at 500-millisecond intervals
+            reqend();
+        }
+
+        color = <0,255 * .5,255 * .75>;
+
+        idleTest
+        {
+            drawline(color,0,2,100,2);
+
+            color.x += 5;
+            color.y += 5;
+            color.z += 5;
+
+            if(color.x > 255) color.x = 0;
+            if(color.y > 255) color.y = 0;
+            if(color.z > 255) color.z = 0;
+        }
+
+  Certain conditions may prevent the system from invoking the UDF at exact interval times.
+  Thus, the timeout value specified should be considered only an approximation--in other words,
+  you should not make the assumption that only that amount of time has elapsed when your
+  idle-time UDF is invoked.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The Requester control identifier value, returned by functions like ctlstring() and
+  ctlnumber(), has been promoted to valid LScript data type status.  This ascension has
+  enabled the new Control data type to sport its own set of object attributes.  Below
+  are the initial set of methods and data members.  The attribute set may be expanded
+  in future releases of LScript.
+
+  The new methods exported by the new Control data type:
+
+        active([<font color="FFFF00">&lt;Boolean&gt;</font>])
+
+            This method sets the immediate active state of the
+            control.  An optional Boolean value indicates whether
+            or not the control should be active.  If ommitted,
+            an implicit 'true' value is assumed.
+
+        visible([<font color="FFFF00">&lt;Boolean&gt;</font>])
+
+            This method sets the immediate visible state of the
+            control.  An optional Boolean value indicates whether
+            or not the control should be visible.  If ommitted,
+            an implicit 'true' value is assumed.
+
+        position(<font color="FFFF00">&lt;column&gt;</font>,<font color="FFFF00">&lt;row&gt;</font>)
+
+            Sets the location of the control on the open Requester
+            panel to the specified column/row.  The re-positioning
+            action is immediate.  You should use the <b>visible()</b> method
+            before and after this call to ensure a clean move of
+            the control.
+
+  Data members exported by the Control data type:
+
+        value
+
+            This data member holds the context value display
+            by the control.  Reading from and writing to this
+            value is equivalent to using the setvalue() and
+            getvalue() functions, respectively, on the control
+            identifier.
+
+        active                              <b>(read-only)</b>
+
+            Returns a Boolean value indicating the current
+            active state of the control, where a 'true' value
+            indicates that the control is currently active and
+            can interact with the user.
+
+        visible                             <b>(read-only)</b>
+
+            Returns a Boolean value indicating the current
+            visible state of the control, where a 'true' value
+            indicates that the control is currently visible
+            on the Requester panel.
+
+        x                                   <b>(read-only)</b>
+
+            Contains the control's current X position on the
+            Requester panel.
+
+        y                                   <b>(read-only)</b>
+
+            Contains the control's current Y position on the
+            Requester panel.
+
+        w                                   <b>(read-only)</b>
+
+            Contains the control's width
+
+        h                                   <b>(read-only)</b>
+
+            Contains the control's height
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new function has been added to the Requester drawing toolbox.  The <b>drawerase()</b> function
+  takes the the X and Y position, along with the width and height, of the area to be erased
+  on the Requester panel.
+
+        ...
+        drawerase(10,10,50,25);
+        ...
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Requester panels can now be interactively resized by the user if an internal resize callback
+  is defined within the script using the new <b>reqresize()</b> function.  This function takes up to
+  five arguments, the first, a required string value, should identify a UDF within the script.
+  This UDF should accept two integer arguments, indicating the new width and height of the
+  Requester panel, and should return nothing.
+
+  Two optional pairs of numbers can also be provided to indicate the the minimum width and
+  height, and maximum width and height, for the panel.  If ommitted, the minimum width and
+  height becomes that of the initial window, and the maximum width and height is limited only
+  by the screen resolution.
+
+  The following Generic script illustrates the use of the new resize mechanism by locking a
+  control to a specific location on the panel, regardless of its size:
+
+        c1;
+
+        generic
+        {
+            reqbegin("Resize Me!");
+
+            c1 = ctlnumber("Number",1.0);
+
+            reqresize("resize",,,640,480);  // maximum becomes 640x480
+
+            reqpost();
+            reqend();
+        }
+
+        resize: w,h
+        {
+            c1.position(w - c1.w - 5,h - c1.h - 35);
+        }
+
+  Resizing of Requester panels is only enabled when the <b>reqresize()</b> function successfully
+  identifies a callback UDF.  If <b>reqresize()</b> is not used, then the panel is locked to its
+  initial size.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  LScript sports a new plug-in class, Custom (Object).  Like Item Animation, Custom Object
+  can take an optional argument to its create() UDF that is an Object Agent for the object
+  to which this script is assigned.  Custom Object also supports the init(), newtime() and
+  cleanup() UDFs.
+
+  The Custom Object process() UDF takes a single argument which is a Custom Object Agent
+  that provides an interface to the underlying Custom Object functionality.  It exports
+  the following data and methods:
+
+        view
+
+            a read-only data member that indicates which
+            view drawing will effect.  It will contain one
+            of the following:
+
+                VIEW_ZY
+                VIEW_XZ
+                VIEW_XY
+                VIEW_PERSP
+                VIEW_LIGHT
+                VIEW_CAMERA
+                VIEW_SCHEMA
+
+        flags[]
+
+            read-only array of settings for the current Custom
+            instance.  it only has a single element right
+            now (flags[1]) which will be 'true' if the Custom
+            object should be drawn in a selected state, or
+            'false' otherwise.
+
+        setColor(<font color="0000A0">&lt;r,g,b&gt;</font>|<font color="0000A0">r,g,b[,a]</font>)
+
+           sets the color for subsequent drawing actions.
+
+        setPattern(<font color="0000A0">pat</font>)
+
+           sets the drawing pattern.  solid by default, or
+           can be one of the following:
+
+                PATTERN_SOLID    (or "SOLID")
+                PATTERN_DOT      (or "DOT")
+                PATTERN_DASH     (or "DASH")
+                PATTERN_LONGDOT  (or "LONGDOT")
+
+        drawPoint(<font color="0000A0">&lt;pos&gt;</font>[,<font color="0000A0">coord</font>])
+
+           draw a point into the current view at the vector
+           location <font color="0000A0">&lt;pos&gt;</font> using the previously set color and
+           line pattern.  The <font color="0000A0">coord</font> parameter is optional
+           (SYS_OBJECT is the default), and can be one of
+           the following:
+
+                SYS_WORLD        (or "WORLD" or "GLOBAL")
+                SYS_OBJECT       (or "OBJECT" or "LOCAL")
+                SYS_ICON         (or "ICON")
+
+        drawLine(<font color="0000A0">&lt;pos1&gt;</font>,<font color="0000A0">&lt;pos2&gt;</font>[,<font color="0000A0">coord</font>])
+
+           draws a line segment from vector <font color="0000A0">&lt;pos1&gt;</font> to
+           vector <font color="0000A0">&lt;pos2&gt;</font>.
+
+        drawTriangle(<font color="0000A0">&lt;pos1&gt;</font>,<font color="0000A0">&lt;pos2&gt;</font>,<font color="0000A0">&lt;pos3&gt;</font>[,<font color="0000A0">coord</font>])
+
+           draws a triangle whose end points are vector <font color="0000A0">&lt;pos1&gt;</font>,
+           vector <font color="0000A0">&lt;pos2&gt;</font>, and vector <font color="0000A0">&lt;pos3&gt;</font>.
+
+        drawCircle(<font color="0000A0">&lt;pos&gt;</font>,<font color="0000A0">rad</font>[,<font color="0000A0">coord</font>])
+
+           draws a circle whose center point is vector <font color="0000A0">&lt;pos&gt;</font>,
+           with a radius of <font color="0000A0">rad</font>.
+
+        drawText(<font color="0000A0">&lt;pos&gt;</font>,<font color="0000A0">text</font>[,<font color="0000A0">coord</font>,[<font color="0000A0">align</font>]])
+
+           draws the provided text string at the vector
+           location <font color="0000A0">&lt;pos&gt;</font>.  the <font color="0000A0">align</font> argument can be one
+           of the following:
+
+                LEFT             (or "LEFT")
+                CENTER           (or "CENTER")
+                RIGHT            (or "RIGHT")
+
+  The plug-in API does not maintain state information between evaluations, and neither does
+  LScript.  This means that every time the process() UDF is called, the color is set back
+  to that established for the object in the Layout interface, and the drawing pattern is
+  always PATTERN_SOLID.
+
+  Here is a short Custom Object LScript that duplicates the "barn" sample provided by
+  Ernie in the LightWave SDK:
+
+        @warnings
+        @script custom
+
+        vert = @ <0.0,  0.0,  0.0>,  <1.0,  0.0,  0.0>,  <1.0,  1.0,  0.0>,
+                 <0.5,  1.5,  0.0>,  <0.0,  1.0,  0.0>,  <0.0,  0.0, -1.0>,
+                 <1.0,  0.0, -1.0>,  <1.0,  1.0, -1.0>,  <0.5,  1.5, -1.0>,
+                 <0.0,  1.0, -1.0> @;
+
+        edge = @ 1, 2,  2, 3,  3, 4,   4, 5,  5, 1,  6, 7,
+                 7, 8,  8, 9,  9, 10,  10, 6, 1, 6,  2, 7,
+                 3, 8,  4, 9,  5, 10,  2, 5,  1, 3 @;
+
+        process: ca
+        {
+           for(x = 1;x < 31;x += 2)
+                ca.drawLine(vert[edge[x]],vert[edge[x+1]]);
+
+           ca.setPattern("dot");
+
+           for(x = 31; x < 35;x += 2)
+                ca.drawLine(vert[edge[x]],vert[edge[x+1]]);
+        }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  LScript now offers a new Object Agent for Layout scripts:  <font color="FFFF00">Particle</font>.
+
+  This Object Agent provides an interface to the underlying plug-in API Particle System
+  services.  Specific documentation for that global service can be found in the LightWave
+  SDK docs.
+
+  A Particle Object Agent instance is created using the constructor <b>Particle()</b>.  This
+  constructor can be used to create a new instance of a Particle database, or it can be
+  used to acquire an existing Particle System, depending upon the arguments provided.
+
+  If a valid Layout Object Agent is provided to the constructor, then a list of the
+  Particle systems active on that object are returned.  If no Particle systems are
+  enabled for that object, then 'nil' is returned.
+
+        ...
+        obj = Mesh("Cow");
+        part = Particle(obj) || error("No particle systems active!");
+        ...
+
+  When creating a new Particle system, you must specify the type of the particles and
+  provide a list of the buffers that are to be created and maintained for each particle.
+  Particle types can be one of <b>PART_PARTICLE</b> (single particle) or <b>PART_TRAIL</b> (particle with
+  tail).  As with most constants in LScript, these can also be specified using the string
+  equivalents "particle" and "trail".
+
+  The buffers that can be allocated for each particle are as follows:
+
+        PART_POSITION     (or "position")
+        PART_SIZE         (or "size")
+        PART_SCALE        (or "scale")
+        PART_ROTATION     (or "rotation")
+        PART_VELOCITY     (or "velocity")
+        PART_AGE          (or "age")
+        PART_FORCE        (or "force")
+        PART_PRESSURE     (or "pressure")
+        PART_TEMPERATURE  (or "temperature")
+        PART_MASS         (or "mass")
+        PART_LINK         (or "link")
+        PART_ID           (or "id")
+        PART_ENABLE       (or "enable")
+        PART_RGBA         (or "rgba")
+        PART_COLLISION    (or "collision")
+
+  Particles can exist in one of three states: <b>PART_ALIVE</b>, <b>PART_DEAD</b>, or <b>PART_LIMBO</b>.  These
+  values are used when reading/writing the <b>PART_ENABLE</b> buffer.
+
+  The following methods and data members are exported by the Particle Object Agent:
+
+        count
+
+           returns the current number of particles (integer) defined
+           in the instance.
+
+        save()
+
+           writes particle-specific data during the save state
+
+        load()
+
+           loads particle data during the load state
+
+        attach(<font color="FFFF00">Object Agent</font>)
+
+           attaches the particle instance to a Layout Object Agent
+           so systems like HyperVoxels can access the particle data
+
+        detach(<font color="FFFF00">Object Agent</font>)
+
+           disassociates the particle instance from its object
+
+        reset()
+
+           clears all particles from the instance
+
+        addParticle()
+
+           generates a new particle in the instance.  the index
+           value of the new particle is returned.
+
+        remParticle(<font color="FFFF00">index</font>)
+
+           removes the indicated particle <font color="FFFF00">index</font> from the instance
+
+        setParticle(<font color="FFFF00">index</font>,<font color="FFFF00">bufid</font>,<font color="FFFF00">value</font>)
+
+           sets the data for the specified particle buffer for the
+           indicated particle <font color="FFFF00">index</font>.
+
+        getParticle(<font color="FFFF00">index</font>,<font color="FFFF00">bufid</font>)
+
+           retrieves the value in the specified particle buffer for
+           the indicated particle <font color="FFFF00">index</font>.
+
+  Here is the LScript equivalent of the particle SDK example.  You can test it by applying
+  it to an object, and then enabling that object in HyperVoxels:
+
+        @warnings
+        @version 2.3
+        @script displace
+
+        part;
+
+        create: id
+        {
+            part = Particle("particle",@"position","size","enable","rgba"@);
+            part.attach(id);
+        }
+
+        newtime: id, frame, time
+        {
+            part.reset();
+        }
+
+        flags { return(WORLD); }
+
+        process: da
+        {
+            i = part.addParticle();
+            part.setParticle(i,"position",&lt;da.oPos[1],da.oPos[2],da.oPos[3]&gt;);
+            part.setParticle(i,"rgba",100,150,200,255);
+            part.setParticle(i,"enable",PART_ALIVE);
+        }
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The following Command Sequence functions have been added to the Layout LScript
+  programming environment, sychronizing the system to LightWave Layout 525:
+
+        DynamicUpdate(1-3)
+        BoundingBoxThreshold(<font color="0000A0">threshold</font>)
+        AddPosition(&lt;x,y,z&gt;|x,y,z)
+        AddRotation(&lt;h,p,b&gt;|h,p,b)
+        AddScale(&lt;x,y,z&gt;|x,y,z)
+        RadiosityIntensity(0.0-1.0)
+        CausticIntensity(0.0-1.0)
+        ZenithColor(&lt;r,g,b&gt;|r,g,b)
+        SkyColor(&lt;r,g,b&gt;|r,g,b)
+        GroundColor(&lt;r,g,b&gt;|r,g,b)
+        NadirColor(&lt;r,g,b&gt;|r,g,b)
+        EditServer(<font color="0000A0">class</font>,<font color="0000A0">index</font>)
+        BoneFalloffType(1-7)
+        ShadowMapSize(16-32000)
+        ShowTargetLines()
+        MasterPlugins()
+        Generics()
+        ClearAudio()
+        LoadAudio()
+        PlayAudio()
+        ReplaceObjectLayer(<font color="0000A0">layer</font>,<font color="0000A0">filename</font>)
+        HStiffness(<font color="0000A0">stiffness</font>)
+        PStiffness(<font color="0000A0">stiffness</font>)
+        BStiffness(<font color="0000A0">stiffness</font>)
+        ItemActive(<font color="0000A0">Boolean</font>)
+        ItemLock(<font color="0000A0">Boolean</font>)
+        RadiosityType(1-3)
+        AddButton(<font color="0000A0">command</font>,<font color="0000A0">group</font>)
+        LoadObjectLayer(<font color="0000A0">layer</font>,<font color="0000A0">filename</font>)
+        LightQuality(1-5)
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A new pragma called <b>@name</b> has been added to the pre-processor.  The value of this
+  pragma is a display name for the script.  This value will be used by the LightWave
+  LCore subsystem to provide a menu display name for the script when it is installed
+  as a plug-in.  In addition, it will be used as a backup value for those scripts
+  who have the capability to call the identification function <b>setdesc()</b>, but do not.
+
+        @warnings
+        @script generic
+        @name Bone Cloner
+        ...
+
+  If specified, script names are also now embedded into compiled LScripts, providing
+  them with the same naming capabilities when installed.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The VMap Object Agent now supports creation of user-defined vertex maps in Modeler.
+
+  The method used is nearly identical to that of creating a new vertex map from a
+  pre-defined type.  In order to generate a custom vertex map, instead of using one
+  of the pre-defined type identifiers, you must provide a custom map type.  Custom
+  map types are a unique four-character sequence, housed in an initialization block.
+
+  For example, to generate a vertex map of type <b>NMBK</b>, named <b>my_normals</b>, with
+  two data elements per point:
+
+        ...
+        @define VMAP_NMBK  @'N','M','B','K'@
+        ...
+        normMap = VMap(VMAP_NMBK,"my_normals",2);
+
+
+  Be aware that custom vertex maps will not appear anywhere in the application's
+  interface.  They are of types not known to the application, so no allocation is
+  made for them.  They will, however, be stored into the object file when it
+  is saved, and will continue to be transported within the object file.
+
+  The <b>VMap()</b> constructor will return 'nil' if it fails to generate the new vertex
+  map, regardless of its mode (custom or pre-defined).
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<A NAME="BEHAVIOR">
+
+<H2>Behavioral Changes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Requester panels now adhere to the practice of mapping the Enter key to the 'Ok' button,
+  and the Escape key to the 'Cancel' button (if it exists).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The use of the <b>LoadScene()</b> and <b>ClearScene()</b> Layout CS commands are now disallowed in
+  Master scripts that are functioning in <b>SCENE</b> mode.  Either of these commands can clear
+  the script, potentially leaving LScript in an unstable state.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Channel Object Agent's setKeyTime() method has been removed from the object.  Key time
+  indices are read-only, so this method has no purpose.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The <b>ctlfilename()</b> function's default behavior is now to post a Save dialog when its selection
+  button is pressed.  An optional Boolean <b>true</b> value as a fourth argument will alter this
+  default behavior and post a Load dialog instead.  This change was made for the Mac where
+  Save and Load dialogs have distinctly different functionality.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The <b>getfile()</b> function now follows the same behavioral changes as <b>ctlfilename()</b>.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<H2>Bug Fixes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>AddEnvelope()</b> and <b>RemoveEnvelope()</b> commands were internally wrapping the
+  envelope name in quotation marks, which caused Layout some heartburn.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>ctlposition()</b> function was not accepting the correct number of arguments
+  when used in Modeler scripts.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>polygon()</b> method and <b>polygon</b> data member of the <b>Point</b> integral data type were
+  not implemented correctly, resulting in incorrect return values.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The run-time system was not managing short numeric types when a need existed to
+  swap bytes--such as when running an Intel-compiled script on the Macintosh.  This
+  lead to some odd error messages and occasional crashes.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The sort methods (<b>sortA()</b> and <b>sortD()</b>) were not properly handling strings.  A
+  new sorting algorithm has been implemented to address this.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The pre- and post-increment and pre- and post-decrement operators were not being provided
+  the correct internal pointer types when applied to an object's data member.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The VMap <b>setValue()</b> method was suffering from a lack of clarity in my understanding of the
+  Vertex Map access functions (and a lack of consolidation of that particular API interface
+  in the SDK).  This caused a crash on second and subsequent calls for the same VMap Object
+  Agent.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Associative assignments were not working correctly when the data being assigned was
+  multiple-return Object Agents.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>CLEAR</b> action for <b>selpoint()</b> and <b>selpolygon()</b> would not clear specific points or
+  polygons from the current selection when provided as arguments using the ID or NDX
+  flags.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The image offset values provided to <b>ctlimage()</b> were not being processed correctly.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The vertical selection argument to the <b>ctlchoice()</b> function has been enabled.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A re-entrancy problem existed when Generic scripts invoked Command Sequence functions that
+  then invoked other Generic scripts as part of their processing.  This has been addressed.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

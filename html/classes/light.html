@@ -1,0 +1,351 @@
+<html>
+
+<head>
+<title>Classes: LightHandler</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="laytool.html"><img width="96" height="20"
+    border="0" src="../images/navlt.gif" alt="LayoutTool"></a></td>
+    <td width="96" align="left"><a href="master.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="MasterHandler"></a></td>
+    <td width="96" align="left"><a href="../classes.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Classes"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+<h3>
+LightHandler<br>
+LightInterface</h3>
+<font size=-1><b>Availability</b>&nbsp; LightWave&reg; 9.5</font>
+<br><font size=-1><b>Component</b>&nbsp; Layout</font>
+<br><font size=-1><b>Header</b>&nbsp; <a href="../../include/lwlight.h">lwlight.h</a></font>
+<p>Light handlers implement different types of light. Before LightWave&reg; 9.5 only a fixed set
+of built-in light types were available. With version 9.5 the light calculations have been moved
+to a plugin API, enabling an unlimited range of light types to be added.
+<p>Light plugins provide illumination in a scene. Light plugins are not concerned with how
+this illumination interacts with a surface to create shading (that is the role of shader
+handlers). To enforce the seperation between lighting and shading, light handlers are provided
+with only minimal surface and mesh information. What mesh information is provided is meant for
+optimization purposes.
+<p>Different parts of the rendering and Layout preview system have different requirements for
+light evaluation. The light API therefore contains several light evaluation functions, each
+specialized for the various areas. Some are optional, in which case the light does not support
+that type of rendering, or a fallback evaluation method is used (which may slow down rendering,
+or produce inaccurate results).
+<p>There are four light evaluation functions that a light plugin can implement:
+<dl>
+<dt><tt>evaluate</tt></dt>
+<dd>Determines the lighting at a point in space. Used for surface shading.</dd>
+<dt><tt>getPhotons</tt></dt>
+<dd>Generates particles of light originating at the light, shooting into the scene.
+This is used for caustics.</dd>
+<dt><tt>getRayIlluminations</tt></dt>
+<dd>Gets illumination samples along a ray segment. For use with volumetric lighting.</dd>
+<dt><tt>preview</tt></dt>
+<dd>Returns an array of standard lights which are used as an approximation of the light
+type for Layout preview rendering.</dd>
+</dl>
+<p>Light evaluation generates illumination information in the form of one or more rays
+that illuminate a point in space. These rays can originate from anywhere, and need not be
+tied to the position of the light item. This allows a single light to create complex lighting
+effects.
+<p>Light handlers can override several parts of the lighting and shading pipeline. Reasons for
+doing this include optimization, providing the user with controls beyond that provided natively,
+and removal of options which do not apply to the light type. Handlers can opt to do their own
+occlusion and volumetric shadow calculations, and apply their own light falloff instead of the
+native falloff calculations.
+<p>As lights are evaluated during rendering, light plugins must be aware of multithreading. Light
+evaluations associated with rendering are supplied with a pre-allocated array to fill in, rather
+than having to manage per-thread illumination arrays themselves. For speed, light plugins should
+avoid using write locks or critical sections in the evaluation functions. The <tt>newFrame</tt>
+callback can be used to do pre-computation at the start of each render frame.
+<p>Light plugins can also be evaluated from other plugins through the light evaluation global.
+Evaluating a plugin from mulitple clients at the same time can cause problems if each client
+expects the plugin to be in a different state (for example, at different frame numbers). To
+prevent such problems each light evaluator is given a copy of the light plugin instance. It
+is therefore important that the plugin implements the copy instance function.
+
+<p><b>Handler Activation Function</b>
+<pre>   XCALL_( int ) MyLight( int version, GlobalFunc *global,
+      LWLightHandler *local, void *serverData );</pre>
+The <tt>local</tt> argument to a LightHandler activation function is
+an LWLightHandler.
+
+<pre>   typedef struct st_LWLightHandler
+   {
+      LWInstanceFuncs* inst;
+      LWItemFuncs* item;
+      LWRenderFuncs* rend;
+      unsigned int (*flags)      (LWInstance);
+      LWError      (*newFrame)   (LWInstance, const LWFrameInfo* frameinfo,
+                                  unsigned int* maxilluminations,
+                                  const LWLightAccess* lightaccess);
+      int          (*evaluate)   (LWInstance, const LWDVector spot, double fractime,
+                                  LWIllumination illumination[],
+                                  const LWLightAccess* lightaccess);
+      unsigned int (*getPhotons) (LWInstance, unsigned int maxphotons, LWPhoton photons[],
+                                  const LWLightAccess* lightaccess);
+      unsigned int (*getRayIlluminations) (LWInstance, LWDVector raystart, LWDVector raydir,
+                                           double farclip, unsigned int maxrayilluminations,
+                                           LWRayIllumination rayilluminations[],
+                                           const LWLightAccess* lightaccess);
+      const LWPreviewLight* (*preview)    (LWInstance);
+   } LWLightHandler;
+</pre>
+
+The first three members of this structure are the standard <a href="../handler.html">handler
+functions</a>. The <tt>context</tt> argument to the <tt>inst->create</tt> function is the LWItemID of the associated light item.
+
+	<dl> 
+		<dt><tt>flags = <b>flags</b>( instance )</tt></dt>
+		<dd>Returns bit flags combined using bitwise-or. Currently defined flags are:
+			<dl>
+				<dt><tt>LWLIGHTTYPEF_NO_PHOTONS</tt></dt>
+				<dd>The light does not support photon generation (for example, caustics).</dd>
+				<dt><tt>LWLIGHTTYPEF_NO_RAYILLUM</tt></dt>
+				<dd>The light does not support ray illumination (for example, volumetric lights).</dd>
+				<dt><tt>LWLIGHTTYPEF_OCCLUSION_SHADOWED</tt></dt>
+				<dd>Returned illumination already includes the effects of occlusion shadowing.</dd>
+				<dt><tt>LWLIGHTTYPEF_VOLUMETRICS_SHADOWED</tt></dt>
+				<dd>Returned illumination already includes the effects of volumetric shadowing.</dd>
+				<dt><tt>LWLIGHTTYPEF_NO_FALLOFF</tt></dt>
+				<dd>Do not show standard falloff gadgets, and do not apply falloff.</dd>
+				<dt><tt>LWLIGHTTYPEF_SHOW_FALLOFF</tt></dt>
+				<dd>Show the standard falloff gadgets, but do not apply falloff.</dd>
+			</dl>
+			The <tt>NO_FALLOFF</tt> and <tt>SHOW_FALLOFF</tt> flags can be used by light plugins to override
+			the standard falloff calculations applied by the renderer. At most one of these two flags can be set.
+                </dd>
+		<br>
+		<dt><tt>result = <b>newFrame</b>( instance, frameinfo, maxilluminations, lightaccess )</tt></dt>
+		<dd>This is called whenever a new set of evaluations is started, usually at the start of a frame render.
+			This is a good place to do some pre-computation.
+			The light access structure is explained below. The <tt>frameinfo</tt> structure is the same as
+			that used by <a href="camera.html#frameinfo">camera plugins</a>.
+			The plugin fills in <tt>maxilluminations</tt> with the largest number of illuminations it intends
+			to fill in in the evaluation functions. As this is used to allocate the illumination array, the
+			value should be a tight upper bound (if not exact).
+			Returns a pointer to an error string of something went wrong, or NULL if all is well.
+		</dd>
+		<br>
+		<dt><tt>result = <b>evaluate</b>( instance, spot, fractime, illumination, lightaccess )</tt></dt>
+		<dd>Given a position <tt>spot</tt> in space and a fractional time into the frame, compute the illumination
+			by the light. The illumination is returned by filling in the supplied illumination array. The
+			plugin must fill in no more than the maximum number of illuminations it returned in <tt>newFrame()</tt>.
+			It can however fill in fewer entries, or even none. The actual number is allowed to vary with each
+			call (for example, for some sort of adaptive illumination).<br>
+<pre>   typedef struct st_LWIllumination {
+      LWDVector <b>color</b>;
+      double <b>intensity</b>;
+      LWDVector <b>direction</b>;
+      double <b>distance</b>;
+      LWDVector <b>shadowAttenuation</b>;
+   } LWIllumination;
+</pre>
+			<dl>
+				<dt><b><tt>color, intensity</tt></b></dt>
+				<dd>The color and intensity of the sample. Do not include the intensity in
+				    the color. The renderer will combine the color and intensity. The renderer
+				    will also take care of applying the standard light color and intensity and,
+				    unless set otherwise through the <tt>NO_FALLOFF</tt> or <tt>SHOW_FALLOFF</tt>
+				    flags, the falloff. For a light which just uses the standard color, intensity,
+				    and falloff settings, the color would be set to white and the intensity to 1.</dd>
+				<dt><b><tt>direction</tt></b></dt>
+				<dd>The direction from which the illumination is coming, in world coordinates.
+				    It must be normalized.</dd>
+				<dt><b><tt>distance</tt></b></dt>
+				<dd>The distance between the spot being illuminated, and the source of the
+				    illumination. The source need not be the position of the light item.
+				    This is used by the renderer to apply falloff and occlusion, if needed.
+				    A value of <tt>DBL_MAX</tt> indicates the source is infinitely far away.</dd>
+				<dt><b><tt>shadowAttenuation</tt></b></dt>
+				<dd>Degree by which shadows attenuate the illumination. Note that each color
+				    channel can have its own attenuation.</dd>
+			</dl><br>
+			The supplied time value is a fraction between 0 and 1 that ranges over the time duration of the frame (which can be
+			retrieved from the frameinfo structure supplied to <tt>newFrame()</tt>). 0 means the start time of the frame, while 1 means
+			the time at the end of the duration of the frame (which may be different than that implied by the current frames per second
+			setting, as it includes the effects of fields and motion blur length).
+			There is no defined ordering to the time values that will be given. It is recommended that
+			the handler pre-compute any animation of settings in <tt>newFrame()</tt> and uses the <tt>fractime</tt> parameter
+			to interpolate.<br>
+			The return value of the function is the number of entries filled in by the evaluation, and must be
+			between zero and <tt>maxilluminations</tt> set by the <tt>newFrame()</tt> callback.
+		</dd>
+		<br>
+		<dt><tt>result = <b>getPhotons</b>( instance, maxphotons, photons, lightaccess )</tt></dt>
+		<dd>Called to generate a number of photons from the light. This is used for caustics, which traces
+			photons through the scene by shooting them from the light source. Each photon has a color,
+			intensity, starting position and direction in world space.
+<pre>   typedef struct st_LWPhoton {
+      LWDVector <b>color</b>;
+      double <b>intensity</b>;
+      LWDVector <b>direction</b>;
+      LWDVector <b>worldPos</b>;
+   } LWPhoton;
+</pre>
+			The light plugin fills in the photon information in the <tt>photons</tt> array.
+			Up to <tt>maxphotons</tt> photons can be stored in the array. This number is not related
+			to the <tt>maxilluminations</tt> value set by <tt>newFrame()</tt>.<br>
+			The functions returns the number of photons filled in, which must be a number between
+			zero and <tt>maxphotons</tt>.
+		</dd>
+		<br>
+		<dt><tt>result = <b>getRayIlluminations</b>( instance, raystart, raydir, farclip,<br>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxrayilluminations, rayilluminations, lightaccess )</tt><dt>
+		<dd>Used to sample the illumination of a light along an arbitrary ray. This is intended to be
+			used for volumetric lights. Support for this function is not yet implemented.
+		</dd>
+		<br>
+		<dt><tt>previewlights = <b>preview</b>( instance )</tt></dt>
+		<dd>In order to preview a light in Layout, the plugin can provide an array of preview light
+			descriptions. Each preview light is a standard OpenGL light type:
+			<dl>
+				<dt><tt>LWPREVIEWLIGHT_DISTANT</tt></dt>
+				<dt><tt>LWPREVIEWLIGHT_POINT</tt></dt>
+				<dt><tt>LWPREVIEWLIGHT_SPOT</tt></dt>
+				<dt><tt>LWPREVIEWLIGHT_AMBIENT</tt></dt>
+			</dl>
+			The array must be terminated by a preview light type of <tt>LWPREVIEWLIGHT_END</tt>.
+			The array contains <tt>LWPreviewLight</tt> structures. Not all the fields in the
+			structure are used for all preview light types.
+<pre>   typedef struct st_LWPreviewLight {
+      int <b>previewtype</b>;
+
+      LWDVector <b>worldPos</b>;
+      LWDVector <b>toWorld[3]</b>;
+
+      LWDVector <b>color</b>;
+      double <b>intensity</b>;
+
+      double <b>range</b>;
+      int <b>falloff</b>;
+
+      double <b>coneAngle</b>;
+      double <b>coneEdge</b>;
+   } LWPreviewLight;
+</pre>
+			<dl>
+				<dt><b><tt>previewtype</tt></b></dt>
+				<dd>The preview light type. The array must be terminated with a <tt>LWPREVIEWLIGHT_END</tt> type.</dd>
+				<dt><b><tt>worldPos</tt></b></dt>
+				<dd>The world position of the light. Only point and spot lights have a position. Ignored for other
+				    types.</dd>
+				<dt><b><tt>toWorld</tt></b></dt>
+				<dd>The X, Y, and Z axes of the light in world coordinates. The distant and spot lights require only
+				    the Z axis. The ambient and point lights have no directional component, so this field is ignored
+				    completely for those.</dd>
+				<dt><b><tt>color, intensity</tt></b></dt>
+				<dd>The color and intensity of the light.</dd>
+				<dt><b><tt>range, falloff</tt></b></dt>
+				<dd>Falloff settings for point and spot lights. The falloff is one of the <tt>LWLFALL_*</tt> values.
+				    See the <a href="../globals/lighting.html">Light Info global</a> on how range and falloff are used.</dd>
+				<dt><b><tt>coneAngle, coneEdge</tt></b></dt>
+				<dd>Used only for the spot preview light type, these give the radius and soft edge angles of the spot
+				    in radians.</dd>
+			</dl><br>
+			The return value can be NULL, in which case no preview lights are used.
+		</dd>
+	</dl>
+
+<p><b>Interface Activation Function</b> 
+<pre>   XCALL_( int ) MyInterface( int version, GlobalFunc *global,
+      LWInterface *local, void *serverData );</pre>
+<p>This is the standard <a href="../handler.html#ui">interface activation</a>
+for handlers. XPanels are inserted at the bottom of the Basic tab in the Light
+Properties panel.
+
+
+<p><b>Light Access</b>
+<p>The access structure information that may be useful for computing the light.
+<pre>   typedef struct st_LWLightAccess {
+      LWItemID <b>lightID</b>;
+
+      LWDVector <b>worldPos</b>;
+
+      LWDVector <b>toWorld[3]</b>;
+      LWDVector <b>toLight[3]</b>;
+
+      unsigned int <b>maxIlluminations</b>;
+
+      LWRayCastFunc*      <b>rayCast</b>;
+      RandomFloatData     <b>randomData</b>;
+      LWRandomFloatFunc*  <b>randomFloat</b>;
+
+      unsigned int <b>bounces</b>;
+      unsigned int <b>flags</b>;
+
+      LWDVector <b>surfaceNormal</b>;
+
+   } LWLightAccess;
+</pre>
+
+<dl>
+<dt><b><tt>lightID</tt></b></dt>
+<dd>The ItemID of the light that the LightHandler plugin is be applied to.</dd>
+
+<dt><b><tt>worldPos</tt></b></dt>
+<dd>The position of the light item in world coordinates.</dd>
+
+<dt><b><tt>toWorld[3]</tt></b></dt>
+<dd>Right, Up and Forward directions of the light in world coordinates.</dd>
+
+<dt><b><tt>toLight[3]</tt></b></dt>
+<dd>Inverse of <b><tt>toWorld[3]</tt></b> .</dd>
+
+<dt><b><tt>maxIlluminations</tt></b></dt>
+<dd>The maximum number of illumination samples the plugin set in <tt>newFrame()</tt>.</dd>
+
+<dt><b><tt>rayCast</tt></b></dt>
+<dd>Raytracing function available to light plugins for determining occlusion
+and distance to mesh surfaces. Note that using other raytracing functions which
+do light evaluations potentially create an infinite recursion situation.</dd>
+
+<dt><b><tt>randomFloat</tt></b></dt>
+<dd>A random number generator which produces consistent results across frames.
+Returns values in the interval (0, 1).</dd>
+
+<dt><b><tt>bounces</tt></b></dt>
+<dd>The number of times the viewing ray has branched, or bounced, before evaluating
+the light.</dd>
+
+<dt><b><tt>flags</tt></b></dt>
+<dd>A combination of zero or more of:
+	<dl>
+		<dt><tt>LWLF_SAMPLEDRAY</tt></dt>
+		<dd>Set when the light is being evaluated for a sampling ray,
+		    for example for soft reflections. Such cases can generally use
+		    a lower light quality, resulting in significant time savings.</dd>
+		<dt><tt>LWLF_HAVESURFACE</tt></dt>
+		<dd>The light is being evaluated for a point on a mesh surface. This
+		    indicates the existence of a surface normal (see below).</dd>
+		<dt><tt>LWLF_PREPROCESS</tt></dt>
+		<dd>The light evaluation is part of a preprocessing step, typically
+		    radiosity preprocessing. As with the <tt>LWLF_SAMPLEDRAY</tt> flag
+		    the plugin can use this to evaluate quicker at a lower quality.</dd>
+	</dl>
+</dd>
+
+<dt><b><tt>surfaceNormal</tt></b></dt>
+<dd>If the <tt>LWLF_HAVESURFACE</tt> flag is set (see above), then the normal of the
+surface is supplied in this field. Otherwise the values are undefined.
+</dd>
+
+</dl>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<meta name="GENERATOR" content="Mozilla/4.78 [en] (Win98; U) [Netscape]">
+		<meta name="Author" content="Arnie">
+		<title>Globals: Viewport Info</title>
+		<style type="text/css"> <!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+	</head>
+	<body text="#000000" bgcolor="#FFFFFF" link="#000080" vlink="#800000" alink="#0000FF">
+		&nbsp;
+		<table BORDER="0" CELLSPACING="0" CELLPADDING="0" BGCOLOR="#D0D0D0">
+			<tr>
+				<td ALIGN="LEFT" WIDTH="120"><a href="instupdt.html"><img SRC="navlt.gif" ALT="Instance Update" BORDER="0" height="20" width="96"></a></td>
+				<td ALIGN="LEFT" WIDTH="96"><a href="iteminfo.html"><img SRC="navrt.gif" ALT="Item Info" BORDER="0" height="20" width="64"></a></td>
+				<td ALIGN="LEFT" WIDTH="96"><a href="../globals.html"><img SRC="navup.gif" ALT="Globals" BORDER="0" height="20" width="56"></a></td>
+				<td ALIGN="RIGHT" WIDTH="288"><a href="../index.html"><img SRC="proglw.gif" ALT="Table of Contents" BORDER="0" height="20" width="230"></a></td>
+			</tr>
+		</table>
+		<table BORDER="0" CELLSPACING="0" CELLPADDING="0">
+			<tr>
+				<td WIDTH="600">
+					<h3>
+						Viewport Info</h3>
+					<font size="-1"><b>Availability</b>&nbsp; LightWave&reg; 7.5</font>
+					<br>
+					<font size="-1"><b>Component</b>&nbsp; Layout</font>
+					<br>
+					<font size="-1"><b>Header</b>&nbsp; <a href="../../include/lwrender.h">lwrender.h</a></font>
+					<p>The viewport info global returns information about the state of Layout's OpenGL 
+						viewports. The data is read-only, but you can set the parameters using <a href="../commands/layout.html#navigation">
+							navigation</a> and <a href="../commands/layout.html#display">display</a>
+					commands.
+					<p><b>Global Call</b>
+						<pre>&nbsp;&nbsp; LWViewportInfo *vpinfo;
+&nbsp;&nbsp; vpinfo = global( LWVIEWPORTINFO_GLOBAL, GFUSE_TRANSIENT );</pre>
+						The global function returns a pointer to an LWViewportInfo.
+						<pre>&nbsp;&nbsp;<tt> typedef struct st_LWViewportInfo {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>numViewports</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>type</b>)&nbsp; (int);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int&nbsp;&nbsp;&nbsp; (*<b>flags</b>) (int);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>pos</b>)&nbsp;&nbsp; (int, LWDVector);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>xfrm</b>)&nbsp; (int, double mat[9]);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>clip</b>)&nbsp; (int, double *hither, double *yon);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>rect</b>)&nbsp; (int, int *left, int *top, int *width, int *height);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>viewLevel</b>)&nbsp;&nbsp; (int);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>projection</b>)&nbsp; (int, LWDMatrix4 projection, LWDMatrix4 inverse_projection);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>modelview</b>)&nbsp;&nbsp; (int, LWDMatrix4 modelview, LWDMatrix4 inverse_modelview);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>project</b>)&nbsp;&nbsp;&nbsp;&nbsp; (int, LWDVector world, double *winx, double *winy, double *winz);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>unproject</b>)&nbsp;&nbsp; (int, double winx, double winy, double winz, LWDVector world);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>pixelSize</b>)&nbsp;&nbsp; (int, double pixels, LWDVector refpos);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>handleSize</b>)&nbsp; (int);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>gridSize</b>)&nbsp;&nbsp;&nbsp; (int);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWItemID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>viewItem</b>)&nbsp;&nbsp;&nbsp; (int);
+&nbsp;&nbsp; } LWViewportInfo;</tt></pre>
+						<dl>
+							<dt><b><tt>numViewports</tt></b></dt>
+							<dd>
+								The number of viewports visible in the Layout interface.</dd>
+							<br>
+							<tt>view =<b> type</b>( i )</tt>
+							<dd>
+								The type of view in the i<sup>th</sup> viewport. It will be one of the 
+								following:</dd>
+							<dd>
+								<tt>LVVIEWT_NONE</tt></dd>
+							<dd>
+								<tt>LVVIEWT_TOP</tt></dd>
+							<dd>
+								<tt>LVVIEWT_BOTTOM</tt></dd>
+							<dd>
+								<tt>LVVIEWT_BACK</tt></dd>
+							<dd>
+								<tt>LVVIEWT_FRONT</tt></dd>
+							<dd>
+								<tt>LVVIEWT_RIGHT</tt></dd>
+							<dd>
+								<tt>LVVIEWT_LEFT</tt></dd>
+							<dd>
+								<tt>LVVIEWT_PERSPECTIVE</tt></dd>
+							<dd>
+								<tt>LVVIEWT_LIGHT</tt></dd>
+							<dd>
+								<tt>LVVIEWT_CAMERA</tt></dd>
+							<dd>
+								<tt>LVVIEWT_SCHEMATIC</tt></dd>
+							<br>
+							<p><tt>flags = <b>flags</b>( i )</tt>
+								<dd>
+									Returns a set of bit flags for the&nbsp; i<sup>th</sup> viewport. These can be 
+									any combination of the following.&nbsp;</dd>
+								<pre>LWVIEWF_CENTER
+LWVIEWF_WEIGHTSHADE
+LWVIEWF_XRAY</pre>
+								<dt><tt><b>pos</b>(i, spot)</tt></dt>
+								<dd>
+									Fills the <tt>spot</tt> vector with the viewing position of the&nbsp; i<sup>th</sup>
+									viewport.</dd>
+								<dd>
+								</dd>
+								<br>
+								<dt><tt><b>xfrm</b>( i, mat[9] )</tt></dt>
+								<dd>
+									Fills <tt>mat</tt> with a 3x3 transformation from viewport coordinates to world
+									coordinates for the&nbsp; i<sup>th</sup> viewport. Note that from LW9.0, the
+									<tt><b>vpinfo-&gt;projection</b>()</tt> and <tt><b>vpinfo-&gt;modelview</b>()</tt> functions should be preferred,
+									as the <tt><b>vpinfo-&gt;xfrm</b>()</tt> function may not produce correct results for non-perspective
+									camera views.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt><b>clip</b>( i, &amp;hither, &amp;yon )</tt>
+								<dd>
+									Fills <tt>hither</tt> and <tt>yon</tt> with the near and far Z clipping 
+									distances for the&nbsp; i<sup>th</sup> viewport.&nbsp;</dd>
+								<br>
+								<tt><b>rect</b>( i, &amp;left, &amp;top, &amp;width, &amp;height )</tt>
+								<dd>
+									Fills <tt>left, top, width </tt>and<tt> height</tt> with pixel coordinates of 
+									the&nbsp; i<sup>th</sup> viewport.&nbsp;</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>level = <b>viewLevel</b>( i )</tt>
+								<dd>
+									Returns the view level for the&nbsp; i<sup>th</sup> viewport. The returned
+									value is one of the <tt>LWOVIS_*</tt> values.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>result = <b>projection</b>( i, projection, inverse_projection )</tt>
+								<dd>
+									Fills the matrices with the projection matrix and the inverse of
+									the projection matrix for the &nbsp; i<sup>th</sup> viewport. It is safe to
+									pass in NULL for either of the matrices. The matrices follow the
+									OpenGL convention of <tt>m[column][row]</tt> with column vectors. Returns 1
+									if the asked for matrices were retrieved, 0 on failure which usually means that an inverse
+									matrix was asked for for a matrix that could not be inverted.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>result = <b>modelview</b>( i, modelview, inverse_modelview )</tt>
+								<dd>
+									Fills the matrices with the modelview matrix and the inverse of
+									the modelview matrix for the &nbsp; i<sup>th</sup> viewport. It is safe to
+									pass in NULL for either of the matrices. The matrices follow the
+									OpenGL convention of <tt>m[column][row]</tt> with column vectors. Returns 1
+									if the asked for matrices were retrieved, 0 on failure which usually means that an inverse
+									matrix was asked for for a matrix that could not be inverted.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>result = <b>project</b>( i, world, &amp;winx, &amp;winy, &amp;winz )</tt>
+								<dd>
+									Computes the projected position of the given world coordinates for the&nbsp; i<sup>th</sup>
+									viewport. The computed <tt>winx</tt> and <tt>winy</tt> position is in pixels, relative to
+									the upper-left corner of the viewport.
+									Returns 1 if the projection was successful, 0 otherwise. Note that the resulting
+									coordinates may fall outside of the viewport.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>result = <b>unproject</b>( i, winx, winy, winz, world )</tt>
+								<dd>
+									Computes the world coordinates of a given pixel position of the &nbsp; i<sup>th</sup>
+									viewport. The <tt>winz</tt> value ranges from 0 for a spot on the near clipping plane,
+									to 1 for a spot on the far clipping plane. Note that drawing on the near or far clipping
+									plane may cause flickering due to floating point imprecision causing random clipping.
+									Returns 1 if the projection was successful, 0 otherwise. Failure is typically caused by
+									the viewport having a non-invertible modelview or projection matrix.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>size = <b>pixelSize</b>( i, pixels, refpos )</tt>
+								<dd>
+									Returns the world size of the given number of pixels at the reference position in world for
+									the i<sup>th</sup> viewport.
+									A sphere with a diameter of the returned size, placed at the reference position, will have
+									a diameter of approximately the given number of pixels when projected.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>size = <b>handleSize</b>( i )</tt>
+								<dd>
+									Returns the standard handle size for the i<sup>th</sup> viewport, in pixels.
+									This is the size used for example for drawing the translation and rotation tool handles.</dd>
+								<br>
+								<tt>size = <b>gridSize</b>( i )</tt>
+								<dd>
+									Returns the size of the grid spacing for the i<sup>th</sup> viewport, in metres.</dd>
+								<dd>
+								</dd>
+								<br>
+								<tt>item = <b>viewItem</b>( i )</tt>
+								<dd>
+									For viewports which have a view through a scene item (<tt>LWVIEWT_LIGHT</tt> and <tt>LWVIEWT_CAMERA</tt>)
+									the ID of the item is returned. Otherwise <tt>LWITEM_NULL</tt> is returned.</dd>
+						</dl>
+				</td>
+			</tr>
+		</table>
+	</body>
+</html>

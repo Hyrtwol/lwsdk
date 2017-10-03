@@ -1,0 +1,1344 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00FF00"
+      vlink="#00FF00">
+
+<TITLE>LScript Patch Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript Patch Release Notes</H1>
+
+<table BORDER=1>
+  <tr>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v141">v1.4.1</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v142">v1.4.2</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v143">v1.4.3</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v144">v1.4.4</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v145">v1.4.5</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v146">v1.4.6</A>
+    </td>
+  </tr>
+  <tr>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v147">v1.4.7</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v148">v1.4.8</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v149">v1.4.9</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v1410">v1.4.10</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v1411">v1.4.11</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v1412">v1.4.12</A>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+<A NAME=v141>
+
+<pre>
+<H3>patch: v1.4.1       released: 03.15.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  As a result of a new "buffering" mechanism, the pointmove() function was
+  moving points in a relative fashion, instead of treating the provided
+  coordinates as absolute locations (as they were in v1.3).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The new garbage collection mechanism contained a bug that reclaimed function
+  memory in both the caller and the called functions upon return from the
+  called function!
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<A NAME=v142>
+
+<pre>
+<H3>patch: v1.4.2       released: 03.17.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The writeln() method had been inadvertently ommitted from the save()
+  i/o object when a new function jump table was implemented.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Only the first Layout script to link in an external Object Agent Library
+  (OAL) could do so successfully because of an oversight in the Layout
+  LScript code.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<A NAME=v143>
+
+<pre>
+<H3>patch: v1.4.3       released: 03.31.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The internal callback functions that support the ctlrefresh() and
+  ctlvisible() requester commands were munging LScript's run-time stack.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<A NAME=v144>
+
+<pre>
+<H3>patch: v1.4.4       released: 04.07.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The setvalue() function was not performing sanity checks and data
+  conversions where certain Panels controls were concerned (such as
+  popup controls).  The symptoms of the problem were that the correct
+  value was not appearing in the control after setvalue() was called.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The ctlrefresh() and ctlactive() functions were behaving in a mutually-
+  exclusive fashion.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Although it was documented in the original v1.4 release notes, Point
+  and Polygon identifier usage in mathematical expressions was <i>not</i>
+  complete in the LScript code.  Thinking I had completed this feature,
+  I documented it in the release notes.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<A NAME=v145>
+
+<pre>
+<H3>patch: v1.4.5       released: 04.20.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  An unforseen side effect of the correction to default value assignments,
+  UDF arguments were being ignored in the pre-/post-increment code because
+  of their (new) special type designations.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Camera Object Agent fStop() method was actually returning the camera's
+  focal distance setting.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Certain Camera- and Light-specific methods were incorrectly given to the
+  Mesh Object interface.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Added a 'range' data member to the Light Object Agent.  This contains the
+  maximum range (in meters) of the intensity falloff if this setting is
+  enabled, and the light is not distant.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Added a 'null' data member to the Mesh Object Agent that contains a
+  boolean true/false to indicate if an object is a Null.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Corrected the Tab requester control code to correctly recognize and
+  handle ctlimage() data on pages.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Images placed on panels (with ctlimage()) now have the ability to
+  be active or inactive (i.e., they can be used with ctlactive()
+  callbacks).  When inactive, they are rendered in black and white.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Altering the value of a control using setvalue() while a panel
+  was active (i.e., from a callback) did not invoke that control's
+  registered refresh callback function.  This is not a bug, as it
+  is a situation not explicitly handled by Panels (for good reason),
+  however the lack of this type of handling was causing some
+  problems with properly refreshing some controls.  A new mechanism
+  in LScript now deals with this situation.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A new integral object method has been added called hash().  This
+  method, useful only with character strings, will return an integer
+  value that represents a calculated hash value for that string.  The
+  array type also responds to this method, and will calculate a hash
+  value for all string elements in the array.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Array duplications (which take place when an existing array is
+  assigned to a variable) were only duplicating the contents of
+  the source array in the target.  Other attributes of the source
+  array, such as its dimension count, were not being duplicated.
+  In cases of where multidimensional arrays are assigned to existing
+  linear arrays, the target array would remain linear.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A new integral object method has been added called crc().  This
+  method can be used to derive a CRC32 value for the data type.  In
+  the case of arrays, all the elements in the array will generate
+  a CRC32 value that will be added to the total for the array (making
+  it the preferable method of equality testing for arrays).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  As a result of poor design, the requester callback mechanism was
+  treating the ctlactive(), ctlrefresh() and ctlvisible() settings
+  as mutually exclusive.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<A NAME=v146>
+
+<pre>
+<H3>patch: v1.4.6       released: 05.02.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Character string arguments passed to a UDF were not being set to the
+  correct data type, and as a result, were being discarded by the memory
+  manager along with other temporary memory.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Shader API function raycast() has been added to the LS/PT Shader
+  Object Agent's toolbox.  Raycast() is essentially a faster version of
+  raytrace(), accepting the same parameters, but only returning the ray
+  length.  No shading is evaluated, and no recursive raytracing takes
+  place.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Internal corrections and updates have been effected in order to
+  successfully build LScript v1.4 for the Mac PPC platform.  Changes
+  in the PPC compiler between updates broke LScript's Object Agent
+  loading code.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The ctlimage() requester function has been hooked into LScript's
+  internal component search engine.  This means that all defined
+  search paths will be used to locate the image file it is not
+  immediately visible as it is referenced in the script.  If the
+  image cannot be found in any of the existing search directories
+  (locations that LScript remembers when it prompts you to locate
+  script components), it will now prompt you to locate the image
+  referenced, and will remember that location in subsequent searches.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The LScript internal component search engine has had it's maximum
+  number of maintained search paths reduced from 100 to 20 for disk
+  space and run-time memory considerations.  As a consequence, the
+  search engine will "age" search paths each time this maximum amount
+  is reached.  The oldest path in the list will be discarded each time
+  a new path is introduced.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<A NAME=v147>
+
+<pre>
+<H3>patch: v1.4.7       released: 06.03.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Images referenced by ctlimage() were being ignored by the compiler
+  if they were not immediately visible by the name provided.  The
+  compiler will now prompt you to locate images that it cannot find
+  through its existing search paths.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The code in the effectedby() function that dealt with Bones contained
+  an endless-loop condition that would cause Layout to hang if one or
+  more bones were referenced.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The effectedby() function could potentially crash the application if
+  no valid object names were provided.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The component search engine was performing selected-file comparisons
+  in a case-sensitive fashion.  This resulted in failed searches.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Scene Object Agent's 'fps' data member was being returned as
+  an integer instead of a floating-point value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The polyinfo() function was running horrendously slow.  This wasn't
+  really apparent until the function was called repeatedly in a loop.
+  The reason for this was that polygon points were processed each
+  time to determine their index values--each call to polyginfo() scanned
+  all the points in an object to determine point order.
+
+  A new generate-on-the-fly point indexing scheme has been implemented
+  in LScript.  A point's index order in the mesh is not calculated until
+  the point is used in a fashion that would render it as an integer (i.e.,
+  in a mathematical expression or an array index).  Distributing this
+  overhead on an as-needed basis increases the polyinfo() function's
+  processing speed by more than two orders of magnitude.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v148>
+
+<pre>
+<H3>patch: v1.4.8       released: 12.15.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A new Layout LScript function called targetobject() has been added.
+  This function, given a source and target object identifier, along
+  with a time index, will return the heading, pitch, and bank values
+  required to make the source object's Z-axis normal face the target
+  object.  (This function was added to support a <b><u>NewTekniques</u></b> article
+  that provided automated weapons targeting.)
+
+  Because targetobject() returns these three rotational values as
+  a vector, its output can be piped directly into the Item Motion's
+  set() method:
+
+      ...
+      ma.set(ROTATION,targetobject(me,source,time));
+      ...
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Reentrancy has been a problem for Layout LScript in certain
+  situations.  Specifically, when objects have dependencies upon
+  each other and "Show Motion Paths" has been enabled.  In order to
+  properly update the display, Layout will often call a plug-in's
+  process() function even while the plug-in is already in its
+  process() function handling another instance.
+
+  A new instance stack mechanism has been implemented to handle
+  these recursive calls to process() by Layout.  Among other things,
+  it enables objects to have dependencies upon each other.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A few other minor bug fixes.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v149>
+
+<pre>
+<H3>patch: v1.4.9       released: 12.18.99</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The instance stack mechanism introduced in thE last release had
+  some hidden issues.  After some quality therapy, those issues have
+  been addressed.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v1410>
+
+<pre>
+<H3>patch: v1.4.10       released: 1.19.2000</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Certain error messages were performing NULL pointer dereferencing
+  under particular circumstances.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The getfile() function was using character buffer sizes that would 
+  hold only up to 99 characters.  This has been greatly increased,
+  approximately double the operating-system standard size of 256
+  characters.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The pointinfo() function, only valid during a MeshDataEdit session,
+  was not correctly being trapped when no edit session is active.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The readVector() method was incorrectly reading floating-point
+  values into variables declared as doubles.  These two numeric
+  values have completely different internal sizes and formats.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Static memory allocations made for the instance mechanism were
+  causing the Alpha run-time plug-ins to more than double in size.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v1411>
+
+<pre>
+<H3>patch: v1.4.11       released: 3.10.2000</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Image chunk of a compiled LScript was not being recognized by
+  the Layout run-time system.  This was causing images embedded in
+  the compiled script to be improperly prompted for when it was run.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The pre-processor would not properly ignore/regard pragma
+  directives that were enclosed with an @if/@end conditional
+  sequence.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The run-time name construction system, introduced in release 1.4,
+  (over a year ago!) was not working properly to construct function
+  names when those functions were called with arguments.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The number() function was not handling all valid data types.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v1412>
+
+<pre>
+<H3>patch: v1.4.12       released: 9.1.2000</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The modulo operator (%) was not functioning properly with integer
+  values.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<table>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF">
+        LScript v1.4.12 Archives
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF" size="-1">
+        (contains <strong>all</strong> plug-ins)
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls1412x86.zip">Intel</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     SGI
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Sun
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Macintosh
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Alpha
+</font>
+  </tr>
+</table>
+
+<br>
+<!--
+<table>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF">
+        LScript v1.4.11 &#192la carte
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF" size="-1">
+        (you may need to <strong>Shift-Click</strong> to download)
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#00FFFF">
+     Intel
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#00FFFF">
+     SGI
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#00FFFF">
+     Sun
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#00FFFF">
+     Macintosh
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#00FFFF">
+     Alpha
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls-dm.zip">LS/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/ls-dm.zip">LS/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/ls-dm.zip">LS/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/ls-dm.sit">LS/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/ls-dm.zip">LS/DM</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls-gn.zip">LS/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/ls-gn.zip">LS/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/ls-gn.zip">LS/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/ls-gn.sit">LS/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/ls-gn.zip">LS/GN</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls-ia.zip">LS/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/ls-ia.zip">LS/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/ls-ia.zip">LS/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/ls-ia.sit">LS/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/ls-ia.zip">LS/IA</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls-if.zip">LS/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/ls-if.zip">LS/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/ls-if.zip">LS/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/ls-if.sit">LS/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/ls-if.zip">LS/IF</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls-or.zip">LS/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/ls-or.zip">LS/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/ls-or.zip">LS/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/ls-or.sit">LS/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/ls-or.zip">LS/OR</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/ls-pt.zip">LS/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/ls-pt.zip">LS/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/ls-pt.zip">LS/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/ls-pt.sit">LS/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/ls-pt.zip">LS/PT</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsc-lw.zip">LSC/LW</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsc-lw.zip">LSC/LW</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsc-lw.zip">LSC/LW</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsc-lw.sit">LSC/LW</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsc-lw.zip">LSC/LW</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsc-md.zip">LSC/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsc-md.zip">LSC/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsc-md.zip">LSC/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsc-md.sit">LSC/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsc-md.zip">LSC/MD</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lscript.zip">LScript</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lscript.zip">LScript</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lscript.zip">LScript</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lscript.sit">LScript</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lscript.zip">LScript</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-dm.zip">LS-RT/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-dm.zip">LS-RT/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-dm.zip">LS-RT/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-dm.sit">LS-RT/DM</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsrt-dm.zip">LS-RT/DM</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-gn.zip">LS-RT/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-gn.zip">LS-RT/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-gn.zip">LS-RT/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-gn.sit">LS-RT/GN</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsrt-gn.zip">LS-RT/GN</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-ia.zip">LS-RT/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-ia.zip">LS-RT/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-ia.zip">LS-RT/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-ia.sit">LS-RT/IA</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsrt-ia.zip">LS-RT/IA</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-if.zip">LS-RT/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-if.zip">LS-RT/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-if.zip">LS-RT/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-if.sit">LS-RT/IF</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsrt-if.zip">LS-RT/IF</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-or.zip">LS-RT/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-or.zip">LS-RT/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-or.zip">LS-RT/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-or.sit">LS-RT/OR</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsrt-or.zip">LS-RT/OR</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-pt.zip">LS-RT/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-pt.zip">LS-RT/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-pt.zip">LS-RT/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-pt.sit">LS-RT/PT</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+     <A HREF="v1412_axp/lsrt-pt.zip">LS-RT/PT</A>
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_x86/lsrt-md.zip">LS-RT/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sgi/lsrt-md.zip">LS-RT/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_sun/lsrt-md.zip">LS-RT/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_mac/lsrt-md.sit">LS-RT/MD</A>
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     <A HREF="v1412_axp/lsrt-md.zip">LS-RT/MD</A>
+</font>
+  </tr>
+</table>
+-->
+
+</CENTER>

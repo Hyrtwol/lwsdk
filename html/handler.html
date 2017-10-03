@@ -1,0 +1,466 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE>Handlers</TITLE>
+	<STYLE>
+	<!--
+		TD P { color: #000000 }
+		P { color: #000000 }
+		PRE { color: #000000 }
+		H3 { color: #000000 }
+		DT { color: #000000 }
+		DD { color: #000000 }
+		TT { font-size: 10pt }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" TEXT="#000000" BGCOLOR="#ffffff" DIR="LTR">
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 BGCOLOR="#d0d0d0" STYLE="page-break-before: always">
+	<TR>
+		<TD WIDTH=120>
+			<P ALIGN=LEFT><A HREF="globals.html"><IMG SRC="images/navlt.gif" NAME="Graphic1" ALT="Globals" ALIGN=BOTTOM WIDTH=96 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+		<TD WIDTH=96>
+			<P ALIGN=LEFT><A HREF="commands.html"><IMG SRC="images/navrt.gif" NAME="Graphic2" ALT="Commands" ALIGN=BOTTOM WIDTH=64 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+		<TD WIDTH=384>
+			<P ALIGN=RIGHT><A HREF="index.html"><IMG SRC="images/proglw.gif" NAME="Graphic3" ALT="Table of Contents" ALIGN=BOTTOM WIDTH=230 HEIGHT=20 BORDER=0></A></P>
+		</TD>
+	</TR>
+</TABLE>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0>
+	<TR>
+		<TD WIDTH=600>
+			<P><BR><BR>
+			</P>
+			<H3>Handlers</H3>
+			<P>Formally, handlers are plug-in classes that manage persistent
+			instance data through callbacks identified in the activation
+			function. Handlers don't simply run and exit. They tell LightWave&reg;
+			in their activation functions where they can be reached, and then
+			they hang around, waiting for LightWave&reg; to call them.</P>
+			<P><STRONG>Instance Functions</STRONG></P>
+			<P>An <EM>instance</EM> is a block of data you create to describe
+			a specific invocation of your handler plug-in. An
+			<A HREF="classes/itemmot.html">ItemMotionHandler</A>, for example,
+			can be invoked for any number of items in the scene, and might
+			even be invoked more than once for a given item, but for each slot
+			it occupies, the plug-in will create and use an instance
+			specifically for that item slot. The instance data is where the
+			plug-in settings for that invocation are stored, and every one of
+			the plug-in's callbacks receives this data as one of its
+			arguments.</P>
+			<P>The instance callbacks are where your plug-in creates,
+			destroys, copies, loads, saves and describes each instance data
+			block. They're collected together in an LWInstanceFuncs structure
+			which is part of the local data passed to your activation
+			function. Your activation function needs to fill in this structure
+			to tell LightWave&reg; where your instance callbacks are.</P>
+			<PRE>   typedef struct st_LWInstanceFuncs {
+      void         *priv;
+      LWInstance   (*create)  (void *priv, void *context, LWError *);
+      void         (*destroy) (LWInstance);
+      LWError      (*copy)    (LWInstance, LWInstance from);
+      LWError      (*load)    (LWInstance, const LWLoadState *);
+      LWError      (*save)    (LWInstance, const LWSaveState *);
+      const char * (*descln)  (LWInstance);
+   } LWInstanceFuncs;</PRE>
+			<DL>
+				<DT>
+				<STRONG><TT>priv</TT></STRONG> 
+				</DT><DD>
+				Passed as the first argument to <TT>create</TT>. Set this to
+				point to data you'd like your <TT>create</TT> function to have. 
+				</DD><DT>
+				<TT><BR>instance = <STRONG>create</STRONG>( priv, context, error
+				)</TT> 
+				</DT><DD>
+				Create an instance. Called, for example, when the user selects
+				your plug-in on the interface and when Layout loads a scene or an
+				object file that refers to your plug-in. Typically, you'll use
+				<TT>malloc</TT> to allocate memory for a data structure, fill in
+				some of the structure's fields with default values, and return
+				the pointer to this structure. <TT>priv</TT> is the same as the
+				<TT>priv</TT> field of the LWInstanceFuncs structure and contains
+				whatever your activation function put there. The <TT>context</TT>
+				varies depending on the plug-in class, but this is often an item
+				ID for the item this instance will be associated with. If you
+				can't create an instance, set <TT>error</TT> to an error message
+				string and return NULL. 
+				</DD><DT>
+				<TT><BR><STRONG>destroy</STRONG>( instance )</TT> 
+				</DT><DD>
+				Destroy an instance. Called, for example, when the user deselects
+				your plug-in and when the scene is cleared. Typically you'll free
+				any memory and resources obtained in <TT>create</TT> when this
+				instance was created. 
+				</DD><DT>
+				<TT><BR><STRONG>copy</STRONG>( dest, source )</TT> 
+				</DT><DD>
+				Copy the contents of the <TT>source</TT> instance to <TT>dest</TT>.
+				If your instance data contains pointers, you may have to allocate
+				memory for the pointer fields in <TT>dest</TT>. 
+				</DD><DT>
+				<TT><BR><STRONG>load</STRONG>( instance, loadstate )</TT> 
+				</DT><DD>
+				Read instance data from a file. LightWave&reg; provides an
+				LWLoadState containing functions used to read the data. See the
+				<A HREF="fileio.html">File I/O</A> page. 
+				</DD><DT>
+				<TT><BR><STRONG>save</STRONG>( instance, savestate )</TT> 
+				</DT><DD>
+				Write instance data to a file using the LWSaveState functions.
+				See the <A HREF="fileio.html">File I/O</A> page. <BR>The
+				existence of this callback is optional.   When not provided, the
+				save callback must set to NULL.  Doing so prevent saving the
+				plugin's data.  Upon loading, the existence of the plugin will
+				not exist in this sitiation and it will not get instanced.  This
+				is useful for Master Class handlers that are meant to be LAYOUT
+				types (they survive a scene clear).  Saved scenes would not
+				contain the plugin; and therefore, loading the scene would not
+				create a duplicate instance of it.  Another use is for
+				save-disabling a demonstration version of a plugin.</DD><DT>
+				<TT><BR><STRONG>descln</STRONG>( instance )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Provide a human-readable description of the instance data. This
+				is a single string displayed to the user on the LightWave&reg;
+				interface and should be short enough to fit there. It can contain
+				anything, but typically it contains shorthand descriptions of the
+				most important settings. This serves as a reminder to the user,
+				who would otherwise have to open your plug-in's interface to
+				check these settings. 
+				</DD></DL>
+			<P>
+			<STRONG>Item Handler Extensions</STRONG></P>
+			<P>Handler classes that work on items in the scene provide a pair
+			of callbacks that allow them to manage dependencies on other
+			items.</P>
+			<PRE>   typedef struct st_LWItemFuncs {
+      const LWItemID *  (*useItems) (LWInstance);
+      void              (*changeID) (LWInstance, const LWItemID *);
+   } LWItemFuncs;</PRE>
+			<DL>
+				<DT>
+				<TT>idlist = <STRONG>useItems</STRONG>( instance )</TT> 
+				</DT><DD>
+				Returns an array of items this instance depends on. If your
+				plug-in's behavior&nbsp;is based on the parameters of other items
+				(such as the positions of objects), you'll want to be
+				re-evaluated after those parameters change, and you use this
+				function to inform Layout of that. The array is terminated by
+				<TT>LWITEM_NULL</TT>. The function can return NULL if the
+				instance doesn't use any items. It can also return <TT>LWITEM_ALL</TT>
+				to indicate that it wants to be evaluated after any change
+				occurs. 
+				</DD><DT>
+				<TT><BR><STRONG>changeID</STRONG>( instance, idlist )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Notification about a change in item IDs. This function is called
+				if the IDs of items are going to change for any reason. The
+				null-terminated item array passed to this function is of the form
+				&quot;old-1, new-1, old-2, new-2, ...&quot; where the old ID is
+				the value that is changing and the new ID is its new value.
+				Clients should be careful to renumber each item only once. 
+				</DD><DD STYLE="margin-bottom: 0.2in">
+				The <TT>changeID</TT> callback may also be called when an item's
+				data, such as the geometry of an object, has changed, and when
+				called for this reason, the old and new item IDs will be the
+				same.</DD></DL>
+			<P>
+			Handlers with an LWItemFuncs in their local data are ordinarily
+			called by Layout, but some handler classes (currently <A HREF="classes/imgfilt.html">image</A>
+			and <A HREF="classes/pxlfilt.html">pixel</A> filters, <A HREF="classes/shader.html">shaders</A>
+			and <A HREF="classes/texture.html">textures</A>) can also be
+			called by Modeler for previewing. When called by Modeler, the
+			LWItemFuncs pointer will be NULL. <EM>Handlers must test the value
+			of the LWItemFuncs pointer before attempting to fill in the
+			<TT>useItems</TT> and <TT>changeID</TT> fields.</EM></P>
+			<P><STRONG>Render Handler Extensions</STRONG></P>
+			<P>Certain handlers involved directly in rendering also provide
+			callbacks for the start and end of a render session and the start
+			of a new sampling pass.</P>
+			<PRE>   typedef struct st_LWRenderFuncs {
+      LWError (*init)    (LWInstance, int);
+      void    (*cleanup) (LWInstance);
+      LWError (*newTime) (LWInstance, LWFrame, LWTime);
+   } LWRenderFuncs;</PRE>
+			<DL>
+				<DT>
+				<TT>errormsg = <STRONG>init</STRONG>( instance, mode )</TT> 
+				</DT><DD>
+				Prepare the instance for a new rendering session. This is called
+				before the first frame of a rendering session is begun. The mode
+				will be either <TT>LWINIT_PREVIEW</TT> or <TT>LWINIT_RENDER</TT>.
+				Returns a string containing an error message if an error occurs,
+				otherwise returns NULL. 
+				</DD><DT>
+				<TT><BR><STRONG>cleanup</STRONG>( instance )</TT> 
+				</DT><DD>
+				Called after the last frame of a rendering session is completed. 
+				</DD><DT>
+				<TT><BR>errormsg = <STRONG>newTime</STRONG>( instance, frame,
+				time )</TT> 
+				</DT><DD STYLE="margin-bottom: 0.2in">
+				Called at the start of a new sampling pass. This may be called
+				more than once for the same frame but for slightly different
+				times. Returns an error message string or NULL. 
+				</DD></DL>
+			<P>
+			<STRONG>Example</STRONG></P>
+			<P>This activation function is for an environment handler. The
+			local data includes both the item and render extensions. All of
+			the names on the right side of the equals sign are functions your
+			plug-in provides.</P>
+			<PRE>   XCALL_( static int )
+   Handler( int version, GlobalFunc *global,
+      LWEnvironmentHandler *local, void *serverData )
+   {
+      if ( version != LWENVIRONMENT_VERSION )
+         return AFUNC_BADVERSION;
+
+      local-&gt;inst-&gt;create   = Create;
+      local-&gt;inst-&gt;destroy  = Destroy;
+      local-&gt;inst-&gt;copy     = Copy;
+      local-&gt;inst-&gt;load     = Load;
+      local-&gt;inst-&gt;save     = Save;
+      local-&gt;inst-&gt;descln   = Descln;
+
+      if ( local-&gt;item ) {
+         local-&gt;item-&gt;useItems = UseItems;
+         local-&gt;item-&gt;changeID = ChangeID;
+      }
+
+      local-&gt;rend-&gt;init     = Init;
+      local-&gt;rend-&gt;cleanup  = Cleanup;
+      local-&gt;rend-&gt;newTime  = NewTime;
+ 
+      local-&gt;evaluate = Evaluate;
+      local-&gt;flags    = Flags;
+
+      return AFUNC_OK;
+   }</PRE><P>
+			<A NAME="ui"></A><STRONG>The Interface Class</STRONG> 
+			</P>
+			<P>Each handler class has an associated interface class with its
+			own activation function. As mentioned in the <A HREF="../server.html#servdesc">server
+			description</A> documentation, LightWave&reg; matches handlers
+			with their interfaces by finding matching name strings in the
+			ServerRecord array for a plug-in file.</P>
+			<P>The interface activation function receives the instance data as
+			the first field of an LWInterface structure. This is the pointer
+			returned by the handler's <TT>create</TT> function. The interface
+			activation fills in the other fields of the LWInterface to tell
+			LightWave&reg; how the plug-in wants its interface to be presented
+			to the user.</P>
+			<PRE>   typedef struct st_LWInterface {
+      LWInstance  inst;
+      LWXPanelID  panel;
+      LWError    (*options) (LWInstance);
+      LWError    (*command) (LWInstance, const char *);
+   } LWInterface;</PRE>
+			<DL>
+				<DT>
+				<STRONG><TT>inst</TT></STRONG> 
+				</DT><DD>
+				An instance returned by the handler's <TT>create</TT> function.
+				This is read-only. 
+				</DD><DT>
+				<TT><STRONG><BR>panel</STRONG></TT> 
+				</DT><DD>
+				An xpanel containing the controls for a user interface. The
+				xpanel is created by calling the functions returned by the
+				<A HREF="globals/xpanel.html">XPanels</A> global. If this is
+				NULL, LightWave&reg; will use the <TT>options</TT> callback
+				instead. Some classes receive real estate on LightWave&reg;'s
+				panels for displaying their non-modal xpanel interfaces, so for
+				those classes, the plug-in's interface is &quot;always on,&quot;
+				rather than being explicitly invoked by the user. 
+				</DD><DT>
+				<TT><BR>error = <STRONG>options</STRONG>( instance )</TT> 
+				</DT><DD>
+				A callback that typically displays a modal panel. This is
+				equivalent to the way the interface activation function itself
+				worked in versions of LightWave&reg; prior to 6.0. LightWave&reg;
+				calls this whenever the user explicitly opens the interface for
+				the associated handler, often by double-clicking on the handler's
+				name in a list. If <TT>options</TT> is NULL, LightWave&reg; uses
+				the <TT>panel</TT> to display the plug-in's interface. (Exactly
+				one of the <TT>panel</TT> and <TT>options</TT> fields should be
+				non-NULL.) 
+				</DD><DT>
+				<TT><BR>error = <STRONG>command</STRONG>( instance, cmdstring )</TT>
+								</DT><DD STYLE="margin-bottom: 0.2in">
+				A callback that processes batch commands. This isn't used in
+				LightWave&reg; 6.0 and can safely be set to NULL. 
+				</DD></DL>
+			<P>
+			<STRONG>Example</STRONG></P>
+			<P>The <A HREF="../../sample/Layout/Input-Output/avisave/">avisave</A>
+			sample plug-in uses the <TT>options</TT> function to display the
+			standard Windows codec selection dialog. This is also the approach
+			to take if you're going to display a classic <A HREF="../globals/panel.html">panels</A>
+			interface.</P>
+			<PRE>   XCALL_( int )
+   Interface( int version, GlobalFunc *global, LWInterface *local,
+      void *serverData )
+   {
+      if ( version != LWINTERFACE_VERSION )
+         return AFUNC_BADVERSION;
+
+      local-&gt;panel   = NULL;
+      local-&gt;options = Options;
+      local-&gt;command = NULL;
+
+      return AFUNC_OK;
+   }</PRE><P>
+			<TT>Options</TT> uses the Win32 <TT>ICCompressorChoose</TT>
+			function to display the dialog. The window handle of Layout's main
+			window, obtained from the <A HREF="../globals/display.html">Host
+			Display Info</A> global, is passed as the parent window for the
+			dialog.</P>
+			<PRE>   XCALL_( static LWError )
+   Options( SampleAVI *avi )
+   {
+      ...
+      result = ICCompressorChoose( hdi-&gt;window,
+         ICMF_CHOOSE_ALLCOMPRESSORS, NULL, NULL, &amp;cv,
+         &quot;SampleAVI Options&quot; );
+      ...
+      return NULL;
+   }</PRE><P>
+			The <A HREF="../../sample/Layout/ChannelFilter/noisychan/">NoisyChan</A>
+			sample creates an <TT>LWXP_VIEW</TT> <A HREF="../globals/xpanel.html">xpanel</A>
+			that draws its controls in the lower right corner of Layout's
+			graph editor window.</P>
+			<PRE>   XCALL_( static int )
+   NoisyChannel_UI( int version, GlobalFunc *global, LWInterface *UI,
+      void *serverData )
+   {
+      if ( version != LWINTERFACE_VERSION )
+         return AFUNC_BADVERSION;
+
+      GGlobal = global;
+
+      UI-&gt;panel   = NoisyXPanel( global, UI-&gt;inst );
+      UI-&gt;options = NULL;
+      UI-&gt;command = NULL;
+
+      return AFUNC_OK;
+   }</PRE><P>
+			The <TT>NoisyXPanel</TT> function creates the xpanel.</P>
+			<PRE>   LWXPanelID NoisyXPanel( GlobalFunc *global, NoisyData *dat )
+   {
+      LWXPanelFuncs *lwxpf = NULL;
+      LWXPanelID     panID = NULL;
+      static LWXPanelHint hint[] = {
+         XpLABEL(0,&quot;Noisy Channel&quot;),
+         XpEND
+      };
+
+      lwxpf = (LWXPanelFuncs*)(*global)( LWXPANELFUNCS_GLOBAL,
+         GFUSE_TRANSIENT );
+      if ( lwxpf ) {
+         panID = (*lwxpf-&gt;create)( LWXP_VIEW, ctrl_list );
+         if ( panID ) {
+            (*lwxpf-&gt;hint)    ( panID, 0, hint );
+            (*lwxpf-&gt;describe)( panID, data_descrip, NoiseData_get,
+               NoiseData_set );
+            (*lwxpf-&gt;viewInst)( panID, dat );
+            (*lwxpf-&gt;setData) ( panID, 0, dat);
+         }
+      }
+      return panID;
+   }</PRE><P>
+
+
+			<A NAME="gizmo"></A><STRONG>The Gizmo Class</STRONG> 
+			</P>
+			<P>Some handler classes in Layout have an associated gizmo class with its
+			own activation function. Gizmos are a means for plugins to draw
+			user interfaces in the viewport with which the user can interact
+			by dragging handles. They act like non-modal
+			<a href="classes/laytool.html">Layout Tools</a>. 
+			<P>The gizmo activation function receives the instance data as
+			the first field of an LWGizmo structure. This is the pointer
+			returned by the handler's <TT>create</TT> function. The gizmo
+			activation fills in the other fields of the LWGizmo to set the
+			functions used to draw in the viewports and process user interaction
+			with the gizmo.</P>
+<PRE>   typedef struct st_LWGizmoFuncs {
+      void            (*done)     (LWInstance);
+      void            (*draw)     (LWInstance, LWCustomObjAccess *);
+      const char *    (*help)     (LWInstance, LWToolEvent *);
+      int             (*dirty)    (LWInstance);
+      int             (*count)    (LWInstance, LWToolEvent *);
+      int             (*handle)   (LWInstance, LWToolEvent *, int i, LWDVector pos);
+      int             (*start)    (LWInstance, LWToolEvent *);
+      int             (*adjust)   (LWInstance, LWToolEvent *, int i);
+      int             (*down)     (LWInstance, LWToolEvent *);
+      void            (*move)     (LWInstance, LWToolEvent *);
+      void            (*up)       (LWInstance, LWToolEvent *);
+      void            (*event)    (LWInstance, int code);
+      LWXPanelID      (*panel)    (LWInstance);
+   } LWGizmoFuncs;
+
+   typedef struct st_LWGizmo {
+      LWInstance       instance;
+      LWGizmoFuncs     *gizmo;
+      const LWItemID* (*pickItems)(LWInstance, const LWItemID *, const unsigned int *);
+   } LWGizmo;</PRE>
+
+			<P>The gizmo functions are the same as the <a href="classes/laytool.html">
+			Layout Tool functions</a>. However, the following functions currently have no effect:
+<dl>
+<dt><strong><tt>done</tt></strong></dt><dd>Gizmos use the plugin instance data, and are therefore destroyed when the plugin instance is destroyed.</dd>
+<dt><strong><tt>event</tt></strong></dt><dd>Gizmos are non-modal and can not be dropped or activated independent of the plugin.</dd>
+<dt><strong><tt>panel</tt></strong></dt><dd>Use the plugin interface class instead.</dd>
+</dl>
+			From version 2 of the gizmo interface the drawing done by a gizmo can participate
+                        in viewport picking by supplying a <tt><b>pickItems</b></tt> function. In version 3
+			this was expanded to include an array of part numbers:
+<dl>
+<dt><tt>items = <b>pickItems</b>( instance, drawitems, drawparts )</tt></dt>
+<dd>
+The <tt>drawitems</tt> array contains the item IDs that were set with <tt><b>setCSysItem</b></tt>
+(see below) for those parts of the gizmo drawing that were picked. This array may be <tt>NULL</tt>
+if there were no items set, otherwise the array will be terminated with <tt>LWITEM_NULL</tt>.
+The array may contain multiple item IDs (for example if the gizmo draws in multiple coordinate
+systems and a box selection is done), but no duplicates.
+<p>
+If there are items in the array, then there can be an optional <tt>drawparts</tt> array of part
+numbers supplied. If not NULL, each entry in the array corresponds with the matching entry in the <tt>drawitems</tt>
+array. The values in the array are derived from the part numbers supplied by the <tt>LWCustomObjAccess</tt>
+<tt><b>setPart</b></tt> function. There can be multiple part numbers per item. Each value is a bitfield of
+32 bits. Part number 1 is mapped to bit 0 (least significant bit), part 2 to bit 1, and so on up to part 32
+and bit 31 (most significant bit).
+<p>
+Return an <tt>LWITEM_NULL</tt> terminated array of items which should become selected or deselected
+when the user picks the drawing done by the gizmo. It is acceptable to return <tt>NULL</tt>, which is
+equivalent to no items. During the picking tests, the gizmo's draw function will be called with the
+<tt>LWCOFL_PICKING</tt> flag set.
+<p>
+A common implementation for gizmos which add drawing to items in their coordinate systems would be
+to simply return <tt>drawitems</tt>.
+</dd>
+</dl>
+			<p>Note that a gizmo is not associated with any specific item in the scene,
+			unlike a <a href="classes/custobj.html">Custom Object Handler</a> for example.
+			When drawing using an object-relative coordinate system, use the
+			<tt><b>setCSysItem</b></tt> <tt>LWCustomObjAccess</tt> function to set which
+			item to draw relative to.
+			<p>A gizmo is automatically enabled if the plugin is enabled. It is up
+			to the gizmo implementation to decide whether or not to draw based on
+			the state of Layout, for example by examining if a particular item is
+			selected or not.
+			<p>By combining a <a href="classes/master.html">Master Handler</a> with
+			a gizmo, a non-modal always-on layout tool can be created.
+
+
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>

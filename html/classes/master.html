@@ -1,0 +1,301 @@
+<html>
+
+<head>
+<title>Classes: MasterHandler</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="laytool.html"><img width="96" height="20" border="0"
+    src="../images/navlt.gif" alt="LayoutTool"></a></td>
+    <td width="96" align="left"><a href="me.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="MeshDataEdit"></a></td>
+    <td width="96" align="left"><a href="../classes.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Classes"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+<h3>MasterHandler</h3>
+<font size=-1><b>Availability</b>&nbsp; LightWave&reg; 6.0</font>
+<br><font size=-1><b>Component</b>&nbsp; Layout</font>
+<br><font size=-1><b>Header</b>&nbsp; <a href="../../include/lwmaster.h">lwmaster.h</a></font>
+<p>Masters can issue commands like <a href="generic.html">generics</a>,
+but unlike generics, masters can respond to the user's changes to a scene
+as the scene is being composed. Masters are handlers, so they have persistent
+instances that can be saved in scene files. Masters can be used to record
+a sequence of commands for scripting or as a central point of control for
+a suite of handler plug-ins.
+<p><b>Activation Function</b>
+<pre>&nbsp;&nbsp; XCALL_( int ) MyMaster( int version, GlobalFunc *global,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWMasterHandler *local, void *serverData );</pre>
+The <tt>local</tt> argument to a master's activation function is an LWMasterHandler.
+<pre>&nbsp;&nbsp; typedef struct st_LWMasterHandler {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWInstanceFuncs *<b>inst</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWItemFuncs&nbsp;&nbsp;&nbsp;&nbsp; *<b>item</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>type</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>event</b>) (LWInstance, const LWMasterAccess *);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; unsigned int&nbsp;&nbsp;&nbsp; (*<b>flags</b>) (LWInstance);
+&nbsp;&nbsp; } LWMasterHandler;</pre>
+The first two members of this structure point to standard <a href="../handler.html">handler
+functions</a>. In addition to these, a master handler provides a type code,
+an event function and a flags function.
+<dl>&nbsp;
+<dt>
+<b><tt>type</tt></b></dt>
+
+<dd>
+This can be one of the following.</dd>
+
+<dl>&nbsp;
+<br><tt>LWMAST_SCENE</tt>
+<dt>
+<tt>LWMAST_OBJECTS</tt></dt>
+
+<dt>
+<tt>LWMAST_EFFECTS</tt></dt>
+
+<br><tt>LWMAST_LAYOUT</tt></dl>
+The <tt>SCENE</tt> type is the most common. <tt>OBJECTS</tt> and <tt>EFFECTS</tt>
+types are reserved for future enhancement of the class. <tt>LAYOUT</tt>
+masters are like <tt>SCENE</tt> masters, but they survive scene clearing
+and can therefore be used to automate scene management.
+<dt>
+<tt>val = <b>event</b>( instance, access )</tt></dt>
+
+<dd>
+The event function is called to notify the handler that something has happened.
+Information about the event is included in the access structure, described
+below. The handler can respond to the event by issuing commands through
+functions provided in the access structure. The return value is currently
+ignored and should be set to 0.</dd>
+
+<br><tt>f = <b>flags</b>( instance )</tt>
+<dd>
+Returns flag bits combined using bitwise-or. No flags are currently defined,
+so this function should simply return 0.&nbsp;</dd>
+</dl>
+<b>Interface Activation Function</b>
+<pre>&nbsp;&nbsp; XCALL_( int ) MyInterface( int version, GlobalFunc *global,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWInterface *local, void *serverData );</pre>
+This is the standard <a href="../handler.html#ui">interface activation</a>
+for handlers.
+<p><b>Master Access</b>
+<p>This is the structure passed to the handler's event function.&nbsp;
+<pre>&nbsp;&nbsp; typedef struct st_LWMasterAccess {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>eventCode</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *<b>eventData</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *<b>data</b>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LWCommandCode (*<b>lookup</b>)&nbsp;&nbsp; (void *, const char *cmdName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>execute</b>)&nbsp; (void *, LWCommandCode cmd, int argc,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const DynaValue *argv,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DynaValue *result);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (*<b>evaluate</b>) (void *, const char *command);
+&nbsp;&nbsp; } LWMasterAccess;</pre>
+
+<dl>
+<dt><b><tt>eventCode</tt></b></dt>
+<dt><b><tt>eventData</tt></b></dt>
+<dd>The type of event and its associated data. The event can be one of the
+following.
+	<dl>
+	<dt><tt>LWEVNT_NOTHING</tt></dt>
+	<dd>Not currently used.</dd>
+	<dt><tt>LWEVNT_COMMAND</tt></dt>
+	<dd>A user action corresponding to a <a href="../commands.html">command</a>.
+The <tt>eventData</tt> is a string containing the command and its arguments,
+written in the same format used by the <tt>evaluate</tt> function to issue
+commands.</dd>
+	<dt><tt>LWEVNT_TIME</tt></dt>
+	<dd>Sent whenever the frame slider is moved, which includes playing the scene,
+but not playing back a preview. This allows masters to remain synchronized
+in time with the Layout interface.</dd>
+	<dt><tt>LWEVNT_SELECT (LW7.0+)</tt></dt>
+	<dd>Sent when the item selection has changed.</dd>
+	<dt><tt>LWEVNT_RENDER_DONE (LW7.5+)</tt> </dt>
+	<dd>Sent when a render has been completed.</dd>
+	<p>There are some new event codes available to master handlers via the event callback.  These will only appear when the 'flags' callback returns the correct flags.  These new events can occur in ScreamerNet as well as Layout. The flags available are:</p>
+		<dl>
+		<dt><tt>LWMASTF_LAYOUT</tt></dt>
+		<dd>This flag signals that this master handler should be considered a layout level plugin instead of a scene level plugin for the purposes of saving handler data.</dd>
+		
+		<dt><tt>LWMASTF_RECEIVE_NOTIFICATIONS</tt></dt>
+		<dd>This flag signals that this master handler wants to receive <tt>LWEVNT_NOTIFY_</tt> events.</dd>
+	
+		<dt><tt>LWMASTF_RECEIVE_NOTIFICATIONS_MESHPOINTS</tt></dt>
+		<dd>This flag signals that this master handler wants to receive the <tt>LWEVNT_NOTIFY_MESHPOINTS_ALTERED</tt> event.  It is necessary to specify the <tt>LWMASTF_RECEIVE_NOTIFICATIONS</tt> flag as well, in this case.</dd>
+		</dl>
+
+	<p>When the <tt>LWEVNTF_RECEIVE_NOTIFICATIONS</tt> flag is returned, the following events will be received:
+	<dt><tt>LWEVNT_NOTIFY_MOTION_UPDATE_STARTING</tt></dt>
+	<dd>This indicates item motion is about to be computed.  'eventData' is the item id being affected or <tt>LWITEM_NULL</tt> for all items.  This will be received during mouse manipulation of an item as well.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MOTION_UPDATE_COMPLETE</tt></dt>
+	<dd>This indicates item motion is done being computed.  'eventData' is the item id being affected or <tt>LWITEM_NULL</tt> for all items.  This will be received during mouse manipulation of an item as well.  This notification is also useful to indicate that all meshes are in their final position.  So, the MeshInfo::pntOtherPos() values are valid at this point.  The pntOtherPos() values do not include any transformations of the mesh's owner such as item position, rotation, and shearing.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_REPLACED</tt></dt>
+	<dd>This indicates an object's mesh source has been replaced.  This is a more drastic mesh change than just transforming an existing mesh by displacement.  'eventData' is the item id the object whose mesh has changed.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_UPDATE_STARTING</tt></dt>
+	<dd>This indicates a single mesh is about to be transformed.  'eventData' is the object item id being affected.  This does not mean that the mesh is actually going to change from its current shape, however.  MeshInfo::pntOtherPos() values are not valid at this point.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_UPDATE_AFTERMORPHING</tt></dt>
+	<dd>This indicates a mesh vertexes represent their 'after morphing' positions.  'eventData' is an item id.  MeshInfo::pntOtherPos() values may be used.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_UPDATE_AFTERBONES</tt></dt>
+	<dd>indicates a mesh vertexes represent their 'after bones' positions.  'eventData' is an item id.  MeshInfo::pntOtherPos() values may be used.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_UPDATE_AFTERLOCALDISPLACEMENTS</tt></dt>
+	<dd>indicates a mesh vertexes represent their 'after local displacements' positions.  'eventData' is an item id.  MeshInfo::pntOtherPos() values may be used.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_UPDATE_AFTERMOTION</tt></dt>
+	<dd>indicates a mesh vertexes represent their 'after motion' positions.  'eventData' is an item id.  MeshInfo::pntOtherPos() values may be used.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESH_UPDATE_COMPLETE</tt></dt>
+	<dd>This indicates a single mesh is done being transformed.  'eventData' is the object item id that was affected.  This does not mean that the mesh was actually altered from its previous shape.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_RENDER_FRAME_STARTING</tt></dt>
+	<dd>This indicates a frame is about to be rendered. 'eventData' is the time being rendered. </dd>
+
+	<dt><tt>LWEVNT_NOTIFY_RENDER_FRAME_COMPLETE</tt></dt>
+	<dd>This indicates a frame has completed being rendered.  'eventData' is the time being rendered.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_RENDER_STARTING</tt></dt>
+	<dd>This indicates a sequence of frames are about to be rendered.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_RENDER_ABORTED</tt></dt>
+	<dd>This indicates that the "Abort" action was engaged by the user (either by pressing the button, or the Escape key) during a render.  This event will always be followed by <tt>LWEVNT_NOTIFY_RENDER_COMPLETE</tt>.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_RENDER_COMPLETE</tt></dt>
+	<dd>This indicates a sequence of frames has completed being rendered.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_SCENE_CLEAR_STARTING</tt></dt>
+	<dd>This indicates a scene is about to be cleared. Of course, an existing master handler needs to exist to detect this.  'eventData' is the name of the scene before it was cleared.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_SCENE_CLEAR_COMPLETE</tt></dt>
+	<dd>This indicates a scene has just been cleared.  Only a master handler that survives a scene clear (LAYOUT type) will still be around to detect this. 'eventData' is the name of the scene as it exists as a cleared scene.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_SCENE_LOAD_STARTING</tt></dt>
+	<dd>This indicates a scene is about to be loaded.  'eventData' is the name of the scene file being loaded.  If you wish to retain this name, you must make a copy of it.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_SCENE_LOAD_COMPLETE</tt></dt>
+	<dd>This indicates a scene has just been loaded.  'eventData' is the name of the scene file that was loaded.  If you wish to retain this name, you must make a copy of it.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_SCENE_SAVE_STARTING</tt></dt>
+	<dd>This indicates a scene is about to be saved.  'eventData' is the name of the scene being saved. If you wish to retain this name, you must make a copy of it.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_SCENE_SAVE_COMPLETE</tt></dt>
+	<dd>This indicates a scene has just been saved.  'eventData' is the name of the scene file that was saved.  If you wish to retain this name, you must make a copy of it.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_ITEM_ADDED</tt></dt>
+	<dd>This indicates an item has been added.  An item is considered an object, light, camera, or bone; null items and objects.  'eventData' is the item id that was added.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_ITEM_REMOVING</tt></dt>
+	<dd>This indicates an item is about to be removed.  'eventData' is the item id that is going to be removed.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_ITEM_REPARENTED</tt></dt>
+	<dd>This indicates an item's parent has changed.  'eventData' is the item id that had its parent changed.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_SURFACE_ALTERED</tt></dt>
+	<dd>This indicates a surface was altered in some way.  'eventData' is a SurfID</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_MESHPOINTS_ALTERED</tt></dt>
+	<dd>This indicates a change to the world position of a vertex in an object was altered.  'eventData' is an item ID.  The world vertex position can be altered by simple movement or rotation as well.  By looking for constant movement and orientation, one can rule out those as being the cause of the alteration.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_PLUGIN_CHANGED</tt></dt>
+	<dd>This indicates the state of a plugin was changed.  'eventData' is a pointer to a structure containing information about the change:
+<pre>
+typedef struct st_LWEventNotifyPluginChange
+{
+    const char *<b>classname</b>;
+    const char *<b>servername</b>;
+    unsigned int <b>pluginevent</b>;
+} LWEventNotifyPluginChange;
+</pre>
+	The class and server names are the class and server name of the plugin. The plugin event code is one of:
+	<dl>
+	<dt><tt>LWEVNT_PLUGIN_UPDATED</tt></dt><dd>The plugin indicated a change in its instance data through the instance update global.</dd>
+	<dt><tt>LWEVNT_PLUGIN_CREATED</tt></dt><dd>A plugin instance was created.</dd>
+	<dt><tt>LWEVNT_PLUGIN_DESTROYED</tt></dt><dd>A plugin instance was destroyed.</dd>
+	<dt><tt>LWEVNT_PLUGIN_ENABLED</tt></dt><dd>A plugin instance was enabled.</dd>
+	<dt><tt>LWEVNT_PLUGIN_DISABLED</tt></dt><dd>A plugin instance was disabled.</dd>
+	<dt><tt>LWEVNT_PLUGIN_DESTROYING</tt></dt><dd>A plugin instance is about to be destroyed.</dd>
+	</dl>
+
+	<dt><tt>LWEVNT_NOTIFY_TEXTURE_REMOVING</tt></dt>
+	<dd>This indicates a texture is about to be removed from a surface.  'eventData' is the LWTextureID that is going to be removed.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_TEXTURE_ALTERED</tt></dt>
+	<dd>This indicates a texture was altered in some way.  'eventData' is a LWTextureID</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_IMAGE_REMOVING</tt></dt>
+	<dd>This indicates an image item is about to be removed.  'eventData' is the LWImageID that is going to be removed.</dd>
+	
+	<dt><tt>LWEVNT_NOTIFY_IMAGE_ALTERED</tt></dt>
+	<dd>This indicates a clip from the clip editor was altered in some way.  'eventData' is a LWImageID.  The alteration is something that would affect the images generated by the clip settings including a complete replacement of the clip image.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_LIST_UPDATE_OBJECTS</tt></dt>
+	<dd>This event indicates that the order of objects in Layout's internal list has been altered in some way.  'eventData' is unused.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_LIST_UPDATE_LIGHTS</tt></dt>
+	<dd>This event indicates that the order of lights in Layout's internal list has been altered in some way.  'eventData' is unused.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_LIST_UPDATE_CAMERAS</tt></dt>
+	<dd>This event indicates that the order of cameras in Layout's internal list has been altered in some way.  'eventData' is unused.</dd>
+
+	<dt><tt>LWEVNT_NOTIFY_LIST_UPDATE_BONES</tt></dt>
+	<dd>This event indicates that the order of bones belonging to a Layout object has been altered in some way.  'eventData' is the LWItemID of the parent object.</dd>
+
+	</dd>
+
+	</dl>
+	</dd>
+<dt><b><tt>data</tt></b></dt>
+<dd>An opaque pointer to data used internally by Layout. Pass this as the first
+argument to the <tt>lookup</tt>, <tt>execute</tt> and <tt>evaluate</tt>
+functions.</dd>
+<dt><tt>cmdcode = <b>lookup</b>( data, cmdname )</tt></dt>
+<dd>Returns an integer code corresponding to the command name. The command
+is issued by passing the command code to the <tt>execute</tt> function.
+Command codes are constant for a given Layout session, so this only needs
+to be called once per command, after which the codes can be cached and
+used multiple times.</dd>
+
+<dt><tt>result = <b>execute</b>( data, cmdcode, argc, argv, cmdresult )</tt></dt>
+<dd>Issue the command given by the command code argument. <tt>argv</tt> is
+an array of <a href="dynaval.html">DynaValue</a> arguments. <tt>argc</tt>
+is the number of arguments in the <tt>argv</tt> array. The result of the
+command is written in <tt>cmdresult</tt>. The function returns 1 if it
+succeeds or 0 if it does not.</dd>
+
+<dt><tt>result = <b>evaluate</b>( data, cmdstring )</tt></dt>
+<dd>Issue the command with the name and arguments in the command string. This
+is an alternative to using <tt>lookup</tt> and <tt>execute</tt>. The command
+and its arguments are written to a single string and delimited by spaces.
+The function returns 1 if it succeeds or 0 if it does not.</dd>
+
+</dl>
+See the <a href="../commands.html">Commands</a> pages for a complete list
+of the commands that can be issued in Layout, as well as a detailed explanation
+of the formatting of command arguments for both the <tt>execute</tt> and
+<tt>evaluate</tt>
+methods.
+      <p><b>Example</b> 
+      <p>The <a href="../../sample/Layout/Master/macro/">macro</a> sample is a master that
+records a sequence of commands and saves it as an LScript.</td>
+</tr>
+
+<tr>
+<td></td>
+</tr>
+</table>
+
+</body>
+</html>

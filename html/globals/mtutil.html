@@ -1,0 +1,495 @@
+<html>
+
+<head>
+<title>Globals: Multithreading Utilities</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="locale.html"><img width="96" height="20" border="0"
+    src="../images/navlt.gif" alt="Locale Info"></a></td>
+    <td width="96" align="left"><a href="nodeeditor.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="Node Editor Func"></a></td>
+    <td width="96" align="left"><a href="../globals.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Globals"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+    <h3>Multithreading Utilities</h3>
+    <p><small><strong>Availability</strong>&nbsp; LightWave&reg; 6.0</small><br>
+    <small><strong>Component</strong>&nbsp; Layout, Modeler</small><br>
+    <small><strong>Header</strong>&nbsp; <a href="../../include/lwmtutil.h">lwmtutil.h</a></small></p>
+    <p><strong>Global Call</strong></p>
+
+    <pre>   LWMTUtilFuncs *mtutil;
+   mtutil = global( LWMTUTILFUNCS_GLOBAL, GFUSE_TRANSIENT );</pre>
+    <p>The global function returns a pointer to an LWMTUtilFuncs.</p>
+    <pre>   typedef struct st_LWMTUtilFuncs {
+      LWMTUtilID      (*<strong>create</strong>)(void);
+      void            (*<strong>destroy</strong>)(LWMTUtilID mtid);
+      int             (*<strong>lock</strong>)(LWMTUtilID mtid, int mutexID);
+      int             (*<strong>unlock</strong>)(LWMTUtilID mtid, int mutexID);
+
+      LWMTGroupID     (*<strong>groupCreate</strong>)(int count);
+      void            (*<strong>groupDestroy</strong>)(LWMTGroupID mtgrpid);
+      int             (*<strong>groupLockMutex</strong>)(LWMTGroupID mtgrpid,int mutexID);
+      int             (*<strong>groupUnlockMutex</strong>)(LWMTGroupID mtgrpid,int mutexID);
+      LWMTThreadID    (*<strong>groupAddThread</strong>)(LWMTGroupID mtgrpid, LWMTThreadFunc func,int size,void *arg);
+      LWMTThreadID    (*<strong>groupGetThreadID</strong>)(LWMTGroupID mtgrpid, int index);
+      int             (*<strong>groupGetThreadCount</strong>)(LWMTGroupID mtgrpid);
+
+      int             (*<strong>groupRun</strong>)(LWMTGroupID mtgrpid);
+      int             (*<strong>groupBegin</strong>)(LWMTGroupID mtgrpid);
+      void            (*<strong>groupSync</strong>)(LWMTGroupID mtgrpid);
+      void            (*<strong>groupAbort</strong>)(LWMTGroupID mtgrpid);
+      void            (*<strong>groupKill</strong>)(LWMTGroupID mtgrpid);
+      int             (*<strong>groupIsDone</strong>)(LWMTGroupID mtgrpid);
+      int             (*<strong>groupIsAborted</strong>)(LWMTGroupID mtgrpid);
+      int             (*<strong>groupThreadResult</strong>)(LWMTGroupID mtgrpid,int index);
+
+      int             (*<strong>threadCheckAbort</strong>)();
+      int             (*<strong>threadCheckAbort</strong>)(LWMTThreadID thrdid);
+      int             (*<strong>threadCheckRunning</strong>)(LWMTThreadID thrdid);
+      LWMTThreadID    (*<strong>threadGetID</strong>)(void);
+      void*           (*<strong>threadGetArg</strong>)(void);
+      void*           (*<strong>threadGetArgByID</strong>)(LWMTThreadID thrdid);
+      int             (*<strong>threadGetIndex</strong>)(void);
+      int             (*<strong>threadGetIndexByID</strong>)(LWMTThreadID thrdid);
+      int             (*<strong>threadGetThreadCount</strong>)(LWMTThreadID thrdid);
+      LWMTGroupID     (*<strong>threadGetGroupID</strong>)(LWMTThreadID thrdid);
+      void            (*<strong>threadSetData</strong>)(void* ptr);
+      void*           (*<strong>threadGetData</strong>)(void);
+      void            (*<strong>threadSleep</strong>)(int delay);
+
+      int             (*<strong>groupWait</strong>)(LWMTGroupID mtgrpid,unsigned int);
+
+      LWMTRWLockID    (*<strong>rwlockCreate</strong>)(void);
+      void            (*<strong>rwlockDestroy</strong>)(LWMTRWLockID rwlock);
+      void            (*<strong>rwlockReadLock</strong>)(LWMTRWLockID rwlock);
+      int             (*<strong>rwlockReadLockTimeout</strong>)(LWMTRWLockID rwlock, unsigned int spintries);
+      void            (*<strong>rwlockReadUnlock</strong>)(LWMTRWLockID rwlock);
+      void            (*<strong>rwlockWriteLock</strong>)(LWMTRWLockID rwlock);
+      void            (*<strong>rwlockWriteUnlock</strong>)(LWMTRWLockID rwlock);
+      void            (*<strong>rwlockWriteToReadLock</strong>)(LWMTRWLockID rwlock);
+
+   } LWMTUtilFuncs;</pre>
+   
+    <br><b>Mutex-only Functions</b>
+    <p>The multithreading global supplies a mutex (mutual exclusion) mechanism for managing
+    threaded execution of your plug-in. LightWave&reg; may invoke your plug-in from multiple
+    threads simultaneously, which has the effect of threading your code. But when doing
+    certain things, for example when reading and writing global data, the threads of your code
+    should be executed one at a time, rather than all at once. The mutex mechanism is a way
+    for the threads of your code to cooperate in waiting for one another.</p>
+    <p>Think of a mutex as a dressing room, a place where a thread can have some privacy. Any
+    time your plug-in needs to do something synchronously (one thread at a time), you ask to
+    be let into the dressing room by calling <tt>lock</tt>. If another thread (another
+    &quot;you&quot;) is already in that dressing room, your thread waits until the other
+    thread is done. Then your thread gets the dressing room, and other threads that want that
+    dressing room must wait for you to finish. When you're finished, you call <tt>unlock</tt>.</p>
+    <p>The LWMTUtilID returned by the <tt>create</tt> function allows you to use up to 129
+    separate mutexes. These are organized as one thread lock, numbered 0, and 128 generic
+    locks numbered 1 to 128. The distinction is purely for organizational reasons. There is
+    no functional difference between the locks. The number of the lock is passed as the second
+    argument to <tt>lock</tt> and <tt>unlock</tt>. You might think of these as 129 different
+    dressing rooms.</p>
+    <p>Multithreading is a complex topic. If you're unfamiliar with it, you're encouraged to
+    seek out a general programming text that discusses the writing of thread-safe code.</p>
+    <p>
+    <table border=0 ID="Table1">
+      <tr>
+        <td width=120 align=right valign=top>
+    <strong>PLEASE NOTE:</strong>
+        </td>
+        <td width=600>
+    These "Mutex-only" functions are maintained in the Multithreading Utilities Global only
+    for backward compatibility with existing plug-ins.  They are officially deprecated, and
+    will be removed in some later release of LightWave&reg;.
+        </td>
+      </tr>
+    </table>    
+    </p>
+    <dl>
+      <dt><tt>mtid = <strong>create</strong>()</tt></dt>
+      <dd>Returns an LWMTUtilID that can be used by the lock and unlock functions. The return
+        value is NULL if <tt>create</tt> fails.</dd>
+
+      <br>
+      <dt><tt><strong>destroy</strong>( mtid )</tt></dt>
+      <dd>Free resources allocated by <tt>create</tt>.</dd>
+
+      <br>
+      <dt><tt>ok = <strong>lock</strong>( mtid, index )</tt></dt>
+      <dd>Blocks until the mutex becomes available. Returns true if successful, or false if the
+        lock couldn't be executed for some reason. The index is an integer from 0 to 128 that
+        identifies which of the 129 mutexes to lock. If another thread has already called <tt>lock</tt>
+        for this mutex, the calling thread waits until the other thread calls <tt>unlock</tt>.</dd>
+
+      <br>
+      <dt><tt>ok = <strong>unlock</strong>( mtid, index )</tt></dt>
+      <dd>Release the mutex. If another thread has been waiting for this mutex, that thread will
+        execute. Returns true if successful, otherwise false.</dd>
+    </dl>
+
+    <br><b>Thread Group Functions</b>
+    <p>Cross-platform threading support is provided by the functions in the following 
+    sections. Threads are powerful tools for the developer that allow simultaneous 
+    paths of execution to exist within the same application. On single-core, 
+    single-processor systems, threads typically execute synchronously. However, on 
+    multi-processor (or multi-core) systems, threads will often execute in true 
+    parallel, allowing the application to be more responsive than would be allowed 
+    by a single-path execution model.<br><br>
+
+    <table border=0>
+      <tr>
+        <td width=120 align=right valign=top>
+    <strong>PLEASE NOTE:</strong>
+        </td>
+        <td width=600>
+    These functions only provide the <i>mechanism</i> 
+    for multi-threading. What you do within the threads you create is entirely your 
+    concern. The responsibility lies with you, the developer, to ensure that the 
+    functions you call from within your thread that lead to paths outside your 
+    thread are safe to be called in that fashion (i.e., "thread-safe"). The 
+    practice of calling LightWave&reg; Plug-In API functions from within a thread
+    <i><b>is not officially supported</b></i>.  Please be aware that such a practice
+    is undertaken by you at your own risk.
+        </td>
+      </tr>
+    </table>    
+    </p>
+
+
+   <dl>
+      <dt><tt>mtgrpid = <strong>groupCreate</strong>( count )</tt></dt>
+      <dd>Threads in LightWave&reg; are contained in, and managed by, "thread groups".  Each
+      thread group can contain any number of threads, and must be created with the number
+      of threads to be managed provided in <tt>count</tt>.</dd>
+
+      <br>
+      <dt><tt><strong>groupDestroy</strong>( mtgrpid )</tt></dt>
+      <dd>Destroys the thread group created by <tt>createGroup()</tt>.  If active threads
+      exist in the group when it is destroyed, they will be forcibly stopped.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupLockMutex</strong>( mtgrpid, mutex )</tt></dt>
+      <dd>Attempts to gain a lock on the group's indicated mutex.  Groups contain
+      129 mutexes, numbered from 0 to 128.  The call will block until the mutex is locked.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupUnlockMutex</strong>( mtgrpid, mutex )</tt></dt>
+      <dd>Releases a lock on a group's mutex.</dd>
+
+      <br>
+      <dt><tt>thrdid = <strong>groupAddThread</strong>( mtgrpid, func, argsize, argvalue )</tt></dt>
+      <dd>Thread functions are added to the thread group using this function.  The function
+      to be added must match the <tt>LWMTThreadFunc</tt> signature.  Each thread must accept
+      a single <tt>void *</tt> argument, which is a pointer to the thread argument data
+      <tt>argvalue</tt>.
+      <p>
+      This thread argument can be specified by the <tt>argvalue</tt> parameter.  If <tt>argsize</tt>
+      is greater than zero (i.e., it specifies the size of the data pointed to by
+      <tt>argvalue</tt>), then the value pointed to by <tt>argvalue</tt> will be passed to the
+      thread fuction by value (a copy is made).  On the other hand, if <tt>argsize</tt> is
+      zero, then <tt>argvalue</tt> will be passed to the thread function by reference (i.e.,
+      the actual pointer will be provided).
+      <p>
+      As threads are added to the group, they are maintained in a suspended state.  Threads
+      do not start until the group launches them with one of the execution functions (see
+      below).</dd>
+
+      <br>
+      <dt><tt>thrdid = <strong>groupGetThreadID</strong>( mtgrpid, thrdndx )</tt></dt>
+      <dd>Given a thread index (<tt>thrdndx</tt>), this function will return that thread's
+      identifier.</dd>
+
+      <br>
+      <dt><tt>count = <strong>groupGetThreadCount</strong>( mtgrpid )</tt></dt>
+      <dd>Returns the number of threads the specified group is managing.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupRun</strong>( mtgrpid )</tt></dt>
+      <dd>Causes the threads managed by the group to leave their suspended state, and begin
+      execution (simultaneously).  This function blocks until all threads complete their
+      processing (i.e., terminate).  Returns 1 upon success, and 0 if there was an error.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupBegin</strong>( mtgrpid )</tt></dt>
+      <dd>Causes the threads managed by the group to leave their suspended state, and begin
+      execution (simultaneously).  This function does not block, returning after all threads
+      are started (or an error occurs).  Returns 1 upon success, and 0 if there was an error.</dd>
+
+      <br>
+      <dt><tt><strong>groupSync</strong>( mtgrpid )</tt></dt>
+      <dd>Once started by <tt>groupBegin</tt>, this function will block the calling process
+      until all active threads in the group complete.  Calling <tt>groupBegin</tt> followed
+      immediately by <tt>groupSync</tt> is therefore functionally equivalent to a single
+      call to <tt>groupRun</tt>.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupWait</strong>( mtgrpid, delay ) (9.5+)</tt></dt>
+      <dd>Like <tt>groupSync()</tt> but with a timeout in milliseconds. Returns 1 if all
+      active threads in the group have completed, otherwise returns 0.</dd>
+
+      <br>
+      <dt><tt><strong>groupAbort</strong>( mtgrpid )</tt></dt>
+      <dd>This function signals to all active threads in the group that it is time to stop.
+      This is a cooperative function -- the threads must periodically check for the abort
+      condition, and then terminate.</dd>
+
+      <br>
+      <dt><tt><strong>groupKill</strong>( mtgrpid )</tt></dt>
+      <dd>This function summarily terminates all active threads in the group.  Threads are
+      not afforded the opportunity for graceful termination.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupIsDone</strong>( mtgrpid )</tt></dt>
+      <dd>This query function tests to see if all the threads in the group have terminated.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupIsAborted</strong>( mtgrpid )</tt></dt>
+      <dd>This query function tests to see if the threads in the group were aborted for
+      some reason.</dd>
+
+      <br>
+      <dt><tt>result = <strong>groupThreadResult</strong>( mtgrpid, thrdndx )</tt></dt>
+      <dd>The result (i.e, the return code) of an individual thread can be queried using
+      this function.</dd>
+    </dl>
+
+
+   <br><b>Thread Functions</b>
+    <dl>
+      <dt><tt>abort = <strong>threadCheckAbort</strong>( )</tt></dt>
+      <dt><tt>abort = <strong>threadCheckAbort</strong>( thrdid )</tt></dt>
+      <dd>This function allows the current or identified thread to check for an abort
+      signal from the main group.  If this function returns a true value (!0), the
+      thread should finish up (release resources, close files, etc.), and gracefully
+      terminate.</dd>
+
+      <br>
+      <dt><tt>running = <strong>threadCheckRunning</strong>( thrdid )</tt></dt>
+      <dd>This function tests the identified thread to see if it is still running.</dd>
+
+      <br>
+      <dt><tt>thrdid = <strong>threadGetID</strong>( )</tt></dt>
+      <dd>Returns the identifier of the currently running thread.</dd>
+
+      <br>
+      <dt><tt>value = <strong>threadGetArg</strong>( )</tt></dt>
+      <dd>The data provided for the current thread when it was added to the group can be
+      retrieved using this function.</dd>
+
+      <br>
+      <dt><tt>value = <strong>threadGetArgByID</strong>( thrdid )</tt></dt>
+      <dd>The data provided for the identified thread when it was added to the group
+      can be retrieved using this function.</dd>
+
+      <br>
+      <dt><tt>index = <strong>threadGetIndex</strong>( )</tt></dt>
+      <dd>Returns the group index value of the current thread.</dd>
+
+      <br>
+      <dt><tt>index = <strong>threadGetIndexByID</strong>( thrdid )</tt></dt>
+      <dd>Returns the group index value of the identified thread.</dd>
+
+      <br>
+      <dt><tt>mtgrpid = <strong>threadGetGroupID</strong>( thrdid )</tt></dt>
+      <dd>Allows the thread to retrieve the identifier for the group to which it belongs.</dd>
+
+      <br>
+      <dt><tt><strong>threadSetData</strong>( ptr )</tt></dt>
+      <dd>Sets the private data storage for the currently running thread.</dd>
+
+      <br>
+      <dt><tt>ptr = <strong>threadGetData</strong>( )</tt></dt>
+      <dd>Returns the private data storage for the currently running thread.</dd>
+
+      <br>
+      <dt><tt><strong>threadSleep</strong>( timeout )</tt></dt>
+      <dd>Causes the thread to "sleep" for a specified number of milliseconds.  In most
+      cases, this causes the thread to release its timeslice, avoiding potential hammering
+      of the CPU(s).</dd>
+    </dl>
+
+   <br><b>Read/Write Lock Functions (9.5+)</b>
+    <dl>
+      <dt><tt>rwlock = <strong>rwlockCreate</strong>( )</tt></dt>
+      <dd>Creates a new read/write lock.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockDestroy</strong>( rwlock )</tt></dt>
+      <dd>Destroyes a read/write lock. The lock must not be in use by any thread.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockReadLock</strong>( rwlock )</tt></dt>
+      <dd>Obtain a read lock. The call will block if there is a write lock. A thread
+      can have multiple read locks on the same rwlock. Each read lock must be unlocked.
+      If a thread holds a write lock, it can obtain a read lock, but it will be treated
+      as another write lock. Note that read locks can not be upgraded to a write lock.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockReadLockTimeout</strong>( rwlock, spintries )</tt></dt>
+      <dd>Attempts to obtain a read lock, with a timeout if no read lock can be obtained.
+      The timeout uses a spin lock. The maximum number of attempts to get a read lock is given
+      by <tt>spintries</tt>. The first few attempts will be made without any waiting between
+      tries. Subsequent attempts may sleep for a short period, under the assumption that the
+      write lock is busy for a while. The number of fast tries and the delay between the slower
+      tries are intentionally not defined. A <tt>spintries</tt> values of <tt>UINT_MAX</tt> is
+      treated as an infinite number of attempts, making it exactly equivalent to
+      <tt>rwlockReadLock()</tt>.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockReadUnlock</strong>( rwlock )</tt></dt>
+      <dd>Releases a read lock. Each read lock obtained must be released.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockWriteLock</strong>( rwlock )</tt></dt>
+      <dd>Gets a write lock. Each write lock must be unlocked. A thread can have multiple write locks
+      on the same rwlock. A thread must not attempt to get a write lock while holding a read lock.
+      The thread must release the read lock before obtaining the write lock.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockWriteUnlock</strong>( rwlock )</tt></dt>
+      <dd>Releases a write lock. Each write lock obtained must be released, if not downgraded to
+      a read lock.</dd>
+
+      <br>
+      <dt><tt><strong>rwlockWriteToReadLock</strong>( rwlock )</tt></dt>
+      <dd>Downgrades a write lock to a read lock. The thread will keep a lock throughout the conversion.
+      This allows a thread to safely switch from writing to reading without another thread
+      intervening with a new write lock. Note that once converted to a read lock, it can not be
+      upgraded to a write lock.</dd>
+
+
+    <br><b>History</b>
+    <p>LightWave&reg; 9.0 introduced the <strong>Thread Group</strong> and <strong>Thread</strong>
+    support functions.</p>
+    <p>LightWave&reg; 9.5 added read/write locks.</p>
+
+    <p><strong>Mutex-only Example (legacy)</strong></p>
+    <p>This code fragment outlines the sequence of steps you'd take to use a mutex.</p>
+<pre>   #include &lt;lwmtutil.h&gt;
+
+   LWMTUtilFuncs *mtutil;
+   LWMTUtilID mtid;
+
+   mtutil = global( LWMTUTILFUNCS_GLOBAL, GFUSE_TRANSIENT );
+   if ( !mtutil )
+      ...global not available, do this some other way...
+
+   /* create the mutex */
+   mtid = mtutil-&gt;create();
+   ...
+
+   /* enclose critical code (code that must run synchronously) in
+      matching lock()/unlock() calls */
+   if ( mtutil-&gt;lock( mtid, 0 )) {
+      ...do something that can't be threaded...
+      mtutil-&gt;unlock( mtid, 0 );
+   }
+   ...
+
+   /* free the mutex when you no longer need it */
+   if ( mtid ) mtutil-&gt;destroy( mtid );
+</pre>
+    <p><strong>Mutex-only Example</strong></p>
+    <p>This code fragment illustrates the use of Thread Group functions for
+    performing mutex-only activities.</p>
+<pre>   #include &lt;lwmtutil.h&gt;
+
+   LWMTUtilFuncs *mtutil;
+   LWMTGroupID mtgrpid;
+
+   mtutil = global( LWMTUTILFUNCS_GLOBAL, GFUSE_TRANSIENT );
+   if ( !mtutil )
+      ...global not available, do this some other way...
+
+   // create the thread group to be used just for its mutex array
+   
+   mtgrpid = mtutil-&gt;groupCreate(1);
+   ...
+
+   // enclose critical code (code that must run synchronously) in
+   // matching lock()/unlock() calls
+   
+   if ( mtutil-&gt;groupLockMutex( mtgrpid, 0 )) {
+      ...do something that can't be threaded...
+      mtutil-&gt;groupUnlockMutex( mtgrpid, 0 );
+   }
+   ...
+
+   // free the thread group when you no longer need it
+   
+   if ( mtgrpid ) mtutil-&gt;groupDestroy( mtgrpid );
+</pre>
+    <p><strong>Threading Example</strong></p>
+    <p>The following code fragment shows an example of using threads.</p>
+    <pre>
+    #include &lt;lwmtutil.h&gt;
+    ...
+
+    LWMTUtilFuncs *mtutil;
+    ...
+
+    int my_thread_func(void *arg)
+    {
+        if(!mtutil)
+            return -1;
+
+        // the thread was added to the group with a NULL
+        // argument value, so 'arg' will be NULL. we ignore
+        // it.
+
+        while(!mtutil->threadCheckAbort())
+        {
+            ...process thread function...
+
+            // be a well-behaved thread
+            mtFuncs->threadSleep(100);
+        }
+
+        return 0;
+    }
+    ...
+
+    mtutil = global( LWMTUTILFUNCS_GLOBAL, GFUSE_TRANSIENT );
+    if ( !mtutil )
+        ...global not available, do this some other way...
+
+    // create the thread group, add a thread, and launch it
+
+    LWMTGroupID mtgrpid;
+    mtgrpid = mtutil-&gt;groupCreate(1);
+    if(mtgrpid)
+    {
+        mtutil-&gt;groupAddThread(mtgrpid,my_thread_func,0,NULL);
+        mtutil-&gt;groupBegin(mtgrpid);
+    }
+    ...
+
+    // when we're done, shut down the thread and release the group
+
+    if(mtutil && mtgrpid)
+    {
+        mtutil-&gt;groupAbort(mtgrpid);
+        while(!mtutil-&gt;groupIsDone(mtgrpid))
+            mtutil-&gt;threadSleep(100);
+
+        mtutil-&gt;groupDestroy(mtgrpid);
+    }
+    ...
+</pre>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

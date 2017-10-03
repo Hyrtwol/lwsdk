@@ -1,0 +1,658 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00F0F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v2.4 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.4 Release Notes</H1>
+
+<br><br>
+
+<H2>New Features</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A Layout object's world rotation values can now be calculated using the new <b>WROTATION</b>
+  param() method flag, or the new <b>getWorldRotation()</b> method.  If the object is unparented,
+  then <b>WROTATION</b>/<b>getWorldRotation()</b> returns a value equivalent to <b>ROTATION</b>/<b>getRotation()</b>.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The <b>ctlpage()</b> Requester function now accepts an array of Control Object Agents in
+  addition to a comma-separated list.  The array reference must be the second and last
+  argument to the function.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new control type called <b>ctlmenu()</b> has been added to the Requester mechanism.  This
+  control type consists of a button that displays a popup menu when pressed.
+
+  The first argument is the title of the button.  Next, a list of the items that will
+  appear on the menu when displayed.  As with <b>ctlpopup()</b>, this list can be an array
+  reference or an initialization block of values.  A required callback function is then
+  defined to process any selections made from the menu.  A fourth optional argument will
+  define a callback used to enable/disable individual menu entries.
+
+  A special entry value is recognized as a menu separator.  An entry that begins with
+  at least two equal signs (=) will cause a separator to be added to the popup menu
+  at the indicated location.
+
+  The menu value returned to either callback function corresponds directly to the linear
+  value of the entry in the original items.  However, separator entries will never be
+  processed.
+
+        @version 2.4
+        @warnings
+
+        menu_items = @"New Session","Close Session","=====","Quit"@;
+
+        generic
+        {
+            reqbegin("Testing");
+            c1 = ctlmenu("Sessions",menu_items,"menu_select","menu_active");
+
+            reqpost();
+            reqend();
+        }
+
+        menu_select: item
+        {
+            info("You selected '",menu_items[item],"'");
+        }
+
+        menu_active: item
+        {
+            return(item != 2);
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Two new Requester functions, <b>drawtextwidth()</b> and <b>drawtextheight()</b>, have been added to
+  determine the display width and height, in pixels, of a text string.  They each take
+  a single character string, and return an integer value representing this pixel width
+  or height.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A new information display control is available to Requesters.  Created with <b>ctlinfo()</b>,
+  it defines an area on the Requester panel into which subsequent drawing will occur
+  when a specified UDF callback is invoked.  All drawing into this area is clipped by
+  LScript.
+
+  Three arguments are required by the <b>ctlinfo()</b> function.  The first two are integer values
+  that specify the width and height of the display area.  The third argument defines
+  the UDF to be called when the informational area needs to be redrawn.  This UDF takes
+  no arguments, and has access to all the Requester redraw functions (<b>drawtext()</b>,
+  <b>drawpixel()</b>, etc.).
+
+        @version 2.4
+        @warnings
+
+        @define MSG     "This is cool!"
+
+        msg_x = 101;
+
+        generic
+        {
+            reqbegin("Testing");
+            c1 = ctlinfo(100,30,"info_redraw");
+
+            reqpost("marquee",50);
+            reqend();
+        }
+
+        info_redraw
+        {
+            drawbox(<132,130,132>,0,0,100,30);
+            if(msg_x > 100)
+                msg_x = -1 * drawtextwidth(MSG);
+            drawtext(MSG,<0,0,0>,msg_x, integer((30 - drawtextheight(MSG)) / 2));
+            drawborder(0,0,100,30,true);
+        }
+
+        marquee
+        {
+            msg_x += 2;
+            requpdate();
+        }
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Several new surface-related Object Agents are available in LScript, the first of which
+  is the <b>Surface</b> Object Agent, from which all others are derived.  The <b>Surface()</b> constructor
+  can be used to generate an Object Agent for an existing surface, or it can be used to
+  create a new surface for an object.
+
+  The constructor can be called with no arguments, and the first surface defined in the
+  system will be returned.
+
+  If called with an integer value, the surface in the system that corresponds to that
+  index value will be returned.
+
+  Provided a surface name, the constructor will return that surface if it is already
+  defined in the system.  If it does not exist, a 'nil' value will be returned under Layout,
+  and a new surface with that name will be generated for the current object under Modeler.
+
+  Provided a Mesh Object Agent, a list of the surface names defined for that object will
+  be returned.
+
+  Under Layout, you can create a new surface for an object by providing the Mesh Object
+  Agent to receive the surface as the first argument, and the name of the surface as the
+  second.
+
+  The following channel constants have been defined in LScript for use with the Surface
+  Object Agent:
+
+        <b>SURFCOLR</b>            Base Color              (vector)
+        <b>SURFLUMI</b>            Luminosity              (number)
+        <b>SURFDIFF</b>            Diffuse                 (number)
+        <b>SURFSPEC</b>            Specularity             (number)
+        <b>SURFREFL</b>            Reflectivity            (number)
+        <b>SURFTRAN</b>            Transparency            (number)
+        <b>SURFTRNL</b>            Translucency            (number)
+        <b>SURFRIND</b>            IOR                     (number)
+        <b>SURFBUMP</b>            Bump                    (number)
+        <b>SURFGLOS</b>            Glossiness              (number)
+        <b>SURFBUF1</b>            Special Buffer 1        (number)
+        <b>SURFBUF2</b>            Special Buffer 2        (number)
+        <b>SURFBUF3</b>            Special Buffer 3        (number)
+        <b>SURFBUF4</b>            Special Buffer 4        (number)
+        <b>SURFSHRP</b>            Diffuse Sharpness       (number)
+        <b>SURFSMAN</b>            Smoothing Angle         (degrees)
+        <b>SURFRSAN</b>            Reflection Seam Angle   (degrees)
+        <b>SURFTSAN</b>            Refraction Seam Angle   (degrees)
+        <b>SURFRBLR</b>            Reflection Blur         (number)
+        <b>SURFTBLR</b>            Refraction Blur         (number)
+        <b>SURFCLRF</b>            Color Filter            (number)
+        <b>SURFCLRH</b>            Color Highlights        (number)
+        <b>SURFADTR</b>            Additive Transparency   (number)
+        <b>SURFAVAL</b>            Alpha Value             (number)
+        <b>SURFGVAL</b>            Glow Value              (number)
+        <b>SURFLCOL</b>            Line Color              (vector)
+        <b>SURFLSIZ</b>            Line Size               (number)
+        <b>SURFSIDE</b>            Sidedness               (integer)
+        <b>SURFGLOW</b>            Glow                    (Boolean)
+        <b>SURFLINE</b>            Render Outlines         (Boolean)
+        <b>SURFRIMG</b>            Reflection Image        (Image Object Agent)
+        <b>SURFTIMG</b>            Refraction Image        (Image Object Agent)
+        <b>SURFVCOL</b>            Vertex Coloring         (number)
+
+  The following data members are exported by the Surface Object Agent:
+
+        <b>name</b>
+                the name of the surface
+
+  The following methods are available:
+
+        <b>getValue(&lt;channel&gt;)</b>
+
+                returns the specific value setting for the channel (whose type is
+                defined above).
+
+        <b>getEnvelope(&lt;channel&gt;)</b>
+
+                returns the Envelope Object Agent associated with the specified
+                channel.  returns 'nil' if none exists.
+
+        <b>getTexture(&lt;channel&gt;)</b>
+
+                returns the Texture Object Agent (documented below) associated
+                with the specified channel.  returns 'nil' if none exists.
+
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A Texture Object Agent can be generated from the Surface Object Agent (using its
+  <b>getTexture()</b> method).  This Object Agent provides an interface to a texture assigned
+  to a specific channel in a surface.  Textures have their own settings, including one or
+  more layers that accumulate to represent the visual makeup of the surface.
+
+  The following texture constants have been defined in LScript for use with the Texture
+  Object Agent:
+
+        <b>TXTRIMAGE</b>           Image Texture type
+        <b>TXTRPROCEDURE</b>       Procedural Texture type
+        <b>TXTRGRADIENT</b>        Gradient Texture type
+
+  The following methods are exported by the Object Agent:
+
+        <b>setChannelGroup(&lt;Channel Group Object Agent&gt;)</b>
+
+                sets the Texture's channel group using the provided Object Agent.
+                Envelopes created for parameters in the Texture's layers will
+                belong to this group.
+
+        <b>getChannelGroup()</b>
+
+                returns the Channel Group Object Agent for the Texture.
+
+        <b>firstLayer()</b>
+
+                returns the TextureLayer Object Agent (documented below) for the
+                first layer defined in the Texture.
+
+        <b>nextLayer(&lt;TextureLayer Object Agent&gt;)</b>
+
+                returns the TextureLayer Object Agent that follows the
+                specified TextureLayer for the Texture.
+
+        <b>addLayer(&lt;layer type&gt;)</b>
+
+                creates a new layer in the Texture of the specific type--one,
+                of <b>TXTRIMAGE</b>, <b>TXTRPROCEDURE</b> or <b>TXTRGRADIENT</b>--and returns the
+                TextureLayer Object Agent for it.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  A TextureLayer Object Agent is generated by the Texture Object Agent, and serves as
+  proxy for the settings for the each layer defined in the Texture.
+
+  The following channel constants have been defined in LScript for use with the
+  TextureLayer Object Agent:
+
+        <b>TXLRPOSITION</b>        Position                (vector)
+        <b>TXLRROTATION</b>        Rotation                (vector)
+        <b>TXLRSIZE</b>            Size                    (vector)
+        <b>TXLRFALLOFF</b>         Falloff                 (vector)
+        <b>TXLRPROJECT</b>         Projection              (constant)
+        <b>TXLRAXIS</b>            Texture Axis            (integer)
+        <b>TXLRWWRAP</b>           Width Wrap              (number)
+        <b>TXLRHWRAP</b>           Height Wrap             (number)
+        <b>TXLRCOORD</b>           Coordinate System       (integer: 1==object, 2==world)
+        <b>TXLRIMAGE</b>           Image                   (Image Object Agent)
+        <b>TXLRVMAP</b>            VMap                    (VMap Object Agent)
+        <b>TXLREFOBJ</b>           Reference Object        (Layout Object Agent)
+        <b>TXLROPACITY</b>         Opacity                 (number)
+        <b>TXLRANTIALIAS</b>       Antialias               (Boolean)
+        <b>TXLRAAVALUE</b>         Antialias Threshold     (number)
+        <b>TXLRPIXBLEND</b>        Pixel Blending          (Boolean)
+        <b>TXLRWREPEAT</b>         Width Repeat            (constant)
+        <b>TXLRHREPEAT</b>         Height Repeat           (constant)
+
+  The defined constants for a texture's <b>TXLRPROJECT</b> setting are:
+
+        <b>TXPJPLANAR</b>
+        <b>TXPJCYLINDRICAL</b>
+        <b>TXPJSPHERICAL</b>
+        <b>TXPJCUBIC</b>
+        <b>TXPJFRONT</b>
+        <b>TXPJUVMAP</b>
+
+  The defined constants for a texture's <b>TXLRWREPEAT</b> and <b>TXLRHREPEAT</b> settings are:
+
+        <b>TXRPRESET</b>
+        <b>TXRPREPEAT</b>
+        <b>TXRPMIRROR</b>
+        <b>TXRPEDGE</b>
+
+  The following data members are exported by the TextureLayer Object Agent:
+
+        <b>type</b>
+                the type of the layer (<b>TXTRIMAGE</b>, <b>TXTRPROCEDURE</b> or <b>TXTRGRADIENT</b>)
+
+  The following methods are available:
+
+        <b>getValue(&lt;channel&gt;)</b>
+
+                retrieves the value of the specified channel in the layer.
+
+        <b>setValue(&lt;channel&gt;,&lt;value&gt;)</b>
+
+                sets the the specified layer channel to the provided value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Layout Object Agents now provide methods for managing each object's scene tag information.
+
+  The <b>getTag()</b> method takes an integer index value, and returns the tag value for that index,
+  or 'nil' is no tag exists.
+
+  The <b>setTag()</b> method take an index value, and a string tag value, and applies it to the
+  object.  When the current scene is saved, the tag information will be stored into the
+  scene file in association with the object.
+
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<A NAME="BEHAVIOR">
+
+<H2>Behavioral Changes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>ctltext()</b> Requester function has been augmented to accept an Array reference as either
+  the first (and only) argument, or the second (and final) from which text strings will be
+  extracted.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The <b>requpdate()</b> function now triggers a redraw in any visible <b>ctlinfo()</b> area.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The <b>drawborder()</b> Requester redraw function now accepts a fifth optional Boolean argument
+  that indicates the indentation of the border to be drawn.  If omitted (or <b>false</b>), then
+  the border is draw with a "raised" look.   If <b>true</b>, then the border has a "sunken" look.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                     
+  The <b>ctlactive()</b> and <b>ctlvisible()</b> Requester functions have been augmented to accept an
+  Array of Control identifiers as the third (and final) argument.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The "Ok" button, and the button area, has been removed from non-modal Requester
+  panels to futher integrate scripts with the overall LightWave look-and-feel.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+
+
+<H2>Bug Fixes</H2>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  A memory leak existed in the code that processes the <b>points[]</b> Object Agent data
+  member reference.  The leak did not involve memory allocated by LScript, and so
+  was not released when the script terminated.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Requester key handling had a bug that could crash the application under certain
+  circumstances.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The LScript pre-processor was unaware of the fact that the script it was processing
+  was simply being installed instead of executed.  This made the pre-processor enforce
+  certain pragma directives at inappropriate times.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The Layout LScript compiler was not setting an internal architecture flag before
+  compiling the specified script, leading to a loss of architecture-specific constant
+  definitions in the output file.  This lack of definition caused operational
+  anomalies with the Layout LScript run-time system.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Control identifier type, while housed well within an array, was not being
+  properly identified by LScript when accessed as an array element.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  LScript's Requester mechanism was not correctly handling situations where an open
+  panel launches another.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  The Particle Object Agent was not being handled properly in all cases involving
+  array duplication.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  Non-modal windows would not re-open again once closed because LScript was confused
+  about the fact that it had actually been closed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Controls generated by the <b>ctltext()</b> function were not functioning properly with the
+  <b>visible()</b> method.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  The ommission of an "else" in LScript's code made it impossible to access any of
+  the Custom Object Agent's data members.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Internal switching problems were occurring with requester panels, leading to crashes
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                                    
+  L-value expressions (those on the left of an assignment) involving arrays were not
+  being flagged correctly by LScript, leading to evaluation failure (and possibly a
+  crash).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                                    
+  Associative array handling could cause a crash when an assignment was attempted on
+  an array not already flagged as associative.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

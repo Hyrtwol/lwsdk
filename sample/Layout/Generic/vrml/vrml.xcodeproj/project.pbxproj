@@ -1,0 +1,298 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04D7A5130B617B0900C92F9B /* servmain.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A50D0B617B0900C92F9B /* servmain.c */; };
+		04D7A5140B617B0900C92F9B /* shutdown.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A50E0B617B0900C92F9B /* shutdown.c */; };
+		04D7A5150B617B0900C92F9B /* startup.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A50F0B617B0900C92F9B /* startup.c */; };
+		04D7A5160B617B0900C92F9B /* username.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5100B617B0900C92F9B /* username.c */; };
+		04D7A52A0B617B1700C92F9B /* eulerangle.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5170B617B1700C92F9B /* eulerangle.c */; };
+		04D7A52B0B617B1700C92F9B /* exportvrml.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5190B617B1700C92F9B /* exportvrml.c */; };
+		04D7A52C0B617B1700C92F9B /* objectdb.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A51A0B617B1700C92F9B /* objectdb.c */; };
+		04D7A52D0B617B1700C92F9B /* odb2vrml.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A51C0B617B1700C92F9B /* odb2vrml.c */; };
+		04D7A52E0B617B1700C92F9B /* ptsearch.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A51D0B617B1700C92F9B /* ptsearch.c */; };
+		04D7A52F0B617B1700C92F9B /* sctags.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5200B617B1700C92F9B /* sctags.c */; };
+		04D7A5300B617B1700C92F9B /* surface.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5220B617B1700C92F9B /* surface.c */; };
+		04D7A5310B617B1700C92F9B /* vecmat.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5230B617B1700C92F9B /* vecmat.c */; };
+		04D7A5320B617B1700C92F9B /* vmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5250B617B1700C92F9B /* vmap.c */; };
+		04D7A5330B617B1700C92F9B /* vrml_cobj.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5260B617B1700C92F9B /* vrml_cobj.c */; };
+		04D7A5340B617B1700C92F9B /* vrml_env.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5270B617B1700C92F9B /* vrml_env.c */; };
+		04D7A5350B617B1700C92F9B /* vrml_pan.c in Sources */ = {isa = PBXBuildFile; fileRef = 04D7A5280B617B1700C92F9B /* vrml_pan.c */; };
+		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		04D7A50C0B617B0800C92F9B /* servdesc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = servdesc.c; path = ../../../../source/servdesc.c; sourceTree = SOURCE_ROOT; };
+		04D7A50D0B617B0900C92F9B /* servmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = servmain.c; path = ../../../../source/servmain.c; sourceTree = SOURCE_ROOT; };
+		04D7A50E0B617B0900C92F9B /* shutdown.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = shutdown.c; path = ../../../../source/shutdown.c; sourceTree = SOURCE_ROOT; };
+		04D7A50F0B617B0900C92F9B /* startup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = startup.c; path = ../../../../source/startup.c; sourceTree = SOURCE_ROOT; };
+		04D7A5100B617B0900C92F9B /* username.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = username.c; path = ../../../../source/username.c; sourceTree = SOURCE_ROOT; };
+		04D7A5170B617B1700C92F9B /* eulerangle.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = eulerangle.c; sourceTree = "<group>"; };
+		04D7A5180B617B1700C92F9B /* eulerangle.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = eulerangle.h; sourceTree = "<group>"; };
+		04D7A5190B617B1700C92F9B /* exportvrml.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = exportvrml.c; sourceTree = "<group>"; };
+		04D7A51A0B617B1700C92F9B /* objectdb.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = objectdb.c; sourceTree = "<group>"; };
+		04D7A51B0B617B1700C92F9B /* objectdb.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = objectdb.h; sourceTree = "<group>"; };
+		04D7A51C0B617B1700C92F9B /* odb2vrml.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = odb2vrml.c; sourceTree = "<group>"; };
+		04D7A51D0B617B1700C92F9B /* ptsearch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = ptsearch.c; sourceTree = "<group>"; };
+		04D7A51E0B617B1700C92F9B /* quattype.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = quattype.h; sourceTree = "<group>"; };
+		04D7A51F0B617B1700C92F9B /* scenscan.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = scenscan.h; sourceTree = "<group>"; };
+		04D7A5200B617B1700C92F9B /* sctags.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = sctags.c; sourceTree = "<group>"; };
+		04D7A5210B617B1700C92F9B /* sctags.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = sctags.h; sourceTree = "<group>"; };
+		04D7A5220B617B1700C92F9B /* surface.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = surface.c; sourceTree = "<group>"; };
+		04D7A5230B617B1700C92F9B /* vecmat.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vecmat.c; sourceTree = "<group>"; };
+		04D7A5240B617B1700C92F9B /* vecmat.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = vecmat.h; sourceTree = "<group>"; };
+		04D7A5250B617B1700C92F9B /* vmap.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vmap.c; sourceTree = "<group>"; };
+		04D7A5260B617B1700C92F9B /* vrml_cobj.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vrml_cobj.c; sourceTree = "<group>"; };
+		04D7A5270B617B1700C92F9B /* vrml_env.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vrml_env.c; sourceTree = "<group>"; };
+		04D7A5280B617B1700C92F9B /* vrml_pan.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = vrml_pan.c; sourceTree = "<group>"; };
+		04D7A5290B617B1700C92F9B /* xvrml.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = xvrml.h; sourceTree = "<group>"; };
+		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		8D576316048677EA00EA77CD /* vrml.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vrml.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D576313048677EA00EA77CD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		04D7A50A0B617B0000C92F9B /* lwsdk */ = {
+			isa = PBXGroup;
+			children = (
+				04D7A50C0B617B0800C92F9B /* servdesc.c */,
+				04D7A50D0B617B0900C92F9B /* servmain.c */,
+				04D7A50E0B617B0900C92F9B /* shutdown.c */,
+				04D7A50F0B617B0900C92F9B /* startup.c */,
+				04D7A5100B617B0900C92F9B /* username.c */,
+			);
+			name = lwsdk;
+			sourceTree = "<group>";
+		};
+		089C166AFE841209C02AAC07 /* vrml */ = {
+			isa = PBXGroup;
+			children = (
+				08FB77AFFE84173DC02AAC07 /* Source */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+			);
+			name = vrml;
+			sourceTree = "<group>";
+		};
+		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */,
+			);
+			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8D576317048677EA00EA77CD /* Info.plist */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		08FB77AFFE84173DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				04D7A5170B617B1700C92F9B /* eulerangle.c */,
+				04D7A5180B617B1700C92F9B /* eulerangle.h */,
+				04D7A5190B617B1700C92F9B /* exportvrml.c */,
+				04D7A51A0B617B1700C92F9B /* objectdb.c */,
+				04D7A51B0B617B1700C92F9B /* objectdb.h */,
+				04D7A51C0B617B1700C92F9B /* odb2vrml.c */,
+				04D7A51D0B617B1700C92F9B /* ptsearch.c */,
+				04D7A51E0B617B1700C92F9B /* quattype.h */,
+				04D7A51F0B617B1700C92F9B /* scenscan.h */,
+				04D7A5200B617B1700C92F9B /* sctags.c */,
+				04D7A5210B617B1700C92F9B /* sctags.h */,
+				04D7A5220B617B1700C92F9B /* surface.c */,
+				04D7A5230B617B1700C92F9B /* vecmat.c */,
+				04D7A5240B617B1700C92F9B /* vecmat.h */,
+				04D7A5250B617B1700C92F9B /* vmap.c */,
+				04D7A5260B617B1700C92F9B /* vrml_cobj.c */,
+				04D7A5270B617B1700C92F9B /* vrml_env.c */,
+				04D7A5280B617B1700C92F9B /* vrml_pan.c */,
+				04D7A5290B617B1700C92F9B /* xvrml.h */,
+				04D7A50A0B617B0000C92F9B /* lwsdk */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D576316048677EA00EA77CD /* vrml.plugin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D57630D048677EA00EA77CD /* vrml */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "vrml" */;
+			buildPhases = (
+				8D57630F048677EA00EA77CD /* Resources */,
+				8D576311048677EA00EA77CD /* Sources */,
+				8D576313048677EA00EA77CD /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = vrml;
+			productInstallPath = "$(HOME)/Library/Bundles";
+			productName = vrml;
+			productReference = 8D576316048677EA00EA77CD /* vrml.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB911E08733D790010E9CD /* Build configuration list for PBXProject "vrml" */;
+			hasScannedForEncodings = 1;
+			mainGroup = 089C166AFE841209C02AAC07 /* vrml */;
+			projectDirPath = "";
+			targets = (
+				8D57630D048677EA00EA77CD /* vrml */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D57630F048677EA00EA77CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D576311048677EA00EA77CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				04D7A5130B617B0900C92F9B /* servmain.c in Sources */,
+				04D7A5140B617B0900C92F9B /* shutdown.c in Sources */,
+				04D7A5150B617B0900C92F9B /* startup.c in Sources */,
+				04D7A5160B617B0900C92F9B /* username.c in Sources */,
+				04D7A52A0B617B1700C92F9B /* eulerangle.c in Sources */,
+				04D7A52B0B617B1700C92F9B /* exportvrml.c in Sources */,
+				04D7A52C0B617B1700C92F9B /* objectdb.c in Sources */,
+				04D7A52D0B617B1700C92F9B /* odb2vrml.c in Sources */,
+				04D7A52E0B617B1700C92F9B /* ptsearch.c in Sources */,
+				04D7A52F0B617B1700C92F9B /* sctags.c in Sources */,
+				04D7A5300B617B1700C92F9B /* surface.c in Sources */,
+				04D7A5310B617B1700C92F9B /* vecmat.c in Sources */,
+				04D7A5320B617B1700C92F9B /* vmap.c in Sources */,
+				04D7A5330B617B1700C92F9B /* vrml_cobj.c in Sources */,
+				04D7A5340B617B1700C92F9B /* vrml_env.c in Sources */,
+				04D7A5350B617B1700C92F9B /* vrml_pan.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB911B08733D790010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = vrml;
+				WRAPPER_EXTENSION = plugin;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		1DEB911C08733D790010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				PRODUCT_NAME = vrml;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Release;
+		};
+		1DEB911F08733D790010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = _MACOS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		1DEB912008733D790010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = _MACOS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../../include;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB911A08733D790010E9CD /* Build configuration list for PBXNativeTarget "vrml" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB911B08733D790010E9CD /* Debug */,
+				1DEB911C08733D790010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB911E08733D790010E9CD /* Build configuration list for PBXProject "vrml" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB911F08733D790010E9CD /* Debug */,
+				1DEB912008733D790010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}

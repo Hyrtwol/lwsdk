@@ -1,0 +1,461 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<title>Globals: Scene Info</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#000080" vlink="#800000" alink="#0000FF">
+
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0 BGCOLOR="#D0D0D0" >
+<tr>
+<td ALIGN=LEFT WIDTH="120"><a href="raster.html"><img SRC="navlt.gif" ALT="Raster Services" BORDER=0 height=20 width=96></a></td>
+
+<td ALIGN=LEFT WIDTH="96"><a href="sceneobj.html"><img SRC="navrt.gif" ALT="Scene Objects" BORDER=0 height=20 width=64></a></td>
+
+<td ALIGN=LEFT WIDTH="96"><a href="../globals.html"><img SRC="navup.gif" ALT="Globals" BORDER=0 height=20 width=56></a></td>
+
+<td ALIGN=RIGHT WIDTH="288"><a href="../index.html"><img SRC="proglw.gif" ALT="Table of Contents" BORDER=0 height=20 width=230></a></td>
+</tr>
+</table>
+
+<table BORDER=0 CELLSPACING=0 CELLPADDING=0>
+<tr>
+<td WIDTH="600">
+<h3>
+Scene Info</h3>
+<font size=-1><b>Availability</b>&nbsp; LightWave&reg; 6.0</font>
+<br><font size=-1><b>Component</b>&nbsp; Layout</font>
+<br><font size=-1><b>Header</b>&nbsp; <a href="../../include/lwrender.h">lwrender.h</a></font>
+<p>The scene info global returns information about the current scene. This
+information is read-only and reflects the state of the scene at the time
+the global function is called. You can set these parameters using <a href="../commands/layout.html#scenes">commands</a>.
+<p>Beginning with LightWave&reg; 9, certain portions of each scene camera's render settings
+can be re-directed to use settings from a "global" camera.  This global camera contains settings
+for resolution, motion blur, and mask values that can be shared by one or more cameras in
+the scene.  The values reported in the Scene Info global for resolution and motion blur may
+be the values contained by the global camera, if the selected camara has had its settings for
+that area redirected (see the <a href="caminfo.html">Camera Info</a> global for information
+about querying the state of these redirects).  For example, if the global camera has a frame
+size setting that is different than the selected camera's frame size, the values below for
+<strong>frameWidth</strong> and <strong>frameHeight</strong> may be different for the same
+camera depending upon the state of the "Use Global" flag for these settings.</p>
+<p><b>Global Call</b>
+<pre>   LWSceneInfo *sceneinfo;
+   sceneinfo = global( LWSCENEINFO_GLOBAL, GFUSE_TRANSIENT );</pre>
+The global function returns a pointer to an LWSceneInfo.
+<pre>   typedef struct st_LWSceneInfo {
+      const char *<b>name</b>;
+      const char *<b>filename</b>;
+      int         <b>numPoints</b>;
+      int         <b>numPolygons</b>;
+      int         <b>renderType</b>;
+      int         <b>renderOpts</b>;
+      LWFrame     <b>frameStart</b>;
+      LWFrame     <b>frameEnd</b>;
+      LWFrame     <b>frameStep</b>;
+      double      <b>framesPerSecond</b>;
+      int         <b>frameWidth</b>;
+      int         <b>frameHeight</b>;
+      double      <b>pixelAspect</b>;
+      int         <b>minSamplesPerPixel</b>;
+      int         <b>maxSamplesPerPixel</b>;
+      int         <b>limitedRegion</b>[4];
+      int         <b>recursionDepth</b>;
+      LWItemID   (*<b>renderCamera</b>) (LWTime);
+      int         <b>numThreads</b>;
+      const char  <b>*animFilename</b>;
+      const char  <b>*RGBPrefix</b>;
+      const char  <b>*alphaPrefix</b>;
+      int         <b>antialiasing</b>;
+      int         <b>enhancedAA</b>;
+      int         <b>adaptiveSampling</b>;
+      float         <b>adaptiveThreshold</b>;
+      int         <b>filter</b>;
+      int         <b>dblSidedAreaLights</b>;
+      int         <b>loadInProgress</b>;
+      int         <b>radiosityType</b>;
+      int         <b>radiosityIndirectBounceCount</b>;
+      int         <b>radiosityRaysPerEvaluation1</b>;
+      int         <b>radiosityRaysPerEvaluation2</b>;
+      double      <b>radiosityIntensity</b>;
+      double      <b>radiosityAngularTolerance</b>;
+      double      <b>radiosityMinimumPixelSpacing</b>;
+      double      <b>radiosityMaximumPixelSpacing</b>;
+      double      <b>radiosityMultiplier</b>;
+      const char  <b>*radiosityFileName</b>;
+      double      <b>radiosityMinimumPixelSpacing</b>;
+      double      <b>causticsIntensity</b>;
+      int         <b>causticsAccuracy</b>;
+      int         <b>causticsSoftness</b>;
+      int         <b>radiosityFlags</b>;
+      double      <b>dynamicsRangeMin</b>;
+      double      <b>dynamicsRangeMax</b>;
+      double      <b>saturation</b>;
+      int         <b>pixelFilterForceMT</b>;
+      int         <b>has_multithreaded_filters</b>;
+      int         <b>useZminmax</b>;
+      double      <b>zmin</b>;
+      double      <b>zmax</b>;
+      int         <b>rendermode</b>;
+      int         <b>calculateallnormals</b>;
+   } LWSceneInfo;</pre>
+
+<dl>
+<dt>
+<b><tt>name</tt></b></dt>
+<dd>
+User's name for the scene.</dd>
+
+<br>
+<dt>
+<b><tt>filename</tt></b></dt>
+<dd>
+Filename of the scene file.</dd>
+
+<br>
+<dt><tt><b>numPoints</b>, <b>numPolygons</b></tt></dt>
+<dd>
+Total number of points and polygons for all the objects in the scene.</dd>
+
+<br>
+<dt><b><tt>renderType</tt></b></dt>
+<dd>
+The render type, which can be one of the following.
+<pre>LWRTYPE_WIRE
+LWRTYPE_QUICK
+LWRTYPE_REALISTIC</pre>
+</dd>
+
+<br>
+<dt><tt><b>renderOpts</b></tt></dt>
+<dd>
+This is a combination of bits for different rendering options. The bit
+flags are
+<pre>LWROPT_SHADOWTRACE
+LWROPT_REFLECTTRACE
+LWROPT_REFRACTTRACE
+LWROPT_FIELDS
+LWROPT_EVENFIELDS
+LWROPT_MOTIONBLUR
+LWROPT_DEPTHOFFIELD
+LWROPT_LIMITEDREGION
+LWROPT_PARTICLEBLUR
+LWROPT_ENHANCEDAA
+LWROPT_SAVEANIM
+LWROPT_SAVERGB
+LWROPT_SAVEALPHA
+LWROPT_ZBUFFERAA
+LWROPT_RTTRANSPARENCIES
+LWROPT_RADIOSITY
+LWROPT_CAUSTICS
+LWROPT_OCCLUSION
+LWROPT_RENDERLINES
+LWROPT_INTERPOLATED
+LWROPT_BLURBACKGROUND
+LWROPT_USETRANSPARENCY
+LWROPT_VOLUMETRICRADIOSITY
+LWROPT_USEAMBIENT
+LWROPT_DIRECTIONALRAYS
+LWROPT_LIMITDYNAMICRANGE
+LWROPT_CACHERADIOSITY
+LWROPT_USEGRADIENTS
+LWROPT_USEBEHINDTEST
+LWROPT_CAUSTICSCACHE
+LWROPT_EYECAMERA
+LWROPT_UNPREMULTIPLIEDALPHA
+</pre>
+<tt>LWROPT_EVENFIELDS</tt> is set only if field rendering is on and the
+first line of the output image is from the field that comes first in time.</dd>
+
+<br>
+<dt><tt><b>frameStart</b>, <b>frameEnd</b></tt></dt>
+<dd>
+The numbers of the first and last frame defined for the scene. These are
+the rendering limits, not to be confused with the limits set by the user
+for previews (which you can get from the <a href="intinfo.html">interface
+info</a> global).</dd>
+
+<br>
+<dt><tt><b>frameStep</b></tt></dt>
+<dd>
+The step size, in frames, during rendering (the user setting for the Frame
+Step).</dd>
+
+<br>
+<dt><tt><b>framesPerSecond</b></tt></dt>
+<dd>
+Number of frames per playback second. This will ordinarily be 24 for film,
+30 for NTSC video and 25 for PAL video. Note that this is the number of
+frames, not fields.</dd>
+
+<br>
+<dt><tt><b>frameWidth</b>, <b>frameHeight</b></tt></dt>
+<dd>
+Rendered image size in pixels.</dd>
+
+<br>
+<dt><tt><b>pixelAspect</b></tt></dt>
+<dd>
+The aspect ratio of the pixels in the image, expressed as width/height.
+Values greater than 1.0 mean short wide pixels and values less than 1.0
+mean tall thin pixels.</dd>
+
+<br>
+<dt><tt><b>minSamplesPerPixel</b>, <b>maxSamplesPerPixel</b></tt></dt>
+<dd>
+Limits on the number of samples per pixel in the final image. Because of
+different rendering techniques and adaptive sampling it is impossible to
+compute a precise number of antialiasing samples at any pixel, but this
+gives a range for the current rendering options.</dd>
+
+<br>
+<dt><tt><b>limitedRegion</b></tt></dt>
+<dd>
+The extents of the limited region area, in pixels. The extents are given
+in the order x0, y0, x1, y1.</dd>
+
+<br>
+<dt><tt><b>recursionDepth</b></tt></dt>
+<dd>
+The maximum recursion depth for raytracing.</dd>
+
+<br>
+<dt><tt>camID = <b>renderCamera</b>( time )</tt></dt>
+<dd>
+Returns the item ID of the camera that will render the frame at the specified
+time.</dd>
+
+<br>
+<dt><tt><b>numThreads</b></tt></dt>
+<dd>
+The number of threads of execution that will be used during rendering.</dd>
+
+<br>
+<dt><tt><b>animFilename</b></tt></dt>
+<dd>
+The name of the current animation file.</dd>
+
+<br>
+<dt><tt><b>RGBPrefix</b></tt></dt>
+<dd>
+The current RGB file saving prefix</dd>
+
+<br>
+<dt><tt><b>alphaPrefix</b></tt></dt>
+<dd>
+The current RGB file saving prefix</dd>
+
+<br>
+<dt><tt><b>antialiasing (rev.4+)</b></tt></dt>
+<dd>
+Current antialiasing setting, where zero (0) is off, or a value between 1 and 4
+to indicate increasing antialiasing types.<br>
+LW8.2: current antialiasing setting 0=off, 1-lowest, increasing for higher 
+       values (currently up to 4=extreme), 100 to 114; use PLD (with level 1 
+       being 100 and level 15 being 114)</dd>
+
+<br>
+<dt><tt><b>enhancedAA (rev.4+)</b></tt></dt>
+<dd>
+Boolean value that indicates if Enhanced AA is enabled.  1=enabled, 0=disabled</dd>
+
+<br>
+<dt><tt><b>adaptiveSampling (rev.4+)</b></tt></dt>
+<dd>
+Boolean value that indicates if Adaptive Sampling is enabled. 1=enabled,
+0=disabled</dd>
+
+<br>
+<dt><tt><b>adaptiveThreshold (rev.4+)</b></tt></dt>
+<dd>
+This contains the adaptive sampling threshold and is only valid when
+adaptiveSampling is enabled.</dd>
+
+<br>
+<dt><tt><b>filter (rev.4+)</b></tt></dt>
+<dd>Current Soft Filter setting. A value of zero (0) indicates no 
+filter, while a value of one (1) indicate Soft Filter is enabled.<br>
+LW8.2+:<br>
+bit 0:
+<ul>
+<li>0=no filter</li>
+<li>1=soft filter</li>
+</ul>
+bits 1-5: indicate reconstruction filter:
+<ul>
+<li>1-3=box(std,sharp,soft)</li>
+<li>4-6=Gaussian(std,sharp,soft)</li>
+<li>7-9=Mitchell(std,sharp,soft)</li>
+<li>10-12=Lanczos(std,sharp,soft)</li>
+</ul>
+</dd>
+
+<br>
+<dt><tt><b>dblSidedAreaLights (rev.4+)</b></tt></dt>
+<dd>Current setting for double sided area lights. on/off.</dd>
+
+<br>
+<dt><tt><b>loadInProgress (rev.5+)</b></tt></dt>
+<dd>A value that indicates whether or not a scene load is currently in progress. Zero (0) means no
+scene loading is taking place, 1 means a scene load (fresh) is occuring, and 2 means that load-from-scene
+is bringing in new elements to the existing scene.</dd>
+
+<br>
+<dt><tt><b>radiosityType (rev.5+)</b></tt></dt>
+<dd>This member can hold one of several values.
+<dl>
+<dt><tt>LWRT_BackDrop</tt></dt>
+<dd>Throws rays in random distribution, if miss, used backdrop color.</dd>
+<dt><tt>LWRT_MonteCarlo</tt></dt>
+<dd>Throws rays in a random distribution.</dd>
+<dt><tt>LWRT_FinalGather</tt></dt>
+<dd>Final Gather implementation.</dd>
+</dl>
+</dd>
+
+<br>
+<dt><tt><b>radiosityIndirectBounceCount (rev.5+)</b></tt></dt>
+<dd>Number of radiosity bounces.</dd>
+
+<br>
+<dt><tt><b>radiosityRaysPerEvaluation1 (rev.5+)</b></tt></dt>
+<dd>RPE, number of primary rays cast per evaluation point. These are the rays cast
+by each primary evaluation point.</dd>
+
+<br>
+<dt><tt><b>radiosityRaysPerEvaluation2 (rev.5+)</b></tt></dt>
+<dd>SBR, number of secondary rays cast per primary ray. These inform the primary
+evaluation point with further shading details.</dd>
+
+<br>
+<dt><tt><b>radiosityIntensity (rev.5+)</b></tt></dt>
+<dd>Scales the intensity of the radiosity solution.</dd>
+
+<br>
+<dt><tt><b>radiosityAngularTolerance (rev.5+)</b></tt></dt>
+<dd>Defines the density of placement of radiosity samples for curved surfaces.</dd>
+
+<br>
+<dt><tt><b>radiosityMinimumPixelSpacing (rev.5+)</b></tt></dt>
+<dd>Min.PS, minimum spacing of radiosity samples between output resolution pixels.</dd>
+
+<br>
+<dt><tt><b>radiosityMaximumPixelSpacing (rev.5+)</b></tt></dt>
+<dd>Max.PS, maximum spacing of radiosity samples between output resolution pixels.</dd>
+
+<br>
+<dt><tt><b>radiosityMultiplier (rev.5+)</b></tt></dt>
+<dd>Scales the output resolution of the camera internally to compute the GI at
+lower/higher resolution.</dd>
+
+<br>
+<dt><tt><b>radiosityFileName (rev.5+)</b></tt></dt>
+<dd>Location on the disk where the radiosity cache file is stored.</dd>
+
+<br>
+<dt><tt><b>causticsIntensity (rev.6+)</b></tt></dt>
+<dd>Scales the intensity of the caustic illumination.</dd>
+
+<br>
+<dt><tt><b>causticsAccuracy (rev.6+)</b></tt></dt>
+<dd>The accuracy of the caustic illumination.</dd>
+
+<br>
+<dt><tt><b>causticsSoftness (rev.6+)</b></tt></dt>
+<dd>The softness of the caustic illumination.</dd>
+
+<br>
+<dt><tt><b>radiosityFlags (rev.6+)</b></tt></dt>
+<dd>This is a combination of bits for different radiosity display flags. The bit
+flags are
+<pre>LWRDFLG_SHOW_NODES
+LWRDFLG_SHOW_CELLS
+LWRDFLG_SHOW_COLOR_CELLS
+LWRDFLG_SHOW_SAMPLES
+LWRDFLG_SHOW_MISSING_PREPROCESS_SAMPLES
+LWRDFLG_SHOW_MISSING_RENDER_SAMPLES
+LWRDFLG_SHOW_SECOND_BOUNCE
+LWRDFLG_SHOW_BEHIND
+LWRDFLG_USE_BUMPS
+</pre>
+</dd>
+
+<br>
+<dt><tt><b>dynamicsRangeMin (rev.6+)</b></tt></dt>
+<dd>Dynamic range minimum value, typically 0.</dd>
+
+<br>
+<dt><tt><b>dynamicsRangeMax (rev.6+)</b></tt></dt>
+<dd>Dynamic range maximum value, typically 1.</dd>
+
+<br>
+<dt><tt><b>saturation (rev.6+)</b></tt></dt>
+<dd>Color saturation of the rendered frame.</dd>
+
+<br>
+<dt><tt><b>pixelFilterForceMT (rev.6+)</b></tt></dt>
+<dd>Defaults to 0 to use the pixel filter flags to determine multi-threaded compatibility. Set to 1 to force pixel filters to render multi-threaded.</dd>
+
+<br>
+<dt><tt><b>has_multithreaded_filters (rev.6+)</b></tt></dt>
+<dd>All active pixel filters are capable of multi-threading.</dd>
+
+<br>
+<dt><tt><b>useZminmax (rev.6+)</b></tt></dt>
+<dd>The z buffer has been pre-normalized to the following minimum and maximum values.</dd>
+
+<br>
+<dt><tt><b>zmin (rev.6+)</b></tt></dt>
+<dd>Pre-normalized minimum z value.</dd>
+
+<br>
+<dt><tt><b>zmax (rev.6+)</b></tt></dt>
+<dd>Pre-normalized maximum z value.</dd>
+
+<br>
+<dt><tt><b>rendermode (rev.6+)</b></tt></dt>
+<dd>Incicates which render mode the render was started in
+<pre>lwrm_None
+lwrm_SceneBake
+lwrm_Scene
+lwrm_FrameBake
+lwrm_Frame
+lwrm_Inspire
+lwrm_SelectedObject
+</pre>
+</dd>
+<br>
+
+<dt><tt><b>calculateallnormals (rev.6+)</b></tt></dt>
+<dd>This flag returns the state of the CalculateAllNormals command that forces the calculation of normals, in layout or while rendering.</dd>
+
+</dl>
+
+
+<p>
+<b>Example</b>
+</p>
+<p>This code fragment calculates the running time and frame aspect.
+<pre>   #include &lt;lwserver.h&gt;
+   #include &lt;lwrender.h&gt;
+
+   LWSceneInfo *lwsi;
+   double duration, frameAspect;
+
+   lwsi = global( LWSCENEINFO_GLOBAL, GFUSE_TRANSIENT );
+
+   if ( lwsi ) {
+      duration = ( lwsi-&gt;frameEnd - lwsi-&gt;frameStart + 1 )
+         / lwsi-&gt;framesPerSecond;
+      frameAspect = lwsi-&gt;pixelAspect * lwsi-&gt;frameWidth
+         / lwsi-&gt;frameHeight;
+   }
+</pre>
+
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>

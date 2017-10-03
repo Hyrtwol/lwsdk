@@ -1,0 +1,258 @@
+<html>
+
+<head>
+<title>Classes: CameraHandler</title>
+<style type="text/css"><!--tt { font-size: 10pt } pre { font-size: 10pt }--></style>
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#000080" vlink="#800000" alink="#0000ff">
+
+<table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+  <tr>
+    <td width="120" align="left"><a href="animuv.html"><img width="96" height="20"
+    border="0" src="../images/navlt.gif" alt="AnimUVHandler"></a></td>
+    <td width="96" align="left"><a href="channel.html"><img width="64" height="20" border="0"
+    src="../images/navrt.gif" alt="ChannelHandler"></a></td>
+    <td width="96" align="left"><a href="../classes.html"><img width="56" height="20"
+    border="0" src="../images/navup.gif" alt="Classes"></a></td>
+    <td width="288" align="right"><a href="../index.html"><img width="230" height="20"
+    border="0" src="../images/proglw.gif" alt="Table of Contents"></a></td>
+  </tr>
+</table>
+
+<table border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td width="600"><br>
+<h3>
+CameraHandler<br>
+CameraInterface</h3>
+<font size=-1><b>Availability</b>&nbsp; LightWave&reg; 9.0</font>
+<br><font size=-1><b>Component</b>&nbsp; Layout</font>
+<br><font size=-1><b>Header</b>&nbsp; <a href="../../include/lwcamera.h">lwcamera.h</a></font>
+<p>The CameraHandler provides ray starting positions and directions for each pixel being raytraced.
+In this way any type of camera projection can be created. The projection defined by the plugin
+may be previewed in Layout, if possible, by supplying an OpenGL-like projection matrix.
+<p>A camera handler is attached to a camera. The camera handler works in world coordinates, not
+camera coordinates. The definition of the projection may involve items in the scene other than
+the camera to which the handler is attached. The camera handler maps filmplane and lens positions to rays.
+<p>A position on the film is given in filmplane coordinates. Filmplane coordinates are given in
+units of meters. They define a location on the hypothetical plane on which the film frame is placed.
+The film frame is considered to be at the origin of the filmplane. The filmplane coordinate system has y axis
+going up the film frame, and the x axis in the same direction as the frame's horizontal direction.
+Note that filmplane coordinates are unaffected by image resolution, film size, or pixel aspect ratio.
+<p>A position on the lens is also given in a normalized range from -1 to 1, with the origin considered to
+be the centre of the lens. The lens positions define points on a hypothetical lens. This is particularly
+important for depth of field effects. No assumptions are made about the shape of the lens, except that the
+user can influence the distribution of the sample points that will be supplied by setting a diaphragm shape.
+It is up to the camera handler to map the combination of filmplane and lens sample position to a ray.
+For some cameras there may be no concept of a lens. Those cameras can indicate that they don't support and
+depth of field rendering and can ignore the lens sample positions.
+<p><strong>Note</strong> that there were substantial changes to this API between version 1 and version 2.
+As a result, version 1 can no longer be supported.
+
+<p><b>Handler Activation Function</b>
+<pre>   XCALL_( int ) MyCamera( int version, GlobalFunc *global,
+      LWCameraHandler *local, void *serverData );</pre>
+The <tt>local</tt> argument to a CameraHandler activation function is
+an LWCameraHandler.
+
+<pre>   typedef struct st_LWCameraHandler
+   {
+      LWInstanceFuncs* inst;
+      LWItemFuncs*     item;
+      LWRenderFuncs*   rend;
+      int          (*preview)  (LWInstance, double lpx, double lpy, LWDMatrix4 projection,
+                                const LWCameraAccess* camaccess);
+      LWError      (*newFrame) (LWInstance, const LWFrameInfo* frameinfo,
+                                const LWCameraAccess* camaccess);
+      int          (*evaluate) (LWInstance, double fpx, double fpy, double lpx, double lpy,
+                                double fractime, LWCameraRay* ray, const LWCameraAccess* camaccess);
+      unsigned int (*flags)    (LWInstance);
+   } LWCameraHandler;
+</pre>
+
+The first three members of this structure are the standard <a href="../handler.html">handler
+functions</a>. The <tt>context</tt> argument to the <tt>inst->create</tt> function is the LWItemID of the associated object.
+
+	<dl> 
+		<dt><tt><b>result = preview</b>( instance, lpx, lpy, projection, access )</tt></dt>
+		<dd>Fills in the given matrix with an OpenGL projection matrix that approximates the camera view, if possible.
+			The <tt>(lpx, lpy)</tt> coordinates is the sample position on the lens, with values in the range between -1 and 1.
+			This may be non-zero when constructing motion blur previews for example.
+			The projection matrix should project from camera space to the camera's filmplane.
+			The matrix follows the OpenGL matrix conventions. It is expected that the matrix projects to the film size
+                        (unlike the standard OpenGL frustum which projects to a normalized coordinate system). The effects of aspect
+                        ratio of the film and viewport will be automatically handled by LW. Set the projection matrix to fit the
+                        projection to the height of the film with a square aspect ratio. The frame number and time for the preview is
+			as given by the most recent call to <tt>newTime()</tt>.
+			Returns 1 if the matrix has been filled in, or 0 if the matrix could not be filled in, for example
+			because there is no good projection matrix approximation for the camera.</dd>
+		<br>
+		<dt><tt><b>result = newFrame</b>( instance, frameinfo, access )</tt></dt>
+		<dd>This is called whenever a new set of evaluations is started, usually at the start of a frame render, or when
+			constructing the view frustum preview of a selected camera in Layout. This is a good place to do some pre-computation.
+			The frameinfo and camera access structures are explained below.
+			Returns a pointer to an error string of something went wrong, or NULL if all is well.</dd>
+		<br>
+		<dt><tt><b>result = evaluate</b>( instance, fpx, fpy, lpx, lpy, fractime, ray, access )</tt></dt>
+		<dd>Given a position <tt>(fpx, fpy)</tt> on the camera filmplane, a position <tt>(lpx, lpy)</tt> on the lens, and a fractional time
+			into the frame, compute a starting position and direction for the ray to be cast.
+			The filmplane coordinates may fall outside of the film frame. There is no defined order to the filmplane and lens
+			positions with which the evaluation function is called.
+
+			The supplied time value is a fraction between 0 and 1 that ranges over the time duration of the frame (which can be
+			retrieved from the frameinfo structure supplied to <tt>newFrame()</tt>). 0 means the start time of the frame, while 1 means
+			the time at the end of the duration of the frame (which may be different than that implied by the current frames per second
+			setting, as it includes the effects of fields and motion blur length).
+
+			There is no defined ordering to the time values that will be given. It is recommended that
+			the camera handler pre-computes any animation of settings in <tt>newFrame()</tt> and uses the <tt>fractime</tt> parameter
+			to interpolate. LightWave can do a default interpolation on the returned ray, which consists of transforming the ray
+			coordinates according to the change in position and orientation of the camera at the fractional time compared with the
+			start of the frame. If this is sufficient, the camera handler should compute the ray position and direction as it would
+			be at the start of the frame, ignoring the fractional time, and return a result of <tt>LWCAMTYPEEVAL_DO_DEF_INTERP</tt>
+			(see below).
+
+			The evaluation function must also be thread-safe, for example using
+			the <a href="../globals/mtutil.html">multithreading utilities</a> if needed.
+			The evaluation fills in the ray structure if the camera can cast a ray for the given coordinates and time.
+			The return value is one of:
+			<dl>
+				<dt><tt>LWCAMTYPEEVAL_NO_RAY</tt></dt><dd>No ray can be cast.</dd>
+				<dt><tt>LWCAMTYPEEVAL_RAY</tt></dt><dd>A ray can be cast.</dd>
+				<dt><tt>LWCAMTYPEEVAL_DO_DEF_INTERP</tt></dt><dd>A ray can be cast, but let LightWave do a defauly time interpolation.</dd>
+			</dl>
+			</dd>
+		<br>
+		<dt><tt>flags = <b>flags</b>( instance )</tt><dt>
+		<dd>Returns bit flags combined using bitwise-or. Currently defined flags are:
+			<dl>
+				<dt><tt>LWCAMTYPEF_SUPPORTSDOF</tt></dt>
+				<dd>The camera support depth of field rendering.</dd>
+			</dl>
+		</dd>
+	</dl>
+
+<b>Interface Activation Function</b> 
+<pre>   XCALL_( int ) MyInterface( int version, GlobalFunc *global,
+      LWInterface *local, void *serverData );</pre>
+<p>This is the standard <a href="../handler.html#ui">interface activation</a>
+for handlers. Users open a Camera interface by pressing an Properties
+button on the Camera Properties panel.
+<p>To help implement the user interface, the standard zoom factor controller is
+available as an XPanel control of type <tt>"zoomfactor-env"</tt>, which uses a vparm
+as its underlying data type. This control is available from LightWave&reg; 9.3 onwards.
+The vparm must have been created in the channel group of
+the camera. The control will handle getting and setting the camera zoom settings. The
+vparm does not have to be saved or loaded by the camera plugin.
+
+<p><b><a name="frameinfo">Frame Info</a></b>
+<p>The <tt>newFrame()</tt> function is supplied with some basic information about the frame that is about to be evaluated.
+More detailed information may be obtained through the <a href="../globals/caminfo.html">camera info</a> global.
+<pre>   typedef struct st_LWFrameInfo {
+      LWFrame <b>frame</b>;
+      LWTime <b>start</b>;
+      LWTime <b>duration</b>;
+      double <b>framesPerSecond</b>;
+      unsigned int <b>motionSteps</b>;
+} LWFrameInfo;
+</pre>
+
+<dl>
+<dt><b><tt>frame</tt></b></dt>
+<dd>The frame number of the frame to be evaluated.</dd>
+
+<dt><b><tt>start</tt></b></dt>
+<dd>The start time of the frame to be evaluated.</dd>
+
+<dt><b><tt>duration</tt></b></dt>
+<dd>The duration of the frame to be evaluated. Together with the start time this defines the range
+of time values over which the <tt>fractime</tt> parameter passed to the evaluation function is
+normalized. Finer-grained information can be obtained through <tt>caminfo->frameTiming()</tt></dd>
+
+<dt><b><tt>framesPerSecond</tt></b></dt>
+<dd>The current FPS setting. This is the time from the start of one frame to the start of the next
+frame. Note that this is often different that the duration of the frame due to field rendering and
+motion blur length.</dd>
+
+<dt><b><tt>motionSteps</tt></b></dt>
+<dd>The suggested number of time steps to use for constructing animation interpolation. To compute
+the positions, orientations, and other parameters for items at any time within the frame duration,
+LightWave pre-computes the animations at regular intervals along the frame's duration, and then
+interpolates during during rendering to determine the parameters at any arbitrary time within the
+frame duration. The number of intervals used is given by <tt>motionSteps</tt>. Camera handlers
+can use this as a guide to determine how many intervals to split the frame duration up in to
+pre-compute the animation of its settings. Note that this value may be 0.</dd>
+
+</dl>
+
+
+<p><b>Camera Access</b>
+<p>The access structure information that may be useful for computing the camera.
+<pre>   typedef struct st_LWCameraAccess {
+      LWItemID <b>cameraID</b>;
+      LWDVector <b>worldPos</b>;
+      LWDVector <b>toWorld[3]</b>;
+      LWDVector <b>toCamera[3]</b>;
+      double <b>filmSize[2]</b>;
+   } LWCameraAccess;
+</pre>
+
+<dl>
+<dt><b><tt>cameraID</tt></b></dt>
+<dd>The ItemID of the camera that the CameraHandler plugin is be applied to.</dd>
+
+<dt><b><tt>worldPos</tt></b></dt>
+<dd>The position of the camera item in world coordinates.</dd>
+
+<dt><b><tt>toWorld[3]</tt></b></dt>
+<dd>Right, Up and Forward directions of the camera in world coordinates.</dd>
+
+<dt><b><tt>toCamera[3]</tt></b></dt>
+<dd>Inverse of <b><tt>toWorld[3]</tt></b> .</dd>
+
+<dt><b><tt>filmSize[2]</tt></b></dt>
+<dd>The width and height of a film frame, given in meters.</dd>
+</dl>
+
+<p><b>Ray structure</b>
+<p>The evaluation function fills in a ray structure describing the ray to be cast.
+<pre>   typedef struct st_LWCameraRay {
+      LWDVector <b>rayPos</b>;
+      LWDVector <b>rayDir</b>;
+      LWDVector <b>filmNorm</b>;
+      LWDVector <b>filter[3]</b>;
+   } LWCameraRay;
+</pre>
+
+<dl>
+<dt><b><tt>rayPos</tt></b></dt>
+<dd>The starting position of the ray, in world coordinates.</dd>
+
+<dt><b><tt>rayDir</tt></b></dt>
+<dd>The ray direction, in world coordinates.</dd>
+
+<dt><b><tt>filmNorm</tt></b></dt>
+<dd>The normal to the film plane for the ray. This is used to compute the depth buffer value
+for any point along the ray. The depth buffer value is computed by projecting the point
+(relative to the start position of the ray) onto the film normal for that ray. The length
+of the resulting vector is taken to be the depth value. For example, for a perspective
+camera the film normal is the camera's Z axis. For a spherical projection camera it may
+be more proper to set the film normal equal to the ray direction, so that the depth value
+is equal to distance along the ray.</dd>
+
+<dt><b><tt>filter</tt></b></dt>
+<dd>A camera lens may affect the color, for example darkening towards the edges causing vignetting.
+The camera handler can set a color filter for each of the red, green, and blue channels. A
+filter is applied to a channel by doing a dot-product of the filter with the raytraced RGB color.
+Note that this is not meant to replace the functionality of <a href="pxlfilt.html">pixel filters</a>
+or <a href="imgfilt.html">image filters</a>. The camera filter is used to apply shading effects which
+are inherent to the camera, not the film or scene.</dd>
+</dl>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>

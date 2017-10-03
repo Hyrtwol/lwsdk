@@ -1,0 +1,188 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#FFFFFF"
+      vlink="#FFFFFF">
+
+<TITLE>LScript v2.4.1 Patch Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.4.1 Patch Release Notes</H1>
+
+<table BORDER=1>
+  <tr>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v241">v2.4.1</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+
+<A NAME=v241>
+
+<pre>
+<H3>patch: v2.4.1       released: (unreleased)</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                        
+  The <b>library</b> command, when used with native-code shared libraries, was not processing
+  the referenced disc file using the correct funciton.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The file extension '.p' has been added as a valid native-code shared library type
+  for the <b>library</b> command.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The method used by LScript to locate an object's Channel Group entry was unnecessarily
+  complex, resulting in the wrong identifier being assigned in certain cases.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  LScript's VMap handling system was not cognizant of the fact that a map could exist
+  with zero elements per point defined (i.e., VMSELECT).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The ChannelGroup() constructor was providing only top-level access to channel groups.
+  An existing Channel Group Object Agent can now be provded to it to allow for recursive
+  processing of Channel Group chains.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The EditServer() CS function was causing a crash of Layout when used.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  Accessing an associative array element using a string index not previously assigned a
+  value could potentially crash the application.  Now, a 'nil' value is returned.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The ctltext() control was regarding the width/height setting of a ctlposition() call,
+  resulting in potential display problems if either value was less than the actual
+  dimensions of the control.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The AddCamera() command was not properly allowing a camera name argument.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#505050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The getWorldRotation() method was missing from LScript's method jump table, so was
+  unrecognized when referenced.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#c0c0c0">
+<pre>
+<font color="#000000">
+                                                                                          
+  The WROTATION constant was not being defined in the script environment.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br><br>
+
+</CENTER>

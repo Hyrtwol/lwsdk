@@ -1,0 +1,277 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#0000F0"
+      vlink="#0000F0">
+
+<TITLE>LScript v1.1 Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v1.1 Release Notes</H1>
+
+<br><br>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    Release versioning of the scripting engine will no longer depend upon the build
+    increment to identify minor revisions.  This mechanism renders the "version"
+    pragma directive virtually unusable as it is not designed to regard point
+    build information.  Henceforth, while the build increment may be used
+    internally, the minor designator (and, when appropriate, the major designator)
+    will be incremented for each release to once again enable accurate versioning
+    within scripts.  Point build increment information will only be displayed in
+    test releases.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    The Object Agent Interface has been altered slightly and is now versioned
+    to prevent Object Agent libraries from being loaded that do not support the
+    current interface specifications.  <A HREF="Appendix_B.html">Appendix B</A> of the LScript documentation
+    has been updated to reflect these changes and to document the versioning
+    mechanism.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    A new inline selection mechanism has been added to the language syntax.
+    An "inline index" is now available for use that allows you to select an
+    item from a list of values based upon an expression that must evaluate
+    to an integer index value.
+
+    The syntax of the inline index is quite similar to that of the inline
+    selection mechanism.  Whereas inline selection utilizes the "?:" token
+    pair to perform boolean (true/false) selection:
+
+            pinfo[count][WOBBLEMAG] = wobble ? 30 : 10;
+
+    The inline index uses the "?" operator to perform its indexing selection:
+
+            pinfo[count][WOBBLEMAG] = wobble ? @30,15,10@;
+
+    If the index value is less than 1 or greater than the highest offset of
+    the list of values provided, then a 'nil' value will be returned.
+
+    Any data type capable of being indexed can be used on the right side of
+    the "?" operator, while any expression that evaluates to an integer index
+    value can be used on the left:
+
+            str = "This is my string";
+            x = selectChar() ? str; // if selectChar() returns 6, x becomes "i"
+
+            which = 1 ? 15;   // 'which' becomes 15
+            which = 3 ? 15;   // 'which' becomes 'nil'
+
+            mySel = offset[5] ? @1,2,3,4,5,6,7@;
+            mySel = offset[5] ? offset; // use element #5 value to select
+                                        // another element!
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    Corrections have been made to the Lscript Pre-processor to help keep line
+    numbers synchronized for error-reporting purposes when "@insert" files are
+    used.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    The Modeler Layer functions (getempty(), getemptyfg(), getemptybg(), etc.)
+    have been altered to return a single 'nil' value instead of an array of
+    'nil' values if conditions warrant.  This is intended to cut down on memory
+    consumption by not creating an array, and to speed up the function calls
+    themselves.
+
+                  bg = getempty()
+
+                  if(bg[1] == nil)      // no longer valid
+
+                  if(bg == nil)         // now, the correct way to check
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    Under Intel platforms, the configuration system has been enhanced to first
+    check for registry key values in the HKEY_CURRENT_USER\\Software\\NewTek\\LScript
+    global registry entry before going to the plug-in specific entry below it.
+    This allows for values to be established that can apply to ALL classes of
+    LScript plug-in, instead of having to duplicate entries across all registry
+    entries.
+
+    For instance, I personally place my LibraryPath key setting into this
+    registry entry so that all LScript plug-ins (both Modeler and Layout) look
+    in the same location(s) for insert files and shared libraries.
+
+    (When the Visual C++ compiler is updated by Microsoft beyond v4.0 on the
+    DEC Alpha platform, this mechanism will also work for that platform.  To
+    date, the Visual C++ compiler for DEC Alpha does not even give software
+    developers access to the registry because of its age.)
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    The vmag() function now correctly accepts a vector data type as well as
+    three numeric data values.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    A 'nil' return value is now properly supported from Object Agents.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    Corrected stack indexing in the arithmetic minus (-) code.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    Corrected the arithmetic multiply (*) code to return an integer value
+    when two integer values are multiplied, instead of a floating point
+    value.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    The internal structure of compiled scripts has been reformatted to support
+    new language features and to correct bugs.  Because of this, existing
+    compiled scripts <i><b>must be recompiled</b></i> in order to be used with the new
+    run-time plug-ins.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    The IPC mechanism has been enhanced to support array queue members.
+    These new member types are declared and accessed just as any local
+    LScript array:
+
+        @insert "/lights.inc"
+        ...
+        // 'TOTALLIGHTS' defined as 200 in "lights.inc"
+        expose light[TOTALLIGHTS] as LightQueue;
+        ...
+            for(x = 1;x <= TOTALLIGHTS;x++)
+                light[x] = <0,0,0>;
+
+    As each array element consumes a queue slot entry, there is a practical
+    limit to the size of the array, dictated by the resources available in
+    your operating system.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    A new Layout script compiler and run-time plug-ins have been added to
+    the LScript family of scripting plug-ins.  The Layout compiler is a
+    Layout Generic plug-in that is non-architecture-specific.  Layout run-time
+    plug-ins support Image Filter, Object Replacement, Item Motion,
+    Displacement Map, and Procedural Texture architectures.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+    The Modeler run-time plug-in has had a filename change.  The original
+    file 'ls-rt.p' has been changed to 'lsrt-md.p' to conform to the new
+    run-time plug-in naming standard.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#0000FF">
+<pre>
+<font color="#FFFFFF">
+    Numerous other internal corrections and enhancements have been effected
+    to remove bugs and support changes and additions to the LScript family
+    (for instance, support for the needs of the new Layout compiler).
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+</CENTER>

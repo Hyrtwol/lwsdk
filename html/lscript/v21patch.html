@@ -1,0 +1,341 @@
+<HTML>
+<BODY background="../ls_back.gif"
+      text="#000000"
+      link="#00FF00"
+      vlink="#00FF00">
+
+<TITLE>LScript v2.1 Patch Release Notes</TITLE>
+
+<CENTER>
+<H1>LScript v2.1 Patch Release Notes</H1>
+
+<table BORDER=1>
+  <tr>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v211">v2.1.1</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+<A HREF="#v212">v2.1.2</A>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+    <td width=75 bgcolor="#000050" align=center>
+    </td>
+  </tr>
+</table>
+
+<BODY link="#0000F0" vlink="#0000F0">
+
+<br><br>
+
+
+<A NAME=v211>
+
+<pre>
+<H3>patch: v2.1.1       released: 01.10.2001</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  The <font color="FFFF00">PART</font> option to selpolygon() was not implemented correctly, making such
+  selection types inaccessible from a Modeler script.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The list box control was not displaying entries correctly due to the way LScript
+  was handling the Panels calling sequence for that control.  Although this has been
+  corrected, the list box control continues to have these display problems in
+  non-modal windows.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  Lingering type settings in the 'this' container were causing illegal accesses
+  under certain script conditions.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Several requester functions were not non-modal aware.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  An adjustment made to an internal enumeration of object types inadvertently
+  broke many instances of object type checking, resulting in error messages
+  about invalid methods or data members.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Modeler provides a unique means of identifying an unsaved object, and
+  the Mesh methods in Modeler LScript were not handling this properly.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  The next() method of Modeler's Mesh Object Agent was not dealing correctly
+  with the end-of-list condition.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Array duplication, long broken in LScript, has now been corrected.  Assigned
+  arrays, either to other arrays as sub-arrays, or simply to new containers, are
+  now true duplicates instead of multiple containers pointing at the same instance.
+  Changes made to an array copy now no longer effect the original.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  The Antialiasing() CS function was not properly allowing an optional lack of
+  arguments (the equivalent of issuing Antialiasing(0)).
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The new Object Agent generation functions (Scene(), Mesh(), etc.) were missing
+  from the run-time environment.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  The asAsc() method, introduced in LScript v2.0, was not performing the correct
+  function.  It was returning an integer value extrapolated from its character
+  data, instead of properly generating a character value from an integer value.
+  This has been corrected, and its previously incorrect functionality has been
+  moved to a new asBin() method that will return the integer ASCII value of a
+  character value provided to it.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  The traditional syntax used to declare multidimensional arrays--that of
+  one or more index values enclosed in brackets:
+
+        var  array[x][y][z];
+
+  was broken with the release of LScript v2.1.  This has been corrected
+  and should once again function properly.
+
+  The alternate form continues to function, however, and may be used if needed
+  as a workaround:
+
+        var  array[x,y,z];
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<A NAME=v212>
+
+<pre>
+<H3>patch: v2.1.2       released: (unreleased)</H3>
+</pre>
+
+<table>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  Containers holding arrays were not being cleared completely when new values
+  were assigned, leaving phantom pointers to the reclaimed arrays.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  Array duplication included an additional memory lock that prevented
+  subsequent reclamation.  This caused memory consumption during a script's
+  execution when arrays were frequently created and destroyed.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  Modeler's new() command dropped it's integer parameter with the release
+  of LightWave [6].  LScript has been corrected to adhere to this.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000050">
+<pre>
+<font color="#FFFFFF">
+                                                                                        
+  A problem with the logic flow in object processing caused certain data
+  members (like 'totallayers') to be unrecognized.
+</font>
+</pre>
+    </td>
+  </tr>
+  <tr>
+    <td width=50>
+    </td>
+    <td bgcolor="#000000">
+<pre>
+<font color="#00ff00">
+                                                                                        
+  The Tab control created with ctltab() was not receiving the correct
+  data type, causing a crash of the application when tabs are altered.
+</font>
+</pre>
+    </td>
+  </tr>
+</table>
+
+<br>
+
+<table>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF">
+        LScript v2.1.2 Archives
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" colspan=5 align=center>
+<font color="#FFFFFF" size="-1">
+        (contains <strong>all</strong> plug-ins)
+</font>
+  </tr>
+  <tr>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Intel
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     SGI
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Sun
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Macintosh
+</font>
+    </td>
+    <td bgcolor="#000050" width=100 align=center>
+<font color="#FFFFFF">
+     Alpha
+</font>
+  </tr>
+</table>
+
+<br><br>
+
+</CENTER>

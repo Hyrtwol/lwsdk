@@ -1,0 +1,324 @@
+<head>
+    <meta http-equiv="CONTENT-TYPE" content="text/html; charset=windows-1252">
+    <title>9.6 Changes</title>
+    <style type="text/css">
+        <!--
+                tt { font-size: 10pt } 
+                pre { font-size: 10pt }
+        --></style>
+</head>
+<body lang="en-US" text="#000000" bgcolor="#ffffff" dir="LTR">
+    <table border="0" cellpadding="0" cellspacing="0" bgcolor="#d0d0d0">
+        <tr>
+            <td width="120" align="left"><a href="95.html"><img width="96" height="20" border="0" src="images/navlt.gif" alt="9.5 Changes"></a></td>
+            <td width="384" align="right"><a href="index.html"><img width="230" height="20" border="0" src="images/proglw.gif" alt="Table of Contents"></a></td>
+        </tr>
+    </table>
+    <table border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td width="600"><br>
+                <h3>9.6 Changes</h3>
+                <p><small>November 15, 2008</small>
+                </p>
+                <p>This is a list of the changes in the LightWave&reg; 9.6 release that affect the SDK.</p>
+
+                <p><tt><a href="../include/lwpanel.h">lwpanel.h</a></tt>
+                    <ul>
+                        <li>
+                            A new <tt>DISTSLIDER_CTL</tt> control has been added.
+                        </li>
+                        <li>
+                            The <tt>CTL_MOUSEBUTTON</tt> controller attribute has been added which contains
+                            the mouse buttons which are pressed, to complement the <tt>CTL_MOUSEX</tt>
+                            and <tt>CTL_MOUSEY</tt> attributes.
+                        </li>
+                    </ul>
+
+                <p><tt><a href="../include/lwrender.h">lwrender.h</a></tt>
+                    <ul>
+                        <li>
+                            Functions have been added to <tt>LWBoneInfo</tt> to support the new bulging
+                            and displacement parameters. This brings the version number of the global
+                            up to 5.
+                        </li>
+                        <li>
+                            The <tt>LWSceneInfo</tt> global has been expanded to include new radiosity flags,
+                            and hence has its version number increased to 6.
+			    </li>
+			    <li>
+			    New raytracing functions (<tt>LWRayTraceDataFunc</tt> and <tt>LWRayTraceShadeFunc</tt>)
+			    were added to the Rendering Functions.
+			    See the <a href="raytrace.html">raytracing functions</a> page for a description of these.
+                        </li>
+                        <li>
+                            The <tt><b>itemColorRgba</b></tt> function in <tt>LWInterfaceInfo</tt> has been expanded
+                            to include a state parameter, which indicates the state of the item for which to obtain
+                            the color. Previously only the color of the item in its current state could be returned.
+                            This has necessitated increasing the version number of the <tt>LWInterfaceInfo</tt> global
+                            to 7.
+                        </li>
+                    </ul>
+
+                <p><tt><a href="../include/lwcustobj.h">lwcustobj.h</a></tt>
+                    <ul>
+                        <li>
+                            To support part selection for gizmos, the <tt>LWCustomObjAccess</tt> structure has been
+                            expanded to include <tt><b>setPart</b></tt>.
+                        </li>
+                    </ul>
+
+                <p><tt><a href="../include/lwgizmo.h">lwgizmo.h</a></tt>
+                    <ul>
+                        <li>
+                            The gizmo interface has been changed by the inclusion of a parts array in
+                            <tt><b>pickItems</b></tt>. The version number of the interface has been
+                            bumped to 3.
+                        </li>
+                    </ul>
+
+                <p><tt><a href="../include/lwmeshedt.h">lwmeshedt.h</a></tt>
+                    <ul>
+                        <li>
+                            The st_MeshEditOp interface has been expanded to include routines to create/destroy/manipulate vertex maps. The version number of the interface has been bumped to 6.
+                        </li>
+                    </ul>
+
+                <p><tt><a href="../include/lwfilter.h">lwfilter.h</a></tt>
+                    <ul>
+                        <li>
+                            Some more buffers have been added. Some of the new buffers are computed from
+                            other buffers, and therefore require those other buffers to be available.
+                            Furthermore, as there aren't any bits left to represent those buffers for the
+                            <tt>flags()</tt> callback, requesting access to the new buffers is done by
+                            requesting the needed combination of other buffers. To avoid confusion, the
+                            buffer flags (<tt>LWBUFF_*</tt>, which are bitmasks, returned from the
+                            <tt>flags()</tt> callback) have now been separated from the buffer types
+                            (<tt>LWBUF_*</tt>, which are indices, passed to <tt>getLine()</tt>,
+                            <tt>getVal()</tt>, and <tt>setVal()</tt>).
+                        </li>
+                    </ul>
+
+                <p><tt><a href="../include/lwextrend.h">lwextrend.h</a></tt>
+                    <ul>
+                        <li>
+                            A new class of plugins has been added, used to implement an external renderer.
+                            External renderers replace the built-in LightWave&reg; renderer.
+                        </li>
+                    </ul>
+
+
+
+                <p><tt><a href="commands/layout.html">Commands: Layout</a></tt>
+                    <ul>
+                        <li>
+                            The <tt>ParentInPlace</tt> command now takes an optional argument to set the
+                            state, instead of toggle.
+                        </li>
+                        <li>
+                            The <tt>ClearSelected</tt> command now takes an optional argument to partially
+                            or completely supress the confirmation dialog.
+                        </li>
+                        <li>
+                            The <tt>DirtyMotion</tt> command has been added, which marks the motion of the
+                            currently selected item as needing re-evaluation.
+                        </li>
+                        <li>
+                            A new <tt>EnableMC</tt> toggle command has been added to complement the <tt>EnableIK</tt>
+                            command. It disables motion controllers.
+                        </li>
+                    </ul>
+
+                <p><tt>LScript 2.13.1</tt>
+                    <ul>
+                        <li>
+                            The Shader Access data member <tt>polNum</tt> is now deprecated.  This data member
+                            reports polygon index values in a zero-based format which is incongruent with
+                            LScript's 1-based idiom.
+                        </li>
+                        <li>
+                            A new Shader Access data member called <tt>polIndex</tt> has been added to replace
+                            the deprecated <tt>polNum</tt>.  This new data member reports the polygon index
+                            value using a 1-based format.
+                        </li>
+                        <li>
+                            Added the following new data members to the Scene Object Agent:
+                            <ul>
+                              <li>doublesidedarealights (true/false)</li>
+                              <li>loadinprogress (true/false)</li>
+                              <li>radiositytype
+                                <ul>
+                                  <li>Contains one of the following three values:
+                                    <ul>
+                                      <li>LWRT_BACKDROP</li>
+                                      <li>LWRT_MONTECARLO</li>
+                                      <li>LWRT_FINALGATHER</li>
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </li>
+                              <li>radiosityindirectbouncecount (int)</li>
+                              <li>radiosityraysperevaluation1 (int)</li>
+                              <li>radiosityraysperevaluation2 (int)</li>
+                              <li>radiosityintensity (double)</li>
+                              <li>radiosityangulartolerance (double)</li>
+                              <li>radiosityminimumpixelspacing (double)</li>
+                              <li>radiositymaximumpixelspacing (double)</li>
+                              <li>radiositymultiplier (double)</li>
+                              <li>radiosityfilename (string)</li>
+                              <li>causticsintensity (double)</li>
+                              <li>causticsaccuracy (int)</li>
+                              <li>causticssoftness (int)</li>
+                              <li>radiosityflags[9]
+                                <ul>
+                                  <li>Each entry is a Boolean true/false that corresponds to one of the following radiosity flags:
+                                    <ul>
+                                      <li>LWRDFLG_SHOW_NODES</li>
+                                      <li>LWRDFLG_SHOW_CELLS</li>
+                                      <li>LWRDFLG_SHOW_COLOR_CELLS</li>
+                                      <li>LWRDFLG_SHOW_SAMPLES</li>
+                                      <li>LWRDFLG_SHOW_MISSING_PREPROCESS_SAMPLES</li>
+                                      <li>LWRDFLG_SHOW_MISSING_RENDER_SAMPLES</li>
+                                      <li>LWRDFLG_SHOW_SECOND_BOUNCE</li>
+                                      <li>LWRDFLG_SHOW_BEHIND</li>
+                                      <li>LWRDFLG_USE_BUMPS</li>
+                                    </ul>
+                                  </li>
+                                </ul>
+                              </li>
+                            </ul>
+                        </li>
+                        <li>
+                            Expanded the SceneInfo.renderopts[] array by 3 to accommodate the USEGRADIENTS (28),
+                            USEBEHINDTEST (29), and CAUSTICSCACHE (30) flags.
+                        </li>
+                        <li>
+                            Added the LWRT_BACKDROP, LWRT_MONTECARLO and LWRT_FINALGATHER constants to the environment
+                            for use with the SceneInfo.radiositytype value.
+                        </li>
+                        <li>
+                            Added the Layout RadiosityFlags() command.  This command is used to set one or more
+                            radiosity flag values.  These values are passed to the command, logically or'ing multiple
+                            flags to enable them.  Any flag values not included in the resulting or'd value are
+                            disabled.
+                        </li>
+                        <li>
+                          Added the following environment constants for use with the RadiosityFlags() command:
+                          <ul>
+                            <li>LWRDFLG_SHOW_NODES</li>
+                            <li>LWRDFLG_SHOW_CELLS</li>
+                            <li>LWRDFLG_SHOW_COLOR_CELLS</li>
+                            <li>LWRDFLG_SHOW_SAMPLES</li>
+                            <li>LWRDFLG_SHOW_MISSING_PREPROCESS_SAMPLES</li>
+                            <li>LWRDFLG_SHOW_MISSING_RENDER_SAMPLES</li>
+                            <li>LWRDFLG_SHOW_SECOND_BOUNCE</li>
+                            <li>LWRDFLG_SHOW_BEHIND</li>
+                            <li>LWRDFLG_USE_BUMPS</li>
+                          </ul>
+                        </li>
+                        <li>
+                          Due to potential name conflicts, the following Procedural Texture (Shader) flags have been deprecated:
+                          <ul>
+                            <li><tt>NORMAL</tt></li>
+                            <li><tt>COLOR</tt></li>
+                            <li><tt>LUMINOUS</tt></li>
+                            <li><tt>DIFFUSE</tt></li>
+                            <li><tt>SPECULAR</tt></li>
+                            <li><tt>MIRROR</tt></li>
+                            <li><tt>TRANSPARENT</tt></li>
+                            <li><tt>ETA</tt></li>
+                            <li><tt>ROUGHNESS</tt></li>
+                            <li><tt>RAYTRACE</tt></li>
+                          </ul>
+                          They have been replaced with the following prefixed equivalents:
+                          <ul>
+                            <li><tt>PT_NORMAL</tt></li>
+                            <li><tt>PT_COLOR</tt></li>
+                            <li><tt>PT_LUMINOUS</tt></li>
+                            <li><tt>PT_DIFFUSE</tt></li>
+                            <li><tt>PT_SPECULAR</tt></li>
+                            <li><tt>PT_MIRROR</tt></li>
+                            <li><tt>PT_TRANSPARENT</tt></li>
+                            <li><tt>PT_ETA</tt></li>
+                            <li><tt>PT_ROUGHNESS</tt></li>
+                            <li><tt>PT_RAYTRACE</tt></li>
+                          </ul>
+                          New code should use the prefixed versions, and older code should migrate in preparation for the
+                          removal of the original flags in some later release.
+                        </li>
+                        <li>
+                          The following new flags have been added to the Procedural Texture (Shader) class:
+                          <ul>
+                            <li><tt>PT_TRANSLUCENT</tt></li>
+                            <li><tt>PT_DIFFUSE_SHADE</tt></li>
+                            <li><tt>PT_SPECULAR_SHADE</tt></li>
+                            <li><tt>PT_REFRACT_SHADE</tt></li>
+                            <li><tt>PT_REFLECT_SHADE</tt></li>
+                          </ul>
+                        </li>
+                        <li>
+                          Due to potential name conflicts, the following Image Filter flags have been deprecated:
+                          <ul>
+                            <li><tt>SPECIAL</tt></li>
+                            <li><tt>LUMINOUS</tt></li>
+                            <li><tt>DIFFUSE</tt></li>
+                            <li><tt>SPECULAR</tt></li>
+                            <li><tt>MIRROR</tt></li>
+                            <li><tt>TRANS</tt></li>
+                            <li><tt>RAWRED</tt></li>
+                            <li><tt>RAWGREEN</tt></li>
+                            <li><tt>RAWBLUE</tt></li>
+                            <li><tt>SHADING</tt></li>
+                            <li><tt>SHADOW</tt></li>
+                            <li><tt>GEOMETRY</tt></li>
+                            <li><tt>DEPTH</tt></li>
+                            <li><tt>DIFFSHADE</tt></li>
+                            <li><tt>SPECSHADE</tt></li>
+                            <li><tt>MOTIONX</tt></li>
+                            <li><tt>MOTIONY</tt></li>
+                            <li><tt>REFLECTRED</tt></li>
+                            <li><tt>REFLECTGREEN</tt></li>
+                            <li><tt>REFLECTBLUE</tt></li>
+                            <li><tt>RED</tt></li>
+                            <li><tt>GREEN</tt></li>
+                            <li><tt>BLUE</tt></li>
+                            <li><tt>ALPHA</tt></li>
+                          </ul>
+                          They have been replaced with the following prefixed equivalents:
+                          <ul>
+                            <li><tt>IF_SPECIAL</tt></li>
+                            <li><tt>IF_LUMINOUS</tt></li>
+                            <li><tt>IF_DIFFUSE</tt></li>
+                            <li><tt>IF_SPECULAR</tt></li>
+                            <li><tt>IF_MIRROR</tt></li>
+                            <li><tt>IF_TRANS</tt></li>
+                            <li><tt>IF_RAWRED</tt></li>
+                            <li><tt>IF_RAWGREEN</tt></li>
+                            <li><tt>IF_RAWBLUE</tt></li>
+                            <li><tt>IF_SHADING</tt></li>
+                            <li><tt>IF_SHADOW</tt></li>
+                            <li><tt>IF_GEOMETRY</tt></li>
+                            <li><tt>IF_DEPTH</tt></li>
+                            <li><tt>IF_DIFFSHADE</tt></li>
+                            <li><tt>IF_SPECSHADE</tt></li>
+                            <li><tt>IF_MOTIONX</tt></li>
+                            <li><tt>IF_MOTIONY</tt></li>
+                            <li><tt>IF_REFLECTRED</tt></li>
+                            <li><tt>IF_REFLECTGREEN</tt></li>
+                            <li><tt>IF_REFLECTBLUE</tt></li>
+                            <li><tt>IF_RED</tt></li>
+                            <li><tt>IF_GREEN</tt></li>
+                            <li><tt>IF_BLUE</tt></li>
+                            <li><tt>IF_ALPHA</tt></li>
+                          </ul>
+                          New code should use the prefixed versions, and older code should migrate in preparation for the
+                          removal of the original flags in some later release.
+                        </li>
+                    </ul>
+            </td>
+        </tr>
+    </table>
+    <p><br>
+        <br>
+    </p>
+</body>
+</html>
