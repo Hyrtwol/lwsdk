@@ -1,0 +1,8 @@
+*.ncb
+*.user
+*.sdf
+*.suo
+*.vc.db
+.vs/
+win32/
+*.opendb

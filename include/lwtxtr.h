@@ -8,6 +8,7 @@
 #ifndef LWSDK_TXTR_H
 #define LWSDK_TXTR_H
 
+typedef struct st_GCoreSurface      *LWSurfID;
 typedef struct st_TxtrLayer			*LWTLayerID;
 typedef struct st_LWMicropol		*LWMicropolID;
 typedef struct st_TxtrContext		*LWTxtrContextID;
@@ -45,7 +46,8 @@ typedef struct st_LWMicropol {
     double		  rayLength;			
     double		  cosine;				
     double		  oXfrm[9],wXfrm[9];	// transformation matrix
-    LWItemID	  objID,srfID;			// object ID, surface ID
+    LWItemID	  objID;                // object ID
+    LWSurfID      srfID;                // surface ID (pointer size)
     LWPntID		  verts[4];				// surrounding vertex IDs
     float		  weights[4];			// vertex weigths
     float	      vertsWPos[4][3];		// vertex world positions

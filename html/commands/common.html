@@ -298,6 +298,37 @@
       </tt>
       <dd>Store all of the expressions in a file, or retrieve them from a file.</dd>
     </dl>
+    <p><a name="OBJ"><strong>OBJ Loader and Saver</strong></a></p>
+    <p>The OBJ loader and saver has several options.
+    When loading, the order of the vertices can be changed in memory.
+    Several of the options do change the vertex order.
+    </p>
+    <dt>OBJWriteNormals <strong>n</strong>enabled<br>
+    </tt>
+    <dd>Saves vertex normal into the OBJ file if enabled</tt>.</dd>
+    <dt><br>
+    <dt>OBJMergePoints <strong>n</strong>enabled<br>
+    </tt>
+    <dd>Removes duplicate vertices from the OBJ file.  This command does affect vertex order</tt>.</dd>
+    <dt><br>
+    <dt>OBJZBrushMode <strong>n</strong>enabled<br>
+    </tt>
+    <dd>Uses LightWaves old OBJ exporter.  It is compabable with ZBrush.</tt>.</dd>
+    <dd>This command does affect vertex order</tt>.</dd>
+    <dt><br>
+    <dt>OBJPivotInCenter <strong>n</strong>enabled<br>
+    </tt>
+    <dd>If enabled,the OBJ is loaded with the pivot point in the center.</tt>.</dd>
+    <dd>Otherwise the OBJ is loaded with the pivot point at the origin.</tt>.</dd>
+    <dt><br>
+    <dt>OBJOneLayer <strong>n</strong>enabled<br>
+    </tt>
+    <dd>Saves all OBJ data in a single layer.  This command does affect vertex order</tt>.</dd>
+    <dt><br>
+    <dt>OBJOneVMap <strong>n</strong>enabled<br>
+    </tt>
+    <dd>If enabled, the vertex map is merged into a single vertex map when saved</tt>.</dd>
+    <tt>
     </td>
   </tr>
 </table>

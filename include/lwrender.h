@@ -590,7 +590,7 @@ typedef enum en_lwrenderingmode {
   lwrm_sizeof
 } LWRENDERINGMODE;
 
-#define LWSCENEINFO_GLOBAL "LW Scene Info 6"
+#define LWSCENEINFO_GLOBAL "LW Scene Info 7"
 
 typedef struct st_LWSceneInfo {
     const char *name;
@@ -651,6 +651,9 @@ typedef struct st_LWSceneInfo {
     double      zmax;
     int         rendermode;                     /* LWRENDERINGMODE enum. */
     int         calculateallnormals;            /* Forces the calculation of normals, in layout or while rendering. */
+    /* Added for LW9.7 */
+    int         enableLenseFlares;
+    double      lenseFlareIntensity;
 } LWSceneInfo;
 
 /* SceneInfo.renderType */

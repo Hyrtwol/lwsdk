@@ -31,7 +31,10 @@ typedef enum en_LWImageType {
 	LWIMTYP_RGBFP,
 	LWIMTYP_RGBA32,
 	LWIMTYP_RGBAFP,
-	LWIMTYP_SPECIAL
+	LWIMTYP_SPECIAL,
+	LWIMTYP_GREYDBL,
+	LWIMTYP_RGBDBL,
+	LWIMTYP_RGBADBL
 } LWImageType;
 
 /*
@@ -51,6 +54,12 @@ typedef struct st_LWPixelRGBFP {
 	float            b;
 } LWPixelRGBFP;
 
+typedef struct st_LWPixelRGBDBL {
+	double           r;
+	double           g;
+	double           b;
+} LWPixelRGBDBL;
+
 typedef struct st_LWPixelRGBA32 {
 	unsigned char    r;
 	unsigned char    g;
@@ -64,6 +73,13 @@ typedef struct st_LWPixelRGBAFP {
 	float            b;
 	float            a;
 } LWPixelRGBAFP;
+
+typedef struct st_LWPixelRGBADBL {
+	double           r;
+	double           g;
+	double           b;
+    double           a;
+} LWPixelRGBADBL;
 
 /*
  * Image Buffer Protocol with parameter tags.
@@ -201,12 +217,12 @@ typedef struct st_LWImageProtocol {
  */
 
 typedef struct st_LWImageLoaderLocal {
-	void		   *priv_data;
-	int		    result;
-	const char	   *filename;
-	LWMonitor	   *monitor;
+	void               *priv_data;
+	int                 result;
+	const char         *filename;
+	LWMonitor          *monitor;
 	LWImageProtocolID (*begin) (void *, LWImageType);
-	void		  (*done)  (void *, LWImageProtocolID);
+	void              (*done)  (void *, LWImageProtocolID);
 } LWImageLoaderLocal;
 
 /*
@@ -214,12 +230,12 @@ typedef struct st_LWImageLoaderLocal {
  */
 
 typedef struct st_LWImageSaverLocal {
-	void		 *priv_data;
-	int		  result;
-	LWImageType	  type;
-	const char	 *filename;
-	LWMonitor	 *monitor;
-	int		(*sendData) (void *, LWImageProtocolID, int flags);
+	void               *priv_data;
+	int                 result;
+	LWImageType         type;
+	const char         *filename;
+	LWMonitor          *monitor;
+	int                (*sendData) (void *, LWImageProtocolID, int flags);
 } LWImageSaverLocal;
 
 

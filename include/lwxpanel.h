@@ -446,12 +446,12 @@ typedef struct st_LWXPanelFuncs {
                                           LWXPanelDataDesc *dataDesc,
                                           LWXPanelGetFunc *get,
                                           LWXPanelSetFunc *set );
-        void            (*hint)         ( LWXPanelID panel, unsigned int id,
+        void            (*hint)         ( LWXPanelID panel, unsigned int an_id,
                                           LWXPanelHint *hints );
         void            *(*getData)     ( LWXPanelID panel,
-                                          unsigned int id );
+                                          unsigned int data_id );
         void            (*setData)      ( LWXPanelID panel,
-                                          unsigned int id,
+                                          unsigned int data_id,
                                           void *data );
         void            *(*formGet)     ( LWXPanelID panel,
                                           unsigned int vid );

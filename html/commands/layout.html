@@ -324,6 +324,10 @@
       <dt>ObjGIMaxPixelSpacing <b>g</b>amount</dt>
       </tt>
       <dd>Sets the maxiumum pixel spacing amount for the object's localized Global Illumination settings.</dd>
+      <tt>
+      <dt>LayerNameInstancing <strong>n</strong>enabled</dt>
+      </tt>
+      <dd>Enables or Disables the layer name instancing of duplicate layer names.</dd>
     </dl>
     <p><a name="bones"><strong>Bones</strong></a></p>
     <p>Commands that set bone parameters operate on the currently selected bone. You can use
@@ -468,6 +472,9 @@
       <dd>Set the type of the light.</dd>
       <tt>
       <dt><br>
+        DoubleSidedAreaLight <strong>n</strong>enabled</dt>
+      </tt>
+      <dt><br>
         LightColor <strong>g</strong>red <strong>g</strong>green <strong>g</strong>blue<br>
         LightIntensity <strong>g</strong>intensity</dt>
       </tt>
@@ -546,11 +553,11 @@
     </dl>
     <p><a name="gillum"><strong>Global Illumination</strong></a><dl>
       <tt>
-      <dt>EnableLensFlares<br>
-        EnableShadowMaps<br>
-        EnableVolumetricLights<br>
-        EnableRadiosity<br>
-        EnableCaustics</dt>
+      <dt>EnableLensFlares <strong>n</strong>enabled<br>
+        EnableShadowMaps <strong>n</strong>enabled<br>
+        EnableVolumetricLights <strong>n</strong>enabled<br>
+        EnableRadiosity <strong>n</strong>enabled<br>
+        EnableCaustics <strong>n</strong>enabled</dt>
       </tt>
       <dd>Toggle these features for the whole scene.</dd>
       <tt>
@@ -561,12 +568,12 @@
       <dd>Set the ambient light color and intensity.</dd>
       <tt>
       <dt><br>
-        NoiseReduction</dt>
+        NoiseReduction <strong>n</strong>enabled</dt>
       </tt>
       <dd>Toggle the Shader Noise Reduction feature.</dd>
       <tt>
       <dt><br>
-        RadiosityType <strong>n</strong>type</dt>
+        RadiosityType VolumetricRadiositytype</dt>
       </tt>
       <dd>Set the radiosity type, which can be one of the following. <p>0 - Backdrop Only<br>
         1 - Monte Carlo<br>
@@ -586,7 +593,7 @@
       <dd>Set the radiosity intensity and tolerance and the caustic intensity.</dd>
       <tt>
       <dt><br>
-        VolumetricRadiosity</dt>
+        VolumetricRadiosity <strong>n</strong>enabled</dt>
       </tt>
       <dd>A toggle that's on by default, this controls whether volumetrics are taken into account
         by radiosity.</dd>
@@ -1331,6 +1338,8 @@
         SkyColor <strong>g</strong>red <strong>g</strong>green <strong>g</strong>blue<br>
         GroundColor <strong>g</strong>red <strong>g</strong>green <strong>g</strong>blue<br>
         NadirColor <strong>g</strong>red <strong>g</strong>green <strong>g</strong>blue</dt>
+        SkySqueezeColor <strong>g</strong>red <strong>g</strong>green <strong>g</strong>blue</dt>
+        GroundSqueezeColor <strong>g</strong>red <strong>g</strong>green <strong>g</strong>blue</dt>
       </tt>
       <dd>Enable or disable the gradient backdrop, and set its key colors.</dd>
       <tt>
@@ -1448,12 +1457,17 @@
         VIPER window.</dd>
       <tt>
       <dt><br>
-        RayTraceShadows<br>
-        RayTraceReflection<br>
-        RayTraceRefraction<br>
-        RayTraceTransparency</dt>
+        RayTraceShadows <strong>n</strong>enabled<br>
+        RayTraceReflection <strong>n</strong>enabled<br>
+        RayTraceRefraction <strong>n</strong>enabled<br>
+        RayTraceTransparency <strong>n</strong>enabled</br>
+        RayTraceOcclusion <strong>n</strong>enabled</dt>
       </tt>
       <dd>Toggle raytracing of shadows, reflection, refraction and transparency.</dd>
+      <dt><br>
+        LimitDynamicRange <strong>n</strong>enabled<dt>
+      </tt>
+      <dd>Clamps the dynamic range.</dd>
       <tt>
       <dt><br>
         RenderFrame<br>

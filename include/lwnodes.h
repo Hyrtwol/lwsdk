@@ -10,11 +10,12 @@
 
 #include <lwserver.h>
 #include <lwrender.h>
+#include <lwtxtr.h>
 
 #define LWNODE_HCLASS           "NodeHandler"
 #define LWNODE_ICLASS           "NodeInterface"
 #define LWNODE_GCLASS           "NodeGizmo"
-#define	LWNODECLASS_VERSION     2
+#define	LWNODECLASS_VERSION     3
 
 #define	LWNODEFUNCS_GLOBAL          "NodeFuncs"
 #define	LWNODEINPUTFUNCS_GLOBAL     "NodeInputFuncs 2"
@@ -94,6 +95,10 @@ typedef struct LWNodalAccess_t {
     LWBufferGetValFunc  *getVal;
     LWBufferSetValFunc  *setVal;
 
+    /* Added Version 3 for AnimUV cycling. */
+
+    int outsiz;
+    LWVertexIndexes  *VertexIndexes;	/* Indexs To Original Polygone Vertex Index and Prespective Weights.*/
 } LWNodalAccess;
 
 typedef struct LWNodalMaterial_t {

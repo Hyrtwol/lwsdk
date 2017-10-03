@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Source Files\lwsdk">
+      <UniqueIdentifier>{1fcc036c-9c36-4b5c-8412-648272a6c3fe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="coriolis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cyclone.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dented.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fbmnoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="heteroterrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hybridmfractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="multifractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pts_frctl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pts_gui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pts_incs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pts_math.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pts_noise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pts_rand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="puffyclouds.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ridgedmfractal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="turbnoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="blotch.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="blotchv.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\servmain.c">
+      <Filter>Source Files\lwsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\shutdown.c">
+      <Filter>Source Files\lwsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\startup.c">
+      <Filter>Source Files\lwsdk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\source\username.c">
+      <Filter>Source Files\lwsdk</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
