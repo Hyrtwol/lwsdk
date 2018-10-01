@@ -6,3 +6,7 @@
 .vs/
 win32/
 *.opendb
+*.log
+amd64/
+Debug/
+Release/

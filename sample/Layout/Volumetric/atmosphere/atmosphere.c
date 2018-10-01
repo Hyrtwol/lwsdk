@@ -600,7 +600,7 @@ Return a one-line text description of the instance data.
 XCALL_( static const char * )
 Describe( AtmosphereData *dat )
 {
-   sprintf( dat->desc, "Bottom: %2f Top: %2f", dat->lo, dat->hi );
+   sprintf( dat->desc, "Atmosphere (Bottom: %2f Top: %2f)", dat->lo, dat->hi );
    return dat->desc;
 }
 
@@ -906,7 +906,7 @@ Atmosphere_UI( int version, GlobalFunc *global, LWInterface *local,
 
 
 ServerRecord ServerDesc[] = {
-   { LWVOLUMETRIC_HCLASS, "Demo_GroundFog", Atmosphere },
-   { LWVOLUMETRIC_ICLASS, "Demo_GroundFog", Atmosphere_UI },
+   { LWVOLUMETRIC_HCLASS, "Atmosphere", Atmosphere },
+   { LWVOLUMETRIC_ICLASS, "Atmosphere", Atmosphere_UI },
    { NULL }
 };
