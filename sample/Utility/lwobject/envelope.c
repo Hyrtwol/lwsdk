@@ -47,11 +47,11 @@ Read an ENVL chunk from an LWO2 file.
 lwEnvelope *lwGetEnvelope( FILE *fp, int cksize )
 {
    lwEnvelope *env;
-   lwKey *key;
+   lwKey *key = NULL;
    lwPlugin *plug;
    unsigned int id;
    unsigned short sz;
-   float f[ 4 ];
+   float f[4] = {0,0,0,0};
    int i, nparams, pos, rlen;
 
 

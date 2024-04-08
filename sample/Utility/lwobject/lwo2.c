@@ -78,8 +78,8 @@ lwObject *lwGetObject( char *filename, unsigned int *failID, int *failpos )
    lwObject *object;
    lwLayer *layer;
    lwNode *node;
-   unsigned int id, formsize, type, cksize;
-   int i, rlen;
+   unsigned int id, formsize, type, cksize, rlen;
+   int i;
 
    /* open the file */
 

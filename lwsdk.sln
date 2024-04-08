@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31613.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layout", "Layout", "{E093C51D-43F9-426F-9636-8304BFA08727}"
 EndProject
@@ -974,7 +974,8 @@ Global
 		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.DebugV|Win64 (AMD64).ActiveCfg = Debug|Win32
 		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release|Win32.ActiveCfg = Debug|Win32
 		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release|Win32.Build.0 = Debug|Win32
-		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release|Win64 (AMD64).ActiveCfg = Debug|Win32
+		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release|Win64 (AMD64).ActiveCfg = Release|x64
+		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release|Win64 (AMD64).Build.0 = Release|x64
 		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release2|Win32.ActiveCfg = Debug|Win32
 		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release2|Win32.Build.0 = Debug|Win32
 		{5D6CA1C1-B7C0-4E40-BFA5-C1CE5A647082}.Release2|Win64 (AMD64).ActiveCfg = Debug|Win32

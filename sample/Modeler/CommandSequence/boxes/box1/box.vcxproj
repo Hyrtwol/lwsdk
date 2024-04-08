@@ -186,6 +186,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ImportLibrary>$(OutDir)box.lib</ImportLibrary>
       <TargetMachine>MachineX64</TargetMachine>
+      <MapExports>true</MapExports>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

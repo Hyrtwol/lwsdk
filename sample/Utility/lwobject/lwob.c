@@ -186,10 +186,10 @@ Read an lwSurface from an LWOB file.
 lwSurface *lwGetSurface5( FILE *fp, int cksize, lwObject *obj )
 {
    lwSurface *surf;
-   lwTexture *tex;
-   lwPlugin *shdr;
+   lwTexture *tex = NULL;
+   lwPlugin *shdr = NULL;
    char *s;
-   float v[ 3 ];
+   float v[3] = {0,0,0};
    unsigned int id, flags;
    unsigned short sz;
    int pos, rlen, i;

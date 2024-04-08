@@ -374,7 +374,7 @@ int make_filespec( char *spec, char *subdir, char *fullname )
 
 int find_files( char *filespec )
 {
-   long h, err;
+   intptr_t h, err;
    struct _finddata_t data;
    char *filename, *prevname;
    unsigned int failID;

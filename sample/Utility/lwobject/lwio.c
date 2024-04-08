@@ -420,7 +420,7 @@ char *sgetS0( unsigned char **bp )
 {
    char *s;
    unsigned char *buf = *bp;
-   int len;
+   size_t len;
 
    if ( flen == FLEN_ERROR ) return NULL;
 
